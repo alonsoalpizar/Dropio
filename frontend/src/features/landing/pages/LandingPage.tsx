@@ -1,525 +1,525 @@
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
 import { useIsAuthenticated } from '@/hooks/useAuth';
-import { Shield, Eye, Zap, Gift, Ticket, Trophy, Ban, CheckCircle, UserCheck, FileCheck, Clock, ShieldX } from 'lucide-react';
+
+// Componente de la moneda flotante
+function AloCoin() {
+  return (
+    <div className="relative animate-float">
+      {/* Glow effect */}
+      <div className="absolute inset-0 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 bg-gold/20 rounded-full blur-3xl animate-glow-pulse" />
+
+      {/* Coin */}
+      <div className="relative w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full flex flex-col items-center justify-center"
+        style={{
+          background: 'linear-gradient(145deg, #F4B942, #C9952E)',
+          boxShadow: '0 0 100px rgba(244, 185, 66, 0.3), inset 0 -10px 30px rgba(0, 0, 0, 0.3), inset 0 10px 30px rgba(255, 255, 255, 0.2)',
+        }}
+      >
+        {/* Inner border */}
+        <div className="absolute inset-[15px] border-[3px] border-white/30 rounded-full" />
+
+        {/* Symbol */}
+        <span className="text-[3.5rem] md:text-[5rem] font-black text-dark"
+          style={{ textShadow: '2px 2px 0 rgba(255, 255, 255, 0.3)' }}
+        >
+          A
+        </span>
+        <span className="text-sm md:text-base font-bold text-dark tracking-[4px] uppercase mt-2">
+          AloCoins
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Floating card component
+function FloatingCard({
+  position,
+  icon,
+  label,
+  value,
+  colorClass
+}: {
+  position: 'top-right' | 'bottom-left' | 'bottom-right';
+  icon: string;
+  label: string;
+  value: string;
+  colorClass: 'green' | 'blue' | 'purple';
+}) {
+  const positionClasses = {
+    'top-right': 'top-5 -right-10',
+    'bottom-left': 'bottom-10 -left-16',
+    'bottom-right': '-bottom-5 right-5',
+  };
+
+  const bgClasses = {
+    green: 'bg-accent-green/15',
+    blue: 'bg-accent-blue/15',
+    purple: 'bg-accent-purple/15',
+  };
+
+  const textClasses = {
+    green: 'text-accent-green',
+    blue: 'text-accent-blue',
+    purple: 'text-accent-purple',
+  };
+
+  return (
+    <div className={`absolute ${positionClasses[position]} bg-dark-card border border-dark-lighter rounded-2xl px-5 py-4 flex items-center gap-3 shadow-2xl animate-fade-in-up hidden lg:flex`}
+      style={{ animationDelay: '0.5s' }}
+    >
+      <div className={`w-11 h-11 ${bgClasses[colorClass]} rounded-xl flex items-center justify-center text-xl`}>
+        {icon}
+      </div>
+      <div className="flex flex-col">
+        <span className="text-xs text-neutral-500">{label}</span>
+        <span className={`text-base font-bold font-mono ${textClasses[colorClass]}`}>{value}</span>
+      </div>
+    </div>
+  );
+}
+
+// Use card component
+function UseCard({ icon, title, description }: { icon: string; title: string; description: string }) {
+  return (
+    <div className="group bg-dark-card border border-dark-lighter rounded-3xl p-8 md:p-10 text-center transition-all duration-400 relative overflow-hidden hover:-translate-y-2 hover:border-gold hover:shadow-[0_20px_60px_rgba(244,185,66,0.15)]">
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold to-gold-light opacity-0 group-hover:opacity-100 transition-opacity" />
+
+      <div className="w-[72px] h-[72px] bg-gold/10 rounded-[20px] flex items-center justify-center text-[2rem] mx-auto mb-6">
+        {icon}
+      </div>
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-neutral-400 leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
+// Step component
+function Step({ number, title, description }: { number: number; title: string; description: string }) {
+  return (
+    <div className="text-center relative flex-1">
+      <div className="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center text-2xl font-extrabold text-dark mx-auto mb-8 relative z-10 shadow-[0_10px_40px_rgba(244,185,66,0.3)]">
+        {number}
+      </div>
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-neutral-400 leading-relaxed max-w-[260px] mx-auto">{description}</p>
+    </div>
+  );
+}
+
+// Drop card component
+function DropCard({
+  emoji,
+  title,
+  price,
+  progress,
+  badge
+}: {
+  emoji: string;
+  title: string;
+  price: number;
+  progress: number;
+  badge: string;
+}) {
+  return (
+    <div className="bg-dark border border-dark-lighter rounded-3xl overflow-hidden transition-all duration-400 hover:-translate-y-2 hover:border-gold hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+      {/* Image area */}
+      <div className="h-[200px] bg-gradient-to-br from-dark-lighter to-dark-card flex items-center justify-center text-6xl relative">
+        {emoji}
+        <span className={`absolute top-4 right-4 ${badge === 'NUEVO' ? 'bg-accent-blue' : 'bg-accent-green'} text-dark px-3 py-1.5 rounded-lg text-xs font-bold`}>
+          {badge}
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className="p-7">
+        <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+
+        <div className="flex justify-between items-center mt-5 pt-5 border-t border-dark-lighter">
+          <div className="flex flex-col">
+            <span className="text-xs text-neutral-500">Por participación</span>
+            <span className="text-lg font-bold font-mono text-gold">{price} ALO</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-xs text-neutral-500">{progress}% vendido</span>
+            <div className="w-[100px] h-1.5 bg-dark-lighter rounded-full overflow-hidden mt-1.5">
+              <div
+                className="h-full bg-gradient-to-r from-gold to-gold-light rounded-full"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Level card component
+function LevelCard({
+  icon,
+  name,
+  requirement,
+  benefit
+}: {
+  icon: string;
+  name: string;
+  requirement: string;
+  benefit: string;
+}) {
+  return (
+    <div className="bg-dark-card border border-dark-lighter rounded-[20px] p-8 text-center transition-all duration-400 hover:scale-105 hover:border-gold">
+      <div className="text-5xl mb-4">{icon}</div>
+      <h3 className="text-lg font-bold text-white mb-2">{name}</h3>
+      <p className="text-sm text-neutral-500 font-mono mb-4">{requirement}</p>
+      <p className="text-sm text-gold font-medium">{benefit}</p>
+    </div>
+  );
+}
 
 export function LandingPage() {
   const isAuthenticated = useIsAuthenticated();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-sky-50 to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      {/* Header/Nav */}
-      <header className="border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-amber-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2c-5.33 8-8 12-8 15a8 8 0 0 0 16 0c0-3-2.67-7-8-15z"/>
-                </svg>
-              </div>
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                Dropio<span className="text-sky-500">.club</span>
-              </span>
-            </div>
-
-            <nav className="hidden md:flex items-center gap-6">
-              {isAuthenticated ? (
-                <Link to="/dashboard">
-                  <Button>
-                    Ir al Panel
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to="/login">
-                    <Button variant="outline">
-                      Iniciar Sesión
-                    </Button>
-                  </Link>
-                  <Link to="/register">
-                    <Button>
-                      Registrarse
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </nav>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden flex gap-2">
-              {isAuthenticated ? (
-                <Link to="/dashboard">
-                  <Button size="sm">
-                    Mi Panel
-                  </Button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <Button variant="outline" size="sm">
-                    Ingresar
-                  </Button>
-                </Link>
-              )}
-            </div>
+    <div className="min-h-screen bg-dark text-white font-sans overflow-x-hidden">
+      {/* NAV */}
+      <nav className="fixed top-0 w-full px-6 md:px-[60px] py-5 flex justify-between items-center z-50 bg-dark/80 backdrop-blur-xl border-b border-gold/10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-gold to-gold-dark rounded-xl flex items-center justify-center text-lg">
+            🪙
           </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl" />
-          <div className="absolute top-20 -left-20 w-60 h-60 bg-indigo-400/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-teal-400/20 rounded-full blur-3xl" />
+          <span className="text-2xl font-extrabold tracking-tight">
+            Dropio<span className="text-gold">.club</span>
+          </span>
         </div>
 
-        <div className="container mx-auto px-4 py-16 md:py-24 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Text content */}
-            <div className="text-center lg:text-left">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                Nuevo en Costa Rica
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
-                Sorteos{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-amber-500">
-                  transparentes
-                </span>{' '}
-                y seguros
-              </h1>
-
-              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl mx-auto lg:mx-0">
-                Gestiona y realiza sorteos verificables.
-                La forma más confiable de organizar y participar en sorteos en línea.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                {isAuthenticated ? (
-                  <Link to="/explore">
-                    <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-blue-500/25">
-                      Ver Sorteos Disponibles
-                      <Ticket className="w-5 h-5 ml-2" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <>
-                    <Link to="/register">
-                      <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-blue-500/25">
-                        Crear Cuenta Gratis
-                        <Gift className="w-5 h-5 ml-2" />
-                      </Button>
-                    </Link>
-                    <Link to="/login">
-                      <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                        Ya tengo cuenta
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
-
-              {/* Trust indicators */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-10 text-sm text-slate-500 dark:text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-green-500" />
-                  <span>Datos protegidos</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-blue-500" />
-                  <span>100% auditable</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-500" />
-                  <span>Resultados instantáneos</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Visual illustration */}
-            <div className="relative hidden lg:block">
-              {/* Main card - Raffle preview mockup */}
-              <div className="relative z-10 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                    <Trophy className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white">iPhone 15 Pro Max</h3>
-                    <p className="text-sm text-slate-500">Sorteo activo</p>
-                  </div>
-                </div>
-
-                {/* Ticket grid preview */}
-                <div className="grid grid-cols-5 gap-2 mb-4">
-                  {[...Array(15)].map((_, i) => {
-                    const isSold = [0, 2, 4, 7, 9, 11, 13].includes(i);
-                    const isWinner = i === 7;
-                    return (
-                      <div
-                        key={i}
-                        className={`
-                          aspect-square rounded-lg flex items-center justify-center text-sm font-medium
-                          ${isWinner
-                            ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white animate-pulse'
-                            : isSold
-                              ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-400'
-                          }
-                        `}
-                      >
-                        {String(i).padStart(2, '0')}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">7 de 100 vendidos</span>
-                  <span className="font-semibold text-green-600">¢5,000 / boleto</span>
-                </div>
-              </div>
-
-              {/* Floating elements */}
-              <div className="absolute -top-6 right-8 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-bounce z-20">
-                +₡50,000 recaudado
-              </div>
-
-              <div className="absolute bottom-4 -left-4 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-3 transform rotate-3 z-20">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center">
-                    <Trophy className="w-4 h-4 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Ganador</p>
-                    <p className="font-semibold text-slate-900 dark:text-white text-sm">#08 - María G.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Background decoration card - hidden to avoid visual clutter */}
-            </div>
-          </div>
-
+        {/* Desktop nav links */}
+        <div className="hidden md:flex gap-10 items-center">
+          <a href="#que-es" className="text-neutral-400 hover:text-white transition-colors font-medium">¿Qué es?</a>
+          <a href="#como-funciona" className="text-neutral-400 hover:text-white transition-colors font-medium">Cómo funciona</a>
+          <a href="#drops" className="text-neutral-400 hover:text-white transition-colors font-medium">Drops</a>
+          <a href="#niveles" className="text-neutral-400 hover:text-white transition-colors font-medium">Niveles</a>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white dark:bg-slate-800">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              ¿Por qué elegir Dropio.club?
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Una plataforma diseñada pensando en la transparencia, seguridad y facilidad de uso
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Feature 1 */}
-            <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-green-500/25">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                100% Seguro
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Tus datos y transacciones están protegidos con los más altos estándares de seguridad.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/25">
-                <Eye className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                Transparente
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Todos los sorteos son auditables. Ve en tiempo real el estado de cada número vendido.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-amber-500/25">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                Rápido y Fácil
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Crea un sorteo en minutos. Interfaz intuitiva y proceso simplificado.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How it Works */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-900">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              ¿Cómo funciona?
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              En solo 3 pasos puedes crear tu sorteo o participar en uno existente
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-            {/* Step 1 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                1
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                Regístrate
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Crea tu cuenta de forma gratuita y verifica tu correo electrónico
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                2
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                Crea o Participa
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Crea tu propio sorteo o elige números en sorteos activos
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                3
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                Gana
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Espera el sorteo y verifica los resultados de forma transparente
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Platform Rules Section */}
-      <section className="py-20 bg-white dark:bg-slate-800">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              Normas que garantizan tu seguridad
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Reglas claras para sorteos justos, transparentes y legales
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* Rule 1 - No money */}
-            <div className="flex items-start gap-4 p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
-              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Ban className="w-5 h-5 text-red-600 dark:text-red-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Solo productos, no dinero</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Solo se permite sortear artículos y productos. No se pueden rifar premios en efectivo.
-                </p>
-              </div>
-            </div>
-
-            {/* Rule 2 - Prohibited items */}
-            <div className="flex items-start gap-4 p-6 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 dark:border-rose-800">
-              <div className="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <ShieldX className="w-5 h-5 text-rose-600 dark:text-rose-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Productos prohibidos</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  No se permiten armas, sustancias ilícitas, artículos robados ni cualquier producto que infrinja la ley.
-                </p>
-              </div>
-            </div>
-
-            {/* Rule 3 - Verified source */}
-            <div className="flex items-start gap-4 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Fuente verificable</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Los resultados se basan en la Lotería Nacional de Costa Rica, garantizando imparcialidad.
-                </p>
-              </div>
-            </div>
-
-            {/* Rule 4 - Verified users */}
-            <div className="flex items-start gap-4 p-6 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <UserCheck className="w-5 h-5 text-green-600 dark:text-green-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Usuarios verificados</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Todos los participantes y organizadores deben verificar su identidad.
-                </p>
-              </div>
-            </div>
-
-            {/* Rule 5 - Moderation */}
-            <div className="flex items-start gap-4 p-6 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
-              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FileCheck className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Sorteos moderados</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Cada sorteo es revisado antes de publicarse. Contenido inapropiado será suspendido.
-                </p>
-              </div>
-            </div>
-
-            {/* Rule 6 - Full traceability */}
-            <div className="flex items-start gap-4 p-6 bg-slate-100 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
-              <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Trazabilidad completa</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Todas las transacciones quedan registradas. Historial completo disponible para auditorías.
-                </p>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Platform disclaimer */}
-          <div className="mt-12 max-w-4xl mx-auto">
-            <div className="bg-slate-800 dark:bg-slate-900 rounded-xl p-6 text-center">
-              <p className="text-slate-300 text-sm leading-relaxed">
-                <span className="font-semibold text-white">Dropio.club</span> es una plataforma tecnológica que facilita la gestión de sorteos entre usuarios.
-                La responsabilidad de cada sorteo recae exclusivamente en el organizador que lo publica.
-                Recomendamos a los participantes verificar siempre la información del organizador antes de participar.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-sky-500 to-sky-600 dark:from-sky-600 dark:to-sky-700">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            {isAuthenticated ? "Explora los sorteos disponibles" : "¿Listo para comenzar?"}
-          </h2>
-          <p className="text-sky-100 mb-8 max-w-2xl mx-auto text-lg">
-            {isAuthenticated
-              ? "Descubre los sorteos activos y participa por increíbles premios"
-              : "Únete a Dropio.club hoy y comienza a participar en sorteos transparentes y seguros"
-            }
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {isAuthenticated ? (
-              <Link to="/explore">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white text-sky-600 hover:bg-slate-50 border-white">
-                  Ver Sorteos Activos
-                </Button>
+        {/* Nav buttons */}
+        <div className="flex gap-4">
+          {isAuthenticated ? (
+            <Link
+              to="/dashboard"
+              className="px-7 py-3 rounded-xl font-semibold text-dark bg-gradient-to-br from-gold to-gold-dark hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(244,185,66,0.3)] transition-all"
+            >
+              Ir al Panel
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="hidden md:block px-7 py-3 rounded-xl font-semibold border border-neutral-600 text-white hover:border-gold hover:text-gold transition-all"
+              >
+                Iniciar Sesión
               </Link>
-            ) : (
-              <>
-                <Link to="/register">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white text-sky-600 hover:bg-slate-50 border-white">
-                    Crear Cuenta Gratis
-                  </Button>
-                </Link>
-                <Link to="/login">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white text-sky-600 hover:bg-slate-50 border-white">
-                    Ya tengo cuenta
-                  </Button>
-                </Link>
-              </>
-            )}
+              <Link
+                to="/register"
+                className="px-7 py-3 rounded-xl font-semibold text-dark bg-gradient-to-br from-gold to-gold-dark hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(244,185,66,0.3)] transition-all"
+              >
+                Comprar AloCoins
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="min-h-screen flex items-center px-6 md:px-[60px] pt-[120px] pb-[60px] relative overflow-hidden">
+        {/* Background gradients */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[20%] w-[500px] h-[500px] bg-gold/[0.08] rounded-full blur-[100px]" />
+          <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] bg-gold/[0.05] rounded-full blur-[100px]" />
+        </div>
+
+        <div className="flex flex-col lg:flex-row items-center gap-16 w-full max-w-7xl mx-auto">
+          {/* Left content */}
+          <div className="flex-1 text-center lg:text-left z-10 max-w-[600px]">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/30 px-4 py-2 rounded-full text-sm text-gold mb-8 animate-fade-in-up">
+              <span className="w-2 h-2 bg-accent-green rounded-full animate-pulse-dot" />
+              Activo digital verificable
+            </div>
+
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl lg:text-[4.5rem] font-black leading-[1.05] mb-6 tracking-tight animate-fade-in-up"
+              style={{ animationDelay: '0.1s' }}
+            >
+              Tu moneda.<br />
+              Tus <span className="bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">reglas</span>.
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-lg md:text-xl text-neutral-400 leading-relaxed mb-10 max-w-[480px] mx-auto lg:mx-0 animate-fade-in-up"
+              style={{ animationDelay: '0.2s' }}
+            >
+              Comprá AloCoins, la moneda del Club Dropio. Canjeá en Drops exclusivos,
+              transferí a amigos, coleccioná ediciones especiales. Tus coins, tu decisión.
+            </p>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-12 justify-center lg:justify-start animate-fade-in-up"
+              style={{ animationDelay: '0.3s' }}
+            >
+              <Link
+                to={isAuthenticated ? "/wallet" : "/register"}
+                className="px-9 py-4 rounded-xl font-semibold text-lg text-dark bg-gradient-to-br from-gold to-gold-dark hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(244,185,66,0.3)] transition-all"
+              >
+                Comprar AloCoins
+              </Link>
+              <Link
+                to={isAuthenticated ? "/explore" : "/login"}
+                className="px-9 py-4 rounded-xl font-semibold text-lg border border-neutral-600 text-white hover:border-gold hover:text-gold transition-all"
+              >
+                Ver Drops →
+              </Link>
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-12 justify-center lg:justify-start animate-fade-in-up"
+              style={{ animationDelay: '0.4s' }}
+            >
+              <div className="flex flex-col">
+                <span className="text-3xl font-extrabold font-mono text-gold">1:1</span>
+                <span className="text-sm text-neutral-500 mt-1">Valor fijo (₡)</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-3xl font-extrabold font-mono text-gold">24/7</span>
+                <span className="text-sm text-neutral-500 mt-1">Disponible</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-3xl font-extrabold font-mono text-gold">100%</span>
+                <span className="text-sm text-neutral-500 mt-1">Tuyo</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right visual */}
+          <div className="flex-1 flex justify-center items-center relative z-10">
+            <div className="relative">
+              <AloCoin />
+
+              {/* Floating cards */}
+              <FloatingCard
+                position="top-right"
+                icon="📈"
+                label="Tu nivel"
+                value="Veterano"
+                colorClass="green"
+              />
+              <FloatingCard
+                position="bottom-left"
+                icon="💎"
+                label="Disponibles"
+                value="12,500 ALO"
+                colorClass="blue"
+              />
+              <FloatingCard
+                position="bottom-right"
+                icon="🔒"
+                label="Utilizados"
+                value="45,200 ALO"
+                colorClass="purple"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 dark:bg-slate-950 text-slate-400 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-amber-500 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2c-5.33 8-8 12-8 15a8 8 0 0 0 16 0c0-3-2.67-7-8-15z"/>
-                  </svg>
-                </div>
-                <span className="text-white font-semibold">Dropio.club</span>
-              </div>
-              <p className="text-sm">
-                La plataforma más confiable para sorteos en línea
-              </p>
-            </div>
+      {/* QUE ES */}
+      <section className="py-[120px] px-6 md:px-[60px]" id="que-es">
+        <div className="text-center mb-20">
+          <span className="text-xs font-semibold text-gold tracking-[3px] uppercase mb-4 block">
+            ¿Qué son los AloCoins?
+          </span>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            Tu activo digital. Múltiples usos.
+          </h2>
+        </div>
 
-            <div>
-              <h4 className="text-white font-semibold mb-4">Plataforma</h4>
-              <ul className="space-y-2 text-sm">
-                {isAuthenticated ? (
-                  <>
-                    <li><Link to="/explore" className="hover:text-white transition-colors">Ver Sorteos</Link></li>
-                    <li><Link to="/dashboard" className="hover:text-white transition-colors">Mi Panel</Link></li>
-                    <li><Link to="/wallet" className="hover:text-white transition-colors">Mi Billetera</Link></li>
-                  </>
-                ) : (
-                  <>
-                    <li><Link to="/register" className="hover:text-white transition-colors">Crear Cuenta</Link></li>
-                    <li><Link to="/login" className="hover:text-white transition-colors">Iniciar Sesión</Link></li>
-                  </>
-                )}
-              </ul>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-[1200px] mx-auto">
+          <UseCard
+            icon="🎁"
+            title="Canjear en Drops"
+            description="Participá en sorteos exclusivos de premios increíbles. Cada semana nuevas oportunidades."
+          />
+          <UseCard
+            icon="🛍️"
+            title="Shop"
+            description="Canjeá tus coins por productos exclusivos. Camisetas, accesorios y más."
+          />
+          <UseCard
+            icon="🔄"
+            title="Transferir"
+            description="Enviá AloCoins a amigos o familia. Regalá coins para que ellos participen."
+          />
+          <UseCard
+            icon="💰"
+            title="Coleccionar"
+            description="Guardá tus coins. Subí de nivel. Conseguí beneficios exclusivos por ser holder."
+          />
+        </div>
+      </section>
 
-            <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Términos y Condiciones</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Política de Privacidad</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Política de Cookies</a></li>
-              </ul>
-            </div>
+      {/* COMO FUNCIONA */}
+      <section className="py-[120px] px-6 md:px-[60px] bg-gradient-to-b from-dark to-dark-card" id="como-funciona">
+        <div className="text-center mb-20">
+          <span className="text-xs font-semibold text-gold tracking-[3px] uppercase mb-4 block">
+            Simple y directo
+          </span>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            ¿Cómo funciona?
+          </h2>
+        </div>
 
-            <div>
-              <h4 className="text-white font-semibold mb-4">Soporte</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Centro de Ayuda</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Estado del Servicio</a></li>
-              </ul>
-            </div>
-          </div>
+        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-8 max-w-[1100px] mx-auto relative">
+          {/* Connecting line (desktop only) */}
+          <div className="hidden md:block absolute top-[60px] left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent opacity-30" />
 
-          <div className="border-t border-slate-800 mt-12 pt-8 text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} Dropio.club. Todos los derechos reservados.</p>
+          <Step
+            number={1}
+            title="Comprá AloCoins"
+            description="Adquirí tus coins con tarjeta de crédito o débito. 1 ALO = ₡1"
+          />
+          <Step
+            number={2}
+            title="Elegí qué hacer"
+            description="Participá en Drops, comprá en el Shop, transferí o simplemente guardalos."
+          />
+          <Step
+            number={3}
+            title="Subí de nivel"
+            description="Cada canjeo suma a tu historial. Más uso = mejores beneficios."
+          />
+        </div>
+      </section>
+
+      {/* DROPS */}
+      <section className="py-[120px] px-6 md:px-[60px] bg-dark-card" id="drops">
+        <div className="text-center mb-20">
+          <span className="text-xs font-semibold text-gold tracking-[3px] uppercase mb-4 block">
+            Drops activos
+          </span>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            Participá y ganá
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1100px] mx-auto">
+          <DropCard
+            emoji="📱"
+            title="iPhone 15 Pro Max"
+            price={100}
+            progress={72}
+            badge="ACTIVO"
+          />
+          <DropCard
+            emoji="🎮"
+            title="PlayStation 5"
+            price={75}
+            progress={45}
+            badge="ACTIVO"
+          />
+          <DropCard
+            emoji="👟"
+            title="Nike Air Jordan"
+            price={50}
+            progress={12}
+            badge="NUEVO"
+          />
+        </div>
+
+        {/* View all link */}
+        <div className="text-center mt-12">
+          <Link
+            to={isAuthenticated ? "/explore" : "/register"}
+            className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-semibold"
+          >
+            Ver todos los Drops
+            <span>→</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* NIVELES */}
+      <section className="py-[120px] px-6 md:px-[60px] bg-dark" id="niveles">
+        <div className="text-center mb-20">
+          <span className="text-xs font-semibold text-gold tracking-[3px] uppercase mb-4 block">
+            Sistema de niveles
+          </span>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            Más participás, más ganás
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 max-w-[1200px] mx-auto">
+          <LevelCard icon="🥉" name="Novato" requirement="0 - 999 ALO" benefit="Acceso básico" />
+          <LevelCard icon="🥈" name="Dropper" requirement="1K - 9,999 ALO" benefit="5% descuento Shop" />
+          <LevelCard icon="🥇" name="Veterano" requirement="10K - 49,999 ALO" benefit="10% + Early access" />
+          <LevelCard icon="💎" name="Elite" requirement="50K - 99,999 ALO" benefit="15% + Drops VIP" />
+          <LevelCard icon="👑" name="Leyenda" requirement="100K+ ALO" benefit="20% + NFT gratis" />
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-[120px] px-6 md:px-[60px] bg-gradient-to-b from-dark-card to-dark">
+        <div className="bg-gradient-to-br from-gold/10 to-gold/5 border border-gold/20 rounded-[32px] p-12 md:p-20 max-w-[900px] mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+            ¿Listo para unirte al Club?
+          </h2>
+          <p className="text-xl text-neutral-400 mb-10">
+            Comprá tus primeros AloCoins y empezá a participar hoy.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-5 justify-center">
+            <Link
+              to={isAuthenticated ? "/wallet" : "/register"}
+              className="px-12 py-[18px] rounded-xl font-semibold text-lg text-dark bg-gradient-to-br from-gold to-gold-dark hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(244,185,66,0.3)] transition-all"
+            >
+              Comprar AloCoins
+            </Link>
+            <Link
+              to={isAuthenticated ? "/explore" : "/login"}
+              className="px-12 py-[18px] rounded-xl font-semibold text-lg border border-neutral-600 text-white hover:border-gold hover:text-gold transition-all"
+            >
+              Conocer más
+            </Link>
           </div>
         </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="py-[60px] px-6 md:px-[60px] border-t border-dark-lighter text-center">
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="w-8 h-8 bg-gradient-to-br from-gold to-gold-dark rounded-xl flex items-center justify-center text-base">
+            🪙
+          </div>
+          <span className="text-xl font-extrabold">Dropio.club</span>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-10 mb-8">
+          <a href="#" className="text-neutral-500 hover:text-gold transition-colors text-sm">
+            Términos y condiciones
+          </a>
+          <a href="#" className="text-neutral-500 hover:text-gold transition-colors text-sm">
+            Política de privacidad
+          </a>
+          <a href="#" className="text-neutral-500 hover:text-gold transition-colors text-sm">
+            Soporte
+          </a>
+          <a href="#" className="text-neutral-500 hover:text-gold transition-colors text-sm">
+            FAQ
+          </a>
+        </div>
+
+        <p className="text-sm text-neutral-500">
+          © {new Date().getFullYear()} Dropio.club - Todos los derechos reservados
+        </p>
       </footer>
     </div>
   );

@@ -37,11 +37,11 @@ export function RafflesListPage() {
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      draft: "bg-slate-100 text-slate-700",
-      active: "bg-green-100 text-green-700",
-      suspended: "bg-red-100 text-red-700",
-      completed: "bg-blue-100 text-blue-700",
-      cancelled: "bg-gray-100 text-gray-700",
+      draft: "bg-dark-lighter text-neutral-300",
+      active: "bg-accent-green/20 text-accent-green",
+      suspended: "bg-red-500/20 text-red-400",
+      completed: "bg-accent-blue/20 text-accent-blue",
+      cancelled: "bg-dark-lighter text-neutral-300",
     };
     const labels = {
       draft: "Borrador",
@@ -61,21 +61,21 @@ export function RafflesListPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Gestión de Rifas</h1>
-        <p className="text-slate-600 mt-2">
-          Administra rifas, suspensiones y sorteos manuales
+        <h1 className="text-3xl font-bold text-white">Gestión de Drops</h1>
+        <p className="text-neutral-400 mt-2">
+          Administra drops, suspensiones y sorteos manuales
         </p>
       </div>
 
       {/* Filters */}
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Estado
             </label>
             <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               value={filters.status || ""}
               onChange={(e) =>
                 handleFilterChange(
@@ -94,7 +94,7 @@ export function RafflesListPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Buscar
             </label>
             <Input
@@ -105,7 +105,7 @@ export function RafflesListPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               ID Organizador
             </label>
             <Input
@@ -122,7 +122,7 @@ export function RafflesListPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               ID Categoría
             </label>
             <Input
@@ -141,7 +141,7 @@ export function RafflesListPage() {
       </Card>
 
       {/* Table */}
-      <Card>
+      <Card className="bg-dark-card border-dark-lighter">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner />
@@ -150,22 +150,22 @@ export function RafflesListPage() {
           <div className="p-6">
             <EmptyState
               icon={<AlertCircle className="w-12 h-12 text-red-500" />}
-              title="Error al cargar rifas"
+              title="Error al cargar drops"
               description={error.message}
             />
           </div>
         ) : !data || !data.data || data.data.length === 0 ? (
           <div className="p-6">
             <EmptyState
-              icon={<Package className="w-12 h-12 text-slate-400" />}
-              title="No se encontraron rifas"
+              icon={<Package className="w-12 h-12 text-neutral-500" />}
+              title="No se encontraron drops"
               description="Intenta ajustar los filtros de búsqueda"
             />
           </div>
         ) : (
           <>
             <Table>
-              <TableHeader>
+              <TableHeader className="bg-dark-lighter">
                 <TableRow>
                   <TableHead>ID</TableHead>
                   <TableHead>Título</TableHead>
@@ -183,40 +183,40 @@ export function RafflesListPage() {
                   <TableRow
                     key={item.raffle.ID}
                     onClick={() => navigate(`/admin/raffles/${item.raffle.ID}`)}
-                    className="cursor-pointer hover:bg-slate-50"
+                    className="cursor-pointer hover:bg-dark-lighter"
                   >
                     <TableCell className="font-mono text-sm">
                       #{item.raffle.ID}
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-slate-900">
+                        <p className="font-medium text-white">
                           {item.raffle.Title}
                         </p>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-neutral-500">
                           {item.sold_count}/{item.raffle.TotalNumbers} boletos
                         </p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-sm font-medium text-white">
                           {item.organizer_name}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-neutral-500">
                           {item.organizer_email}
                         </p>
                       </div>
                     </TableCell>
                     <TableCell>{getStatusBadge(item.raffle.Status)}</TableCell>
-                    <TableCell className="text-sm text-slate-600">
+                    <TableCell className="text-sm text-neutral-400">
                       {item.raffle.DrawDate ? format(new Date(item.raffle.DrawDate), "dd/MM/yyyy HH:mm") : "N/A"}
                     </TableCell>
                     <TableCell className="text-right text-sm">
-                      <span className="font-medium text-slate-900">
+                      <span className="font-medium text-white">
                         {item.sold_count}
                       </span>
-                      <span className="text-slate-500">
+                      <span className="text-neutral-500">
                         /{item.raffle.TotalNumbers}
                       </span>
                     </TableCell>
@@ -224,17 +224,17 @@ export function RafflesListPage() {
                       <span
                         className={`font-medium ${
                           item.conversion_rate >= 80
-                            ? "text-green-600"
+                            ? "text-accent-green"
                             : item.conversion_rate >= 50
-                            ? "text-blue-600"
-                            : "text-amber-600"
+                            ? "text-accent-blue"
+                            : "text-gold"
                         }`}
                       >
                         {item.conversion_rate.toFixed(1)}%
                       </span>
                     </TableCell>
-                    <TableCell className="text-right font-medium text-slate-900">
-                      {formatCurrency(item.total_revenue)}
+                    <TableCell className="text-right font-medium text-white">
+                      🪙 {formatCurrency(item.total_revenue)}
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-2">
@@ -257,9 +257,9 @@ export function RafflesListPage() {
 
             {/* Pagination */}
             {data.pagination && data.pagination.total_pages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200">
-                <p className="text-sm text-slate-600">
-                  Mostrando {data.data.length} de {data.pagination.total} rifas
+              <div className="flex items-center justify-between px-6 py-4 border-t border-dark-lighter">
+                <p className="text-sm text-neutral-400">
+                  Mostrando {data.data.length} de {data.pagination.total} drops
                 </p>
                 <div className="flex gap-2">
                   <Button
@@ -270,7 +270,7 @@ export function RafflesListPage() {
                   >
                     Anterior
                   </Button>
-                  <span className="px-4 py-2 text-sm text-slate-700">
+                  <span className="px-4 py-2 text-sm text-neutral-300">
                     Página {page} de {data.pagination.total_pages}
                   </span>
                   <Button

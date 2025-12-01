@@ -109,24 +109,24 @@ export function SystemConfigPage() {
   };
 
   const getCategoryIcon = (category: string) => {
-    if (!category) return <Settings className="w-5 h-5 text-slate-600" />;
+    if (!category) return <Settings className="w-5 h-5 text-neutral-400" />;
 
     switch (category.toLowerCase()) {
       case "database":
-        return <Database className="w-5 h-5 text-blue-600" />;
+        return <Database className="w-5 h-5 text-accent-blue" />;
       case "email":
       case "smtp":
-        return <Mail className="w-5 h-5 text-blue-600" />;
+        return <Mail className="w-5 h-5 text-accent-blue" />;
       case "security":
       case "auth":
-        return <Shield className="w-5 h-5 text-red-600" />;
+        return <Shield className="w-5 h-5 text-red-400" />;
       case "performance":
-        return <Zap className="w-5 h-5 text-yellow-600" />;
+        return <Zap className="w-5 h-5 text-gold" />;
       case "payment":
       case "billing":
-        return <DollarSign className="w-5 h-5 text-green-600" />;
+        return <DollarSign className="w-5 h-5 text-accent-green" />;
       default:
-        return <Settings className="w-5 h-5 text-slate-600" />;
+        return <Settings className="w-5 h-5 text-neutral-400" />;
     }
   };
 
@@ -135,7 +135,7 @@ export function SystemConfigPage() {
       if (typeof value === "object") {
         return (
           <textarea
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+            className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent font-mono text-sm"
             rows={6}
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
@@ -145,7 +145,7 @@ export function SystemConfigPage() {
         return (
           <input
             type="text"
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
           />
@@ -159,8 +159,8 @@ export function SystemConfigPage() {
         <span
           className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
             value
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
+              ? "bg-accent-green/20 text-accent-green"
+              : "bg-red-500/20 text-red-400"
           }`}
         >
           {value ? "Habilitado" : "Deshabilitado"}
@@ -170,13 +170,13 @@ export function SystemConfigPage() {
 
     if (typeof value === "object") {
       return (
-        <pre className="bg-slate-50 p-2 rounded text-xs font-mono overflow-x-auto">
+        <pre className="bg-dark-lighter p-2 rounded text-xs font-mono overflow-x-auto">
           {JSON.stringify(value, null, 2)}
         </pre>
       );
     }
 
-    return <span className="text-sm text-slate-900">{String(value)}</span>;
+    return <span className="text-sm text-white">{String(value)}</span>;
   };
 
   return (
@@ -184,8 +184,8 @@ export function SystemConfigPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Configuración del Sistema</h1>
-          <p className="text-slate-600 mt-2">Gestiona los parámetros de configuración de la plataforma</p>
+          <h1 className="text-3xl font-bold text-white">Configuración del Sistema</h1>
+          <p className="text-neutral-400 mt-2">Gestiona los parámetros de configuración de la plataforma</p>
         </div>
         <div className="flex items-center gap-3">
           <Button onClick={() => setShowNewForm(!showNewForm)} disabled={isLoading}>
@@ -210,39 +210,39 @@ export function SystemConfigPage() {
 
       {/* New Parameter Form */}
       {showNewForm && (
-        <Card className="p-6 bg-blue-50 border-blue-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Crear Nuevo Parámetro</h3>
+        <Card className="p-6 bg-gold/10 border-gold/30">
+          <h3 className="text-lg font-semibold text-white mb-4">Crear Nuevo Parámetro</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Clave (Key) *
               </label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 placeholder="ej: max_upload_size"
                 value={newKey}
                 onChange={(e) => setNewKey(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Valor *
               </label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 placeholder="ej: 100 o true o {}"
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Tipo de Dato *
               </label>
               <select
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 value={newValueType}
                 onChange={(e) => setNewValueType(e.target.value as "string" | "int" | "float" | "bool" | "json")}
               >
@@ -254,11 +254,11 @@ export function SystemConfigPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Categoría *
               </label>
               <select
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
               >
@@ -272,12 +272,12 @@ export function SystemConfigPage() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Descripción (opcional)
             </label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
               placeholder="ej: Tamaño máximo de archivo en MB"
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
@@ -344,7 +344,7 @@ export function SystemConfigPage() {
         <>
           {data.Settings.length === 0 ? (
             <EmptyState
-              icon={<Settings className="w-12 h-12 text-slate-400" />}
+              icon={<Settings className="w-12 h-12 text-neutral-500" />}
               title="No hay configuraciones"
               description="No se encontraron configuraciones para esta categoría"
             />
@@ -354,14 +354,14 @@ export function SystemConfigPage() {
                 const isEditing = editingKey === setting.key;
 
                 return (
-                  <Card key={setting.key} className="p-6">
+                  <Card key={setting.key} className="p-6 bg-dark-card border-dark-lighter">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           {getCategoryIcon(setting.category)}
                           <div>
-                            <h3 className="text-lg font-semibold text-slate-900">{setting.key}</h3>
-                            <p className="text-xs text-slate-500">
+                            <h3 className="text-lg font-semibold text-white">{setting.key}</h3>
+                            <p className="text-xs text-neutral-500">
                               Categoría: {setting.category} • Tipo: {setting.value_type || "string"} • Actualizado:{" "}
                               {new Date(setting.updated_at).toLocaleString("es-CR")}
                             </p>
@@ -369,24 +369,24 @@ export function SystemConfigPage() {
                         </div>
 
                         <div className="mt-4">
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Valor</label>
+                          <label className="block text-sm font-medium text-neutral-300 mb-2">Valor</label>
                           {renderValue(setting.value, isEditing)}
                         </div>
 
                         {/* Mostrar descripción actual si existe y no estamos editando */}
                         {!isEditing && setting.description && (
-                          <p className="text-sm text-slate-500 mt-2 italic">{setting.description}</p>
+                          <p className="text-sm text-neutral-500 mt-2 italic">{setting.description}</p>
                         )}
 
                         {/* Campos adicionales de edición */}
                         {isEditing && (
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-4 bg-slate-50 rounded-lg">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-4 bg-dark-lighter rounded-lg">
                             <div>
-                              <label className="block text-sm font-medium text-slate-700 mb-2">
+                              <label className="block text-sm font-medium text-neutral-300 mb-2">
                                 Tipo de Dato
                               </label>
                               <select
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent text-sm"
                                 value={editValueType}
                                 onChange={(e) => setEditValueType(e.target.value as "string" | "int" | "float" | "bool" | "json")}
                               >
@@ -398,11 +398,11 @@ export function SystemConfigPage() {
                               </select>
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700 mb-2">
+                              <label className="block text-sm font-medium text-neutral-300 mb-2">
                                 Categoría
                               </label>
                               <select
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent text-sm"
                                 value={editCategory}
                                 onChange={(e) => setEditCategory(e.target.value)}
                               >
@@ -415,12 +415,12 @@ export function SystemConfigPage() {
                               </select>
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700 mb-2">
+                              <label className="block text-sm font-medium text-neutral-300 mb-2">
                                 Descripción
                               </label>
                               <input
                                 type="text"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent text-sm"
                                 placeholder="Descripción del parámetro"
                                 value={editDescription}
                                 onChange={(e) => setEditDescription(e.target.value)}
@@ -458,7 +458,7 @@ export function SystemConfigPage() {
                             >
                               Cancelar
                             </Button>
-                            <p className="text-xs text-slate-500 ml-2">
+                            <p className="text-xs text-neutral-500 ml-2">
                               Tip: Puedes usar true/false para booleanos, números directamente, o JSON para
                               objetos
                             </p>
@@ -481,12 +481,12 @@ export function SystemConfigPage() {
       )}
 
       {/* Info Card */}
-      <Card className="p-6 bg-blue-50 border-blue-200">
+      <Card className="p-6 bg-gold/10 border-gold/30">
         <div className="flex items-start gap-3">
-          <Settings className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <Settings className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-blue-900 mb-1">Importante</h3>
-            <p className="text-sm text-blue-800">
+            <h3 className="font-semibold text-gold mb-1">Importante</h3>
+            <p className="text-sm text-gold/80">
               Los cambios en la configuración del sistema se aplican inmediatamente. Ten cuidado al
               modificar parámetros críticos como configuración de base de datos, autenticación o pagos.
             </p>

@@ -46,10 +46,10 @@ export function UsersListPage() {
 
   const getStatusBadge = (status: UserStatus) => {
     const variants: Record<UserStatus, { color: string; label: string }> = {
-      active: { color: "bg-green-100 text-green-700", label: "Activo" },
-      suspended: { color: "bg-amber-100 text-amber-700", label: "Suspendido" },
-      banned: { color: "bg-red-100 text-red-700", label: "Bloqueado" },
-      deleted: { color: "bg-slate-100 text-slate-700", label: "Eliminado" },
+      active: { color: "bg-accent-green/20 text-accent-green", label: "Activo" },
+      suspended: { color: "bg-gold/20 text-gold", label: "Suspendido" },
+      banned: { color: "bg-red-500/20 text-red-400", label: "Bloqueado" },
+      deleted: { color: "bg-dark-lighter text-neutral-400", label: "Eliminado" },
     };
 
     const variant = variants[status];
@@ -62,9 +62,9 @@ export function UsersListPage() {
 
   const getRoleBadge = (role: UserRole) => {
     const variants: Record<UserRole, { color: string; label: string }> = {
-      user: { color: "bg-slate-100 text-slate-700", label: "Usuario" },
-      admin: { color: "bg-blue-100 text-blue-700", label: "Admin" },
-      super_admin: { color: "bg-blue-100 text-blue-700", label: "Super Admin" },
+      user: { color: "bg-dark-lighter text-neutral-300", label: "Usuario" },
+      admin: { color: "bg-accent-blue/20 text-accent-blue", label: "Admin" },
+      super_admin: { color: "bg-gold/20 text-gold", label: "Super Admin" },
     };
 
     const variant = variants[role];
@@ -73,11 +73,11 @@ export function UsersListPage() {
 
   const getKYCBadge = (level: KYCLevel) => {
     const variants: Record<KYCLevel, { color: string; label: string }> = {
-      none: { color: "bg-slate-100 text-slate-700", label: "Sin KYC" },
-      email_verified: { color: "bg-blue-100 text-blue-700", label: "Email" },
-      phone_verified: { color: "bg-blue-100 text-blue-700", label: "Teléfono" },
-      cedula_verified: { color: "bg-green-100 text-green-700", label: "Cédula" },
-      full_kyc: { color: "bg-green-100 text-green-700", label: "Full KYC" },
+      none: { color: "bg-dark-lighter text-neutral-400", label: "Sin KYC" },
+      email_verified: { color: "bg-accent-blue/20 text-accent-blue", label: "Email" },
+      phone_verified: { color: "bg-accent-blue/20 text-accent-blue", label: "Teléfono" },
+      cedula_verified: { color: "bg-accent-green/20 text-accent-green", label: "Cédula" },
+      full_kyc: { color: "bg-accent-green/20 text-accent-green", label: "Full KYC" },
     };
 
     const variant = variants[level];
@@ -88,14 +88,14 @@ export function UsersListPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Gestión de Usuarios</h1>
-        <p className="text-slate-600 mt-2">
+        <h1 className="text-3xl font-bold text-white">Gestión de Usuarios</h1>
+        <p className="text-neutral-400 mt-2">
           Administra usuarios, KYC y suspensiones
         </p>
       </div>
 
       {/* Filters */}
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div className="lg:col-span-2">
@@ -115,7 +115,7 @@ export function UsersListPage() {
           {/* Role filter */}
           <div>
             <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-dark-lighter bg-dark text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold/30"
               value={filters.role || ""}
               onChange={(e) => handleFilterChange("role", e.target.value)}
             >
@@ -129,7 +129,7 @@ export function UsersListPage() {
           {/* Status filter */}
           <div>
             <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-dark-lighter bg-dark text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold/30"
               value={filters.status || ""}
               onChange={(e) => handleFilterChange("status", e.target.value)}
             >
@@ -145,7 +145,7 @@ export function UsersListPage() {
         {/* Active filters indicator */}
         {Object.keys(filters).length > 0 && (
           <div className="mt-4 flex items-center gap-2">
-            <span className="text-sm text-slate-600">Filtros activos:</span>
+            <span className="text-sm text-neutral-400">Filtros activos:</span>
             <Button
               variant="outline"
               size="sm"
@@ -161,7 +161,7 @@ export function UsersListPage() {
       </Card>
 
       {/* Results */}
-      <Card>
+      <Card className="bg-dark-card border-dark-lighter">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner />
@@ -169,7 +169,7 @@ export function UsersListPage() {
         ) : error ? (
           <div className="p-6">
             <EmptyState
-              icon={<AlertCircle className="w-12 h-12 text-red-500" />}
+              icon={<AlertCircle className="w-12 h-12 text-red-400" />}
               title="Error al cargar usuarios"
               description={error.message}
             />
@@ -177,7 +177,7 @@ export function UsersListPage() {
         ) : !data || !data.data || data.data.length === 0 ? (
           <div className="p-6">
             <EmptyState
-              icon={<UserX className="w-12 h-12 text-slate-400" />}
+              icon={<UserX className="w-12 h-12 text-neutral-500" />}
               title="No se encontraron usuarios"
               description="Intenta ajustar los filtros de búsqueda"
             />
@@ -186,13 +186,13 @@ export function UsersListPage() {
           <>
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Usuario</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Rol</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>KYC</TableHead>
-                  <TableHead>Registro</TableHead>
+                <TableRow className="border-dark-lighter">
+                  <TableHead className="text-neutral-400">Usuario</TableHead>
+                  <TableHead className="text-neutral-400">Email</TableHead>
+                  <TableHead className="text-neutral-400">Rol</TableHead>
+                  <TableHead className="text-neutral-400">Estado</TableHead>
+                  <TableHead className="text-neutral-400">KYC</TableHead>
+                  <TableHead className="text-neutral-400">Registro</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -200,15 +200,15 @@ export function UsersListPage() {
                   <TableRow
                     key={user.id}
                     onClick={() => handleRowClick(user.id)}
-                    className="hover:bg-blue-50"
+                    className="hover:bg-dark-lighter border-dark-lighter cursor-pointer"
                   >
                     <TableCell>
                       <div>
-                        <p className="font-medium text-slate-900">
+                        <p className="font-medium text-white">
                           {user.first_name} {user.last_name}
                         </p>
                         {user.cedula && (
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-neutral-500">
                             Cédula: {user.cedula}
                           </p>
                         )}
@@ -216,16 +216,16 @@ export function UsersListPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span>{user.email}</span>
+                        <span className="text-neutral-300">{user.email}</span>
                         {user.email_verified && (
-                          <UserCheck className="w-4 h-4 text-green-600" />
+                          <UserCheck className="w-4 h-4 text-accent-green" />
                         )}
                       </div>
                     </TableCell>
                     <TableCell>{getRoleBadge(user.role)}</TableCell>
                     <TableCell>{getStatusBadge(user.status)}</TableCell>
                     <TableCell>{getKYCBadge(user.kyc_level)}</TableCell>
-                    <TableCell className="text-slate-600">
+                    <TableCell className="text-neutral-400">
                       {format(new Date(user.created_at), "dd/MM/yyyy")}
                     </TableCell>
                   </TableRow>
@@ -235,8 +235,8 @@ export function UsersListPage() {
 
             {/* Pagination */}
             {data.pagination.total_pages > 1 && (
-              <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
-                <div className="text-sm text-slate-600">
+              <div className="px-6 py-4 border-t border-dark-lighter flex items-center justify-between">
+                <div className="text-sm text-neutral-400">
                   Página {data.pagination.page} de {data.pagination.total_pages}
                   {" · "}
                   {data.pagination.total} usuarios totales

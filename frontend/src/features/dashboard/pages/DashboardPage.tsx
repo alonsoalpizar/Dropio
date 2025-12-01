@@ -1,29 +1,31 @@
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/hooks/useAuth';
-import { useUserMode } from '@/contexts/UserModeContext';
 import { useEffect } from 'react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const DashboardPage = () => {
   const user = useUser();
-  const { mode } = useUserMode();
   const navigate = useNavigate();
 
-  // Redirect to appropriate dashboard based on mode
+  // Redirect to explore page (main user landing)
   useEffect(() => {
     if (user) {
-      if (mode === 'participant') {
-        navigate('/explore', { replace: true });
-      } else {
-        navigate('/organizer', { replace: true });
-      }
+      navigate('/explore', { replace: true });
     }
-  }, [user, mode, navigate]);
+  }, [user, navigate]);
 
   if (!user) {
-    return <LoadingSpinner text="Cargando dashboard..." />;
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <LoadingSpinner text="Cargando..." />
+      </div>
+    );
   }
 
   // Show loading while redirecting
-  return <LoadingSpinner text="Redirigiendo..." />;
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <LoadingSpinner text="Redirigiendo..." />
+    </div>
+  );
 };

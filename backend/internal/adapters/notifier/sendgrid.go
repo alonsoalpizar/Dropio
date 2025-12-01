@@ -34,12 +34,12 @@ func NewSendGridNotifier(cfg *config.SendGridConfig, logger *logger.Logger) *Sen
 // SendVerificationEmail envía un email de verificación
 func (n *SendGridNotifier) SendVerificationEmail(email, code string) error {
 	to := mail.NewEmail("", email)
-	subject := "Verifica tu cuenta - Sorteos Platform"
+	subject := "Verifica tu cuenta - Dropio.club"
 
 	plainTextContent := fmt.Sprintf(`
 Hola,
 
-Gracias por registrarte en Sorteos Platform.
+Gracias por registrarte en Dropio.club.
 
 Tu código de verificación es: %s
 
@@ -48,7 +48,7 @@ Este código expirará en 15 minutos.
 Si no solicitaste este código, puedes ignorar este email.
 
 Saludos,
-Equipo de Sorteos Platform
+Equipo de Dropio.club
 	`, code)
 
 	htmlContent := fmt.Sprintf(`
@@ -62,7 +62,7 @@ Equipo de Sorteos Platform
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #3B82F6;">Verifica tu cuenta</h2>
         <p>Hola,</p>
-        <p>Gracias por registrarte en <strong>Sorteos Platform</strong>.</p>
+        <p>Gracias por registrarte en <strong>Dropio.club</strong>.</p>
         <div style="background-color: #EFF6FF; border-left: 4px solid #3B82F6; padding: 15px; margin: 20px 0;">
             <p style="margin: 0; font-size: 14px; color: #64748B;">Tu código de verificación es:</p>
             <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #3B82F6; letter-spacing: 5px;">%s</p>
@@ -72,7 +72,7 @@ Equipo de Sorteos Platform
         <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 30px 0;">
         <p style="color: #94A3B8; font-size: 12px;">
             Saludos,<br>
-            <strong>Equipo de Sorteos Platform</strong>
+            <strong>Equipo de Dropio.club</strong>
         </p>
     </div>
 </body>
@@ -110,7 +110,7 @@ Equipo de Sorteos Platform
 // SendPasswordResetEmail envía un email de reset de contraseña
 func (n *SendGridNotifier) SendPasswordResetEmail(email, token string) error {
 	to := mail.NewEmail("", email)
-	subject := "Restablecer contraseña - Sorteos Platform"
+	subject := "Restablecer contraseña - Dropio.club"
 
 	resetURL := fmt.Sprintf("https://sorteos.com/reset-password?token=%s", token)
 
@@ -127,7 +127,7 @@ Este enlace expirará en 1 hora.
 Si no solicitaste restablecer tu contraseña, puedes ignorar este email de forma segura.
 
 Saludos,
-Equipo de Sorteos Platform
+Equipo de Dropio.club
 	`, resetURL)
 
 	htmlContent := fmt.Sprintf(`
@@ -141,7 +141,7 @@ Equipo de Sorteos Platform
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #3B82F6;">Restablecer contraseña</h2>
         <p>Hola,</p>
-        <p>Recibimos una solicitud para restablecer tu contraseña en <strong>Sorteos Platform</strong>.</p>
+        <p>Recibimos una solicitud para restablecer tu contraseña en <strong>Dropio.club</strong>.</p>
         <div style="text-align: center; margin: 30px 0;">
             <a href="%s" style="background-color: #3B82F6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Restablecer Contraseña</a>
         </div>
@@ -150,7 +150,7 @@ Equipo de Sorteos Platform
         <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 30px 0;">
         <p style="color: #94A3B8; font-size: 12px;">
             Saludos,<br>
-            <strong>Equipo de Sorteos Platform</strong>
+            <strong>Equipo de Dropio.club</strong>
         </p>
     </div>
 </body>
@@ -182,19 +182,19 @@ Equipo de Sorteos Platform
 // SendWelcomeEmail envía un email de bienvenida
 func (n *SendGridNotifier) SendWelcomeEmail(email, firstName string) error {
 	to := mail.NewEmail(firstName, email)
-	subject := "¡Bienvenido a Sorteos Platform!"
+	subject := "¡Bienvenido a Dropio.club!"
 
 	plainTextContent := fmt.Sprintf(`
 Hola %s,
 
-¡Bienvenido a Sorteos Platform!
+¡Bienvenido a Dropio.club!
 
 Tu cuenta ha sido verificada exitosamente y ya puedes empezar a participar en sorteos o crear los tuyos propios.
 
 Explora nuestra plataforma y encuentra sorteos increíbles.
 
 Saludos,
-Equipo de Sorteos Platform
+Equipo de Dropio.club
 	`, firstName)
 
 	htmlContent := fmt.Sprintf(`
@@ -206,7 +206,7 @@ Equipo de Sorteos Platform
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #3B82F6;">¡Bienvenido a Sorteos Platform!</h2>
+        <h2 style="color: #3B82F6;">¡Bienvenido a Dropio.club!</h2>
         <p>Hola <strong>%s</strong>,</p>
         <p>Tu cuenta ha sido <strong>verificada exitosamente</strong> y ya puedes empezar a participar en sorteos o crear los tuyos propios.</p>
         <div style="background-color: #F0FDF4; border-left: 4px solid #10B981; padding: 15px; margin: 20px 0;">
@@ -219,7 +219,7 @@ Equipo de Sorteos Platform
         <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 30px 0;">
         <p style="color: #94A3B8; font-size: 12px;">
             Saludos,<br>
-            <strong>Equipo de Sorteos Platform</strong>
+            <strong>Equipo de Dropio.club</strong>
         </p>
     </div>
 </body>

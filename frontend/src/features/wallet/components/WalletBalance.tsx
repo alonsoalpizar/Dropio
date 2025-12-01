@@ -3,7 +3,6 @@ import { useWalletBalance } from "../hooks/useWallet";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { useUserMode } from "@/contexts/UserModeContext";
 import { cn } from "@/lib/utils";
 
 interface WalletBalanceProps {
@@ -24,12 +23,10 @@ function formatCRC(amount: number | string): string {
 
 export const WalletBalance = ({ showRefreshButton = true, compact = false }: WalletBalanceProps) => {
   const { data, isLoading, refetch } = useWalletBalance();
-  const { mode } = useUserMode();
-  const isOrganizer = mode === 'organizer';
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="flex items-center justify-center">
           <LoadingSpinner />
         </div>
@@ -39,8 +36,8 @@ export const WalletBalance = ({ showRefreshButton = true, compact = false }: Wal
 
   if (!data) {
     return (
-      <Card className="p-6">
-        <p className="text-sm text-slate-600 text-center">No se pudo cargar el saldo</p>
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <p className="text-sm text-neutral-400 text-center">No se pudo cargar el saldo</p>
       </Card>
     );
   }
@@ -51,29 +48,27 @@ export const WalletBalance = ({ showRefreshButton = true, compact = false }: Wal
 
   return (
     <Card className={cn(
+      "bg-dark-card border-dark-lighter",
       compact ? "p-4" : "p-6",
       isFrozen && "border-red-500"
     )}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className={cn(
-            "p-3 rounded-lg",
-            isOrganizer ? "bg-teal-100" : "bg-blue-100"
-          )}>
-            <Wallet className={cn("w-6 h-6", isOrganizer ? "text-teal-600" : "text-blue-600")} />
+          <div className="p-3 rounded-lg bg-gold/20">
+            <Wallet className="w-6 h-6 text-gold" />
           </div>
           <div>
-            <p className="text-sm text-slate-600 font-medium">Saldo Disponible</p>
-            <p className={`${compact ? "text-2xl" : "text-3xl"} font-bold text-slate-900`}>
+            <p className="text-sm text-neutral-400 font-medium">Saldo Disponible</p>
+            <p className={`${compact ? "text-2xl" : "text-3xl"} font-bold text-white`}>
               {formatCRC(balanceAmount)}
             </p>
             {pendingAmount > 0 && (
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-neutral-500 mt-1">
                 Pendiente: {formatCRC(pendingAmount)}
               </p>
             )}
             {isFrozen && (
-              <p className="text-sm text-red-600 font-medium mt-1">⚠️ Billetera congelada</p>
+              <p className="text-sm text-red-400 font-medium mt-1">Billetera congelada</p>
             )}
           </div>
         </div>
@@ -83,7 +78,7 @@ export const WalletBalance = ({ showRefreshButton = true, compact = false }: Wal
             variant="ghost"
             size="sm"
             onClick={() => refetch()}
-            className="text-slate-600 hover:text-slate-900"
+            className="text-neutral-400 hover:text-white"
           >
             <RefreshCw className="w-4 h-4" />
           </Button>
@@ -91,20 +86,20 @@ export const WalletBalance = ({ showRefreshButton = true, compact = false }: Wal
       </div>
 
       {!compact && (
-        <div className="mt-4 pt-4 border-t border-slate-200">
+        <div className="mt-4 pt-4 border-t border-dark-lighter">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-600">Moneda</span>
-            <span className="font-medium text-slate-900">{data.currency}</span>
+            <span className="text-neutral-400">Moneda</span>
+            <span className="font-medium text-white">{data.currency}</span>
           </div>
           <div className="flex items-center justify-between text-sm mt-2">
-            <span className="text-slate-600">Estado</span>
+            <span className="text-neutral-400">Estado</span>
             <span
               className={`font-medium ${
                 data.status === "active"
-                  ? "text-green-600"
+                  ? "text-accent-green"
                   : data.status === "frozen"
-                  ? "text-red-600"
-                  : "text-slate-600"
+                  ? "text-red-400"
+                  : "text-neutral-400"
               }`}
             >
               {data.status === "active" ? "Activa" : data.status === "frozen" ? "Congelada" : "Cerrada"}

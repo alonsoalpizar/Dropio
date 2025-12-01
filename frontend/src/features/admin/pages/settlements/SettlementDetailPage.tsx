@@ -68,10 +68,10 @@ export function SettlementDetailPage() {
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      pending: "bg-yellow-100 text-yellow-700",
-      approved: "bg-blue-100 text-blue-700",
-      paid: "bg-green-100 text-green-700",
-      rejected: "bg-red-100 text-red-700",
+      pending: "bg-gold/20 text-gold",
+      approved: "bg-accent-blue/20 text-accent-blue",
+      paid: "bg-accent-green/20 text-accent-green",
+      rejected: "bg-red-500/20 text-red-400",
     };
     const labels: Record<string, string> = {
       pending: "Pendiente",
@@ -80,7 +80,7 @@ export function SettlementDetailPage() {
       rejected: "Rechazada",
     };
     return (
-      <Badge className={styles[status] || "bg-slate-100 text-slate-700"}>
+      <Badge className={styles[status] || "bg-dark-lighter text-neutral-300"}>
         {labels[status] || status}
       </Badge>
     );
@@ -89,15 +89,15 @@ export function SettlementDetailPage() {
   const getEventIcon = (type: string) => {
     switch (type) {
       case "calculated":
-        return <Clock className="w-5 h-5 text-blue-600" />;
+        return <Clock className="w-5 h-5 text-accent-blue" />;
       case "approved":
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-accent-green" />;
       case "rejected":
-        return <XCircle className="w-5 h-5 text-red-600" />;
+        return <XCircle className="w-5 h-5 text-red-400" />;
       case "paid":
-        return <DollarSign className="w-5 h-5 text-green-600" />;
+        return <DollarSign className="w-5 h-5 text-accent-green" />;
       default:
-        return <Clock className="w-5 h-5 text-slate-600" />;
+        return <Clock className="w-5 h-5 text-neutral-500" />;
     }
   };
 
@@ -114,8 +114,8 @@ export function SettlementDetailPage() {
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Liquidación #{settlement.id}</h1>
-            <p className="text-slate-600 mt-1">
+            <h1 className="text-3xl font-bold text-white">Liquidación #{settlement.id}</h1>
+            <p className="text-neutral-400 mt-1">
               Detalles completos de la liquidación
             </p>
           </div>
@@ -124,7 +124,7 @@ export function SettlementDetailPage() {
           {canApprove && (
             <Button
               onClick={() => setShowApproveModal(true)}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-accent-green hover:bg-accent-green/80"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Aprobar
@@ -134,7 +134,7 @@ export function SettlementDetailPage() {
             <Button
               variant="outline"
               onClick={() => setShowRejectModal(true)}
-              className="text-red-600 border-red-600 hover:bg-red-50"
+              className="text-red-400 border-red-400 hover:bg-dark-lighter"
             >
               <XCircle className="w-4 h-4 mr-2" />
               Rechazar
@@ -143,7 +143,7 @@ export function SettlementDetailPage() {
           {canMarkPaid && (
             <Button
               onClick={() => setShowPayoutModal(true)}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-accent-blue hover:bg-accent-blue/80"
             >
               <DollarSign className="w-4 h-4 mr-2" />
               Marcar Como Pagada
@@ -155,37 +155,37 @@ export function SettlementDetailPage() {
       {/* Main Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Settlement Info */}
-        <Card className="p-6">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center gap-3 mb-4">
-            <DollarSign className="w-6 h-6 text-blue-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Liquidación</h2>
+            <DollarSign className="w-6 h-6 text-accent-blue" />
+            <h2 className="text-lg font-semibold text-white">Liquidación</h2>
           </div>
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-slate-600">Estado</p>
+              <p className="text-sm text-neutral-400">Estado</p>
               <div className="mt-1">{getStatusBadge(settlement.status)}</div>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Ingresos Totales</p>
-              <p className="text-lg font-bold text-slate-900">
-                {formatCurrency(settlement.total_revenue)}
+              <p className="text-sm text-neutral-400">Ingresos Totales</p>
+              <p className="text-lg font-bold text-white">
+                🪙 {formatCurrency(settlement.total_revenue)}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Comisión Plataforma</p>
-              <p className="text-lg font-medium text-red-600">
-                - {formatCurrency(settlement.platform_fee)}
+              <p className="text-sm text-neutral-400">Comisión Plataforma</p>
+              <p className="text-lg font-medium text-red-400">
+                - 🪙 {formatCurrency(settlement.platform_fee)}
               </p>
             </div>
-            <div className="pt-3 border-t border-slate-200">
-              <p className="text-sm text-slate-600">Monto Neto a Pagar</p>
-              <p className="text-2xl font-bold text-green-600">
-                {formatCurrency(settlement.net_amount)}
+            <div className="pt-3 border-t border-dark-lighter">
+              <p className="text-sm text-neutral-400">Monto Neto a Pagar</p>
+              <p className="text-2xl font-bold text-accent-green">
+                🪙 {formatCurrency(settlement.net_amount)}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Fecha de Creación</p>
-              <p className="text-sm font-medium text-slate-900">
+              <p className="text-sm text-neutral-400">Fecha de Creación</p>
+              <p className="text-sm font-medium text-white">
                 {format(new Date(settlement.created_at), "dd/MM/yyyy HH:mm")}
               </p>
             </div>
@@ -193,47 +193,47 @@ export function SettlementDetailPage() {
         </Card>
 
         {/* Organizer Info */}
-        <Card className="p-6">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center gap-3 mb-4">
-            <User className="w-6 h-6 text-green-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Organizador</h2>
+            <User className="w-6 h-6 text-accent-green" />
+            <h2 className="text-lg font-semibold text-white">Organizador</h2>
           </div>
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-slate-600">Nombre</p>
-              <p className="text-sm font-medium text-slate-900">
+              <p className="text-sm text-neutral-400">Nombre</p>
+              <p className="text-sm font-medium text-white">
                 {settlement.organizer_name}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Email</p>
-              <p className="text-sm font-medium text-slate-900">
+              <p className="text-sm text-neutral-400">Email</p>
+              <p className="text-sm font-medium text-white">
                 {settlement.organizer_email}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Nivel KYC</p>
+              <p className="text-sm text-neutral-400">Nivel KYC</p>
               <Badge className={
                 settlement.organizer_kyc_level === "verified" || settlement.organizer_kyc_level === "enhanced"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-yellow-100 text-yellow-700"
+                  ? "bg-accent-green/20 text-accent-green"
+                  : "bg-gold/20 text-gold"
               }>
                 {settlement.organizer_kyc_level}
               </Badge>
             </div>
             {bank_account && (
               <>
-                <div className="pt-3 border-t border-slate-200">
-                  <p className="text-sm font-medium text-slate-700 mb-2">Cuenta Bancaria</p>
-                  <p className="text-xs text-slate-600">Banco: {bank_account.bank_name}</p>
-                  <p className="text-xs text-slate-600">
+                <div className="pt-3 border-t border-dark-lighter">
+                  <p className="text-sm font-medium text-neutral-300 mb-2">Cuenta Bancaria</p>
+                  <p className="text-xs text-neutral-400">Banco: {bank_account.bank_name}</p>
+                  <p className="text-xs text-neutral-400">
                     Cuenta: {bank_account.account_number}
                   </p>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-neutral-400">
                     Titular: {bank_account.account_holder}
                   </p>
                   {bank_account.verified_at && (
-                    <Badge className="bg-green-100 text-green-700 mt-2">
+                    <Badge className="bg-accent-green/20 text-accent-green mt-2">
                       Verificada
                     </Badge>
                   )}
@@ -243,27 +243,27 @@ export function SettlementDetailPage() {
           </div>
         </Card>
 
-        {/* Raffle Info */}
-        <Card className="p-6">
+        {/* Drop Info */}
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center gap-3 mb-4">
-            <Package className="w-6 h-6 text-purple-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Rifa</h2>
+            <Package className="w-6 h-6 text-accent-purple" />
+            <h2 className="text-lg font-semibold text-white">Drop</h2>
           </div>
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-slate-600">Título</p>
-              <p className="text-sm font-medium text-slate-900">{settlement.raffle_title}</p>
+              <p className="text-sm text-neutral-400">Título</p>
+              <p className="text-sm font-medium text-white">{settlement.raffle_title}</p>
             </div>
             {raffle && (
               <>
                 <div>
-                  <p className="text-sm text-slate-600">Estado</p>
+                  <p className="text-sm text-neutral-400">Estado</p>
                   <Badge>{raffle.status}</Badge>
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600">Precio por Número</p>
-                  <p className="text-sm font-medium text-slate-900">
-                    {formatCurrency(raffle.ticket_price || 0)}
+                  <p className="text-sm text-neutral-400">Precio por Número</p>
+                  <p className="text-sm font-medium text-white">
+                    🪙 {formatCurrency(raffle.ticket_price || 0)}
                   </p>
                 </div>
               </>
@@ -274,36 +274,36 @@ export function SettlementDetailPage() {
 
       {/* Payments Summary */}
       {payments_summary && (
-        <Card className="p-6">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center gap-3 mb-6">
-            <CreditCard className="w-6 h-6 text-blue-600" />
-            <h2 className="text-lg font-semibold text-slate-900">Resumen de Pagos</h2>
+            <CreditCard className="w-6 h-6 text-accent-blue" />
+            <h2 className="text-lg font-semibold text-white">Resumen de Pagos</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p className="text-sm text-slate-600">Total Pagos</p>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-sm text-neutral-400">Total Pagos</p>
+              <p className="text-2xl font-bold text-white">
                 {payments_summary.total_payments}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Exitosos</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-sm text-neutral-400">Exitosos</p>
+              <p className="text-2xl font-bold text-accent-green">
                 {payments_summary.succeeded_payments}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Ingresos Brutos</p>
-              <p className="text-xl font-bold text-slate-900">
-                {formatCurrency(payments_summary.total_revenue)}
+              <p className="text-sm text-neutral-400">Ingresos Brutos</p>
+              <p className="text-xl font-bold text-white">
+                🪙 {formatCurrency(payments_summary.total_revenue)}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-neutral-400">
                 Comisión ({payments_summary.platform_fee_percent}%)
               </p>
-              <p className="text-xl font-bold text-red-600">
-                {formatCurrency(payments_summary.platform_fee_amount)}
+              <p className="text-xl font-bold text-red-400">
+                🪙 {formatCurrency(payments_summary.platform_fee_amount)}
               </p>
             </div>
           </div>
@@ -311,10 +311,10 @@ export function SettlementDetailPage() {
       )}
 
       {/* Timeline */}
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="flex items-center gap-3 mb-6">
-          <Clock className="w-6 h-6 text-blue-600" />
-          <h2 className="text-lg font-semibold text-slate-900">Timeline de Eventos</h2>
+          <Clock className="w-6 h-6 text-accent-blue" />
+          <h2 className="text-lg font-semibold text-white">Timeline de Eventos</h2>
         </div>
         <div className="space-y-4">
           {timeline && timeline.length > 0 ? (
@@ -324,22 +324,22 @@ export function SettlementDetailPage() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-slate-900">{event.details}</p>
+                      <p className="text-sm font-medium text-white">{event.details}</p>
                       {event.actor && (
-                        <p className="text-xs text-slate-500">Por: {event.actor}</p>
+                        <p className="text-xs text-neutral-500">Por: {event.actor}</p>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-neutral-500">
                       {format(new Date(event.timestamp), "dd/MM/yyyy HH:mm")}
                     </p>
                   </div>
                   {event.metadata && Object.keys(event.metadata).length > 0 && (
-                    <div className="mt-1 text-xs text-slate-600">
+                    <div className="mt-1 text-xs text-neutral-400">
                       {Object.entries(event.metadata).map(([key, value]) => (
                         <span key={key} className="mr-3">
                           <span className="font-medium">{key}:</span>{" "}
                           {typeof value === "number" && key.includes("amount")
-                            ? formatCurrency(value)
+                            ? `🪙 ${formatCurrency(value)}`
                             : String(value)}
                         </span>
                       ))}
@@ -349,19 +349,19 @@ export function SettlementDetailPage() {
               </div>
             ))
           ) : (
-            <p className="text-sm text-slate-500">No hay eventos en el timeline</p>
+            <p className="text-sm text-neutral-500">No hay eventos en el timeline</p>
           )}
         </div>
       </Card>
 
       {/* Admin Notes */}
       {settlement.admin_notes && (
-        <Card className="p-6 bg-yellow-50 border-yellow-200">
+        <Card className="p-6 bg-gold/10 border-gold/30">
           <div className="flex items-center gap-3">
-            <AlertCircle className="w-6 h-6 text-yellow-600" />
+            <AlertCircle className="w-6 h-6 text-gold" />
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-yellow-900">Notas Administrativas</h3>
-              <p className="text-sm text-yellow-700 mt-1 whitespace-pre-wrap">
+              <h3 className="text-sm font-semibold text-gold">Notas Administrativas</h3>
+              <p className="text-sm text-neutral-300 mt-1 whitespace-pre-wrap">
                 {settlement.admin_notes}
               </p>
             </div>
@@ -371,12 +371,12 @@ export function SettlementDetailPage() {
 
       {/* Rejection Reason */}
       {settlement.rejection_reason && (
-        <Card className="p-6 bg-red-50 border-red-200">
+        <Card className="p-6 bg-red-500/10 border-red-400/30">
           <div className="flex items-center gap-3">
-            <XCircle className="w-6 h-6 text-red-600" />
+            <XCircle className="w-6 h-6 text-red-400" />
             <div>
-              <h3 className="text-sm font-semibold text-red-900">Razón del Rechazo</h3>
-              <p className="text-sm text-red-700 mt-1">{settlement.rejection_reason}</p>
+              <h3 className="text-sm font-semibold text-red-400">Razón del Rechazo</h3>
+              <p className="text-sm text-neutral-300 mt-1">{settlement.rejection_reason}</p>
             </div>
           </div>
         </Card>
@@ -449,27 +449,27 @@ function ApproveModal({ onClose, onSubmit }: ApproveModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md p-6">
-        <h2 className="text-xl font-bold text-slate-900 mb-4">Aprobar Liquidación</h2>
+      <Card className="w-full max-w-md p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-xl font-bold text-white mb-4">Aprobar Liquidación</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Notas (Opcional)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               rows={3}
               placeholder="Notas administrativas..."
             />
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-900">
+          <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4">
+            <p className="text-sm text-white">
               <strong>Nota:</strong> Esta acción aprobará la liquidación. El organizador deberá tener:
             </p>
-            <ul className="text-sm text-blue-800 mt-2 list-disc list-inside">
+            <ul className="text-sm text-neutral-300 mt-2 list-disc list-inside">
               <li>KYC nivel verificado o superior</li>
               <li>Cuenta bancaria verificada</li>
             </ul>
@@ -479,7 +479,7 @@ function ApproveModal({ onClose, onSubmit }: ApproveModalProps) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-green-600 hover:bg-green-700">
+            <Button type="submit" className="bg-accent-green hover:bg-accent-green/80">
               Aprobar Liquidación
             </Button>
           </div>
@@ -510,17 +510,17 @@ function RejectModal({ onClose, onSubmit }: RejectModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md p-6">
-        <h2 className="text-xl font-bold text-slate-900 mb-4">Rechazar Liquidación</h2>
+      <Card className="w-full max-w-md p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-xl font-bold text-white mb-4">Rechazar Liquidación</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Razón del Rechazo *
             </label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               rows={3}
               required
               placeholder="Explica por qué se rechaza..."
@@ -528,13 +528,13 @@ function RejectModal({ onClose, onSubmit }: RejectModalProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Notas Adicionales
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               rows={2}
               placeholder="Notas internas..."
             />
@@ -546,7 +546,7 @@ function RejectModal({ onClose, onSubmit }: RejectModalProps) {
             </Button>
             <Button
               type="submit"
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-500 hover:bg-red-600"
               disabled={!reason.trim()}
             >
               Rechazar Liquidación
@@ -582,23 +582,23 @@ function PayoutModal({ netAmount, onClose, onSubmit }: PayoutModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md p-6">
-        <h2 className="text-xl font-bold text-slate-900 mb-4">Marcar Como Pagada</h2>
+      <Card className="w-full max-w-md p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-xl font-bold text-white mb-4">Marcar Como Pagada</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-sm text-green-900">
-              Monto a pagar: <strong>{formatCurrency(netAmount)}</strong>
+          <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4">
+            <p className="text-sm text-white">
+              Monto a pagar: <strong>🪙 {formatCurrency(netAmount)}</strong>
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Método de Pago *
             </label>
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               required
             >
               <option value="bank_transfer">Transferencia Bancaria</option>
@@ -610,26 +610,26 @@ function PayoutModal({ netAmount, onClose, onSubmit }: PayoutModalProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Referencia de Pago
             </label>
             <input
               type="text"
               value={paymentReference}
               onChange={(e) => setPaymentReference(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               placeholder="Número de transferencia, Transaction ID..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Notas
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               rows={2}
               placeholder="Notas sobre el pago..."
             />
@@ -639,7 +639,7 @@ function PayoutModal({ netAmount, onClose, onSubmit }: PayoutModalProps) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            <Button type="submit" className="bg-accent-blue hover:bg-accent-blue/80">
               Marcar Como Pagada
             </Button>
           </div>

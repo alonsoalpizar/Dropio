@@ -1,30 +1,46 @@
-# Reglas Estrictas para Claude Code - Backend Sorteos
+# Reglas Estrictas para Claude Code - Backend Dropio
+
+## Concepto del Producto
+
+**Dropio.club** es una plataforma de AloCoins (moneda digital) donde los usuarios:
+- Compran AloCoins (1 ALO = ₡1)
+- Participan en **Drops** (sorteos) con sus AloCoins
+- Compran en el **Shop** con AloCoins
+- Transfieren AloCoins a otros usuarios
+- Suben de nivel según su historial de uso
+
+**Terminología:**
+- **Drop** = Sorteo/Rifa
+- **AloCoins / ALO** = Moneda virtual
+- **Participación** = Boleto comprado con AloCoins
+
+---
 
 ## 🚀 COMPILACION Y DEPLOY RAPIDO
 
 ### Backend (Go):
 ```bash
-cd /opt/Sorteos/backend
-sudo systemctl stop sorteos-api && \
-go build -o sorteos-api ./cmd/api && \
-sudo systemctl start sorteos-api
+cd /opt/Dropio/backend
+sudo systemctl stop dropio-api && \
+go build -o dropio-api ./cmd/api && \
+sudo systemctl start dropio-api
 ```
 
 ### Frontend (Vite/React):
 ```bash
-cd /opt/Sorteos/frontend
+cd /opt/Dropio/frontend
 npm run build
 ```
-**Nota:** El backend Go sirve el frontend directamente desde `/opt/Sorteos/frontend/dist/` via symlink. No es necesario copiar archivos a ningún otro lugar.
+**Nota:** El backend Go sirve el frontend directamente desde `/opt/Dropio/frontend/dist/` via symlink. No es necesario copiar archivos a ningún otro lugar.
 
 ### Todo junto (Backend + Frontend):
 ```bash
 # Frontend (primero para que esté listo cuando el backend reinicie)
-cd /opt/Sorteos/frontend && npm run build
+cd /opt/Dropio/frontend && npm run build
 
 # Backend
-cd /opt/Sorteos/backend && sudo systemctl stop sorteos-api && \
-go build -o sorteos-api ./cmd/api && sudo systemctl start sorteos-api
+cd /opt/Dropio/backend && sudo systemctl stop dropio-api && \
+go build -o dropio-api ./cmd/api && sudo systemctl start dropio-api
 ```
 
 ---
@@ -35,30 +51,30 @@ go build -o sorteos-api ./cmd/api && sudo systemctl start sorteos-api
 
 ### Ubicacion Oficial del Binario:
 ```
-/opt/Sorteos/backend/sorteos-api
+/opt/Dropio/backend/dropio-api
 ```
 
 ### Servicio Systemd:
 ```
-/etc/systemd/system/sorteos-api.service
-ExecStart=/opt/Sorteos/backend/sorteos-api
+/etc/systemd/system/dropio-api.service
+ExecStart=/opt/Dropio/backend/dropio-api
 ```
 
 ### Proceso de Compilacion Oficial:
 
 ```bash
-cd /opt/Sorteos/backend
-sudo systemctl stop sorteos-api
-go build -o sorteos-api ./cmd/api
-sudo systemctl start sorteos-api
+cd /opt/Dropio/backend
+sudo systemctl stop dropio-api
+go build -o dropio-api ./cmd/api
+sudo systemctl start dropio-api
 ```
 
-**Nota:** Se compila directamente en `sorteos-api` (ubicación de producción). No se usa carpeta `bin/` intermedia.
+**Nota:** Se compila directamente en `dropio-api` (ubicación de producción). No se usa carpeta `bin/` intermedia.
 
 ### Verificar Deploy:
 ```bash
-sudo systemctl status sorteos-api
-curl http://localhost:8080/health
+sudo systemctl status dropio-api
+curl http://localhost:8081/health
 ```
 
 ### ❌ PROHIBIDO:
@@ -70,11 +86,11 @@ curl http://localhost:8080/health
 
 ### ✅ PERMITIDO:
 
-- ✅ Compilar directamente: `go build -o sorteos-api ./cmd/api`
+- ✅ Compilar directamente: `go build -o dropio-api ./cmd/api`
 - ✅ Usar `make build` si se prefiere (actualizar Makefile para compilar directo)
 - ✅ Crear backup temporal SOLO si es necesario:
   ```bash
-  cp sorteos-api sorteos-api.backup-$(date +%Y%m%d-%H%M%S)
+  cp dropio-api dropio-api.backup-$(date +%Y%m%d-%H%M%S)
   ```
 - ✅ Eliminar backups después de verificar que la nueva versión funciona
 
@@ -83,7 +99,7 @@ curl http://localhost:8080/health
 ### Makefile:
 ```makefile
 build:
-	go build -o sorteos-api ./cmd/api
+	go build -o dropio-api ./cmd/api
 ```
 
 **Nota:** Compilar TODO el paquete `./cmd/api`, NO solo `cmd/api/main.go`
@@ -99,8 +115,8 @@ make test      # Ejecutar tests
 ## 📁 Estructura de Directorios
 
 ```
-/opt/Sorteos/backend/
-├── sorteos-api              # Binario en producción (usado por systemd)
+/opt/Dropio/backend/
+├── dropio-api               # Binario en producción (usado por systemd)
 ├── cmd/api/                 # Código fuente de la aplicación
 │   ├── main.go
 │   ├── admin_routes_v2.go
@@ -115,29 +131,29 @@ make test      # Ejecutar tests
 
 ```bash
 # Ver status
-sudo systemctl status sorteos-api
+sudo systemctl status dropio-api
 
 # Ver logs
-sudo journalctl -u sorteos-api -f
+sudo journalctl -u dropio-api -f
 
 # Verificar binario en uso
-ps aux | grep sorteos-api
+ps aux | grep dropio-api
 
 # Ver qué binario está corriendo
-sudo lsof -p $(pgrep sorteos-api) | grep sorteos-api
+sudo lsof -p $(pgrep dropio-api) | grep dropio-api
 ```
 
 ## 📝 Checklist de Actualización
 
 Cuando se actualice el backend:
 
-- [ ] `cd /opt/Sorteos/backend`
+- [ ] `cd /opt/Dropio/backend`
 - [ ] `git pull` (si aplica)
-- [ ] `sudo systemctl stop sorteos-api`
-- [ ] `go build -o sorteos-api ./cmd/api`
-- [ ] `sudo systemctl start sorteos-api`
-- [ ] `sudo systemctl status sorteos-api` (verificar que inicia)
-- [ ] `curl http://localhost:8080/health` (verificar respuesta)
+- [ ] `sudo systemctl stop dropio-api`
+- [ ] `go build -o dropio-api ./cmd/api`
+- [ ] `sudo systemctl start dropio-api`
+- [ ] `sudo systemctl status dropio-api` (verificar que inicia)
+- [ ] `curl http://localhost:8081/health` (verificar respuesta)
 
 ## ⚠️ Resolución de Problemas
 
@@ -145,32 +161,62 @@ Si el servicio no inicia:
 
 ```bash
 # Ver error específico
-sudo journalctl -u sorteos-api -n 50 --no-pager
+sudo journalctl -u dropio-api -n 50 --no-pager
 
 # Ejecutar binario directamente para ver error completo
-./sorteos-api
+./dropio-api
 
 # Verificar permisos
-ls -lah sorteos-api
+ls -lah dropio-api
 # Debe ser: -rwxr-xr-x root root
 ```
 
-## 🎯 Estado Actual
+## 🎨 Paleta de Colores - Dropio (Dark Theme)
 
-**Endpoints Admin:** 52/52 (100%) ✅
+### Primary (Gold)
+```css
+--gold: #F4B942;
+--gold-light: #FFD76E;
+--gold-dark: #C9952E;
+```
 
-**Distribución:**
-- Categories: 5 endpoints
-- Config: 3 endpoints
-- Settlements: 7 endpoints
-- Users: 6 endpoints
-- Organizers: 5 endpoints
-- Payments: 4 endpoints
-- Raffles: 6 endpoints
-- Notifications: 5 endpoints
-- Reports: 4 endpoints
-- System: 6 endpoints
-- Audit: 1 endpoint
+### Dark Theme
+```css
+--dark: #0D0D0D;
+--dark-card: #1A1A1A;
+--dark-lighter: #252525;
+```
 
-**Última actualización:** 2025-11-18
-**Binario:** 27MB (compilado con Go 1.22+)
+### Acentos
+```css
+--accent-green: #4ADE80;   /* Success */
+--accent-blue: #60A5FA;    /* Info */
+--accent-purple: #A78BFA;  /* Special */
+```
+
+## 🔧 Configuración de Servicios
+
+| Servicio | Puerto | Detalles |
+|----------|--------|----------|
+| dropio-api | 8081 | Backend Go (Gin) |
+| PostgreSQL | 5432 | dropio_db / dropio_user |
+| Redis | 6379 | DB 1 (separado de Sorteos) |
+| Nginx | 443 | SSL proxy → 8081 |
+
+## 📧 Email Templates
+
+Los templates de email están en:
+```
+/opt/Dropio/backend/templates/email/
+├── verification.html
+├── welcome.html
+├── password_reset.html
+└── purchase_confirmation.html
+```
+
+Todos deben usar "Dropio.club" como nombre de la plataforma.
+
+**Última actualización:** 2025-11-30
+**Binario:** dropio-api (compilado con Go 1.22+)
+**URL:** https://dropio.club
+**Puerto:** 8081

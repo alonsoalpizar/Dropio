@@ -1,13 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { UserMenu } from './UserMenu';
 import { useAuthStore } from '@/store/authStore';
-import { useUserMode } from '@/contexts/UserModeContext';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 
 export function Navbar() {
   const { user, isAdmin } = useAuthStore();
-  const { mode, colors } = useUserMode();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -20,22 +17,16 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+    <header className="sticky top-0 z-50 bg-dark/95 backdrop-blur-xl border-b border-gold/10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo - color dinámico según modo */}
+          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className={cn(
-              "w-10 h-10 rounded-lg flex items-center justify-center transition-all group-hover:scale-105",
-              "bg-gradient-to-br from-sky-500 to-amber-500"
-            )}>
-              {/* Dropio logo - water drop icon */}
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2c-5.33 8-8 12-8 15a8 8 0 0 0 16 0c0-3-2.67-7-8-15z"/>
-              </svg>
+            <div className="w-10 h-10 bg-gradient-to-br from-gold to-gold-dark rounded-xl flex items-center justify-center transition-all group-hover:scale-105 text-lg">
+              🪙
             </div>
-            <span className="text-xl font-bold text-slate-900 dark:text-white hidden sm:block">
-              Dropio<span className="text-primary-500">.club</span>
+            <span className="text-xl font-bold text-white hidden sm:block">
+              Dropio<span className="text-gold">.club</span>
             </span>
           </Link>
 
@@ -47,14 +38,11 @@ export function Navbar() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar sorteos..."
-                  className={cn(
-                    "w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-transparent transition-colors",
-                    colors.ring.replace('ring-', 'focus:ring-')
-                  )}
+                  placeholder="Buscar Drops..."
+                  className="w-full pl-10 pr-4 py-2 border border-dark-lighter rounded-xl bg-dark-card text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors"
                 />
                 <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -70,59 +58,24 @@ export function Navbar() {
             {/* Main navigation for authenticated users */}
             {user && (
               <nav className="hidden lg:flex items-center gap-1">
-                {mode === 'participant' ? (
-                  <>
-                    <Link
-                      to="/explore"
-                      className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      Explorar
-                    </Link>
-                    <Link
-                      to="/my-tickets"
-                      className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      Mis Números
-                    </Link>
-                    <Link
-                      to="/wallet"
-                      className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      💰 Billetera
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/organizer"
-                      className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      Panel
-                    </Link>
-                    <Link
-                      to="/organizer/raffles"
-                      className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      Sorteos
-                    </Link>
-                    <Link
-                      to="/wallet"
-                      className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      💰 Billetera
-                    </Link>
-                    <Link
-                      to="/organizer/raffles/new"
-                      className={cn(
-                        "px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors",
-                        colors.bg,
-                        colors.bgHover
-                      )}
-                    >
-                      + Crear
-                    </Link>
-                  </>
-                )}
+                <Link
+                  to="/explore"
+                  className="px-3 py-2 text-sm font-medium text-neutral-300 hover:text-gold hover:bg-dark-card rounded-lg transition-colors"
+                >
+                  Explorar
+                </Link>
+                <Link
+                  to="/my-tickets"
+                  className="px-3 py-2 text-sm font-medium text-neutral-300 hover:text-gold hover:bg-dark-card rounded-lg transition-colors"
+                >
+                  Mis Drops
+                </Link>
+                <Link
+                  to="/wallet"
+                  className="px-3 py-2 text-sm font-medium text-neutral-300 hover:text-gold hover:bg-dark-card rounded-lg transition-colors flex items-center gap-1"
+                >
+                  <span className="text-gold">🪙</span> AloCoins
+                </Link>
 
                 {/* Admin link - only visible to super-admin users */}
                 {isAdmin() && (
@@ -147,55 +100,32 @@ export function Navbar() {
 
       {/* Mobile navigation tabs (only for authenticated users) */}
       {user && (
-        <div className="border-t border-slate-200 dark:border-slate-700 lg:hidden">
+        <div className="border-t border-dark-lighter lg:hidden">
           <nav className="container mx-auto px-4 flex items-center gap-1 overflow-x-auto">
-            {mode === 'participant' ? (
-              <>
-                <Link
-                  to="/explore"
-                  className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap"
-                >
-                  Explorar
-                </Link>
-                <Link
-                  to="/my-tickets"
-                  className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap"
-                >
-                  Mis Números
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/organizer"
-                  className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap"
-                >
-                  Panel
-                </Link>
-                <Link
-                  to="/organizer/raffles"
-                  className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap"
-                >
-                  Sorteos
-                </Link>
-                <Link
-                  to="/organizer/raffles/new"
-                  className={cn(
-                    "px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
-                    colors.text,
-                    mode === 'organizer' ? 'dark:text-teal-400' : 'dark:text-blue-400'
-                  )}
-                >
-                  + Crear
-                </Link>
-              </>
-            )}
+            <Link
+              to="/explore"
+              className="px-4 py-3 text-sm font-medium text-neutral-300 hover:text-gold hover:bg-dark-card transition-colors whitespace-nowrap"
+            >
+              Explorar
+            </Link>
+            <Link
+              to="/my-tickets"
+              className="px-4 py-3 text-sm font-medium text-neutral-300 hover:text-gold hover:bg-dark-card transition-colors whitespace-nowrap"
+            >
+              Mis Drops
+            </Link>
+            <Link
+              to="/wallet"
+              className="px-4 py-3 text-sm font-medium text-gold transition-colors whitespace-nowrap flex items-center gap-1"
+            >
+              🪙 AloCoins
+            </Link>
 
             {/* Admin link for mobile - only visible to super-admin users */}
             {isAdmin() && (
               <Link
                 to="/admin/dashboard"
-                className="px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 transition-colors whitespace-nowrap"
+                className="px-4 py-3 text-sm font-medium text-red-400 transition-colors whitespace-nowrap"
               >
                 Admin
               </Link>

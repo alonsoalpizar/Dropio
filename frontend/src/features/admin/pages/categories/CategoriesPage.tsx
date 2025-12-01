@@ -85,14 +85,14 @@ export function CategoriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Gestión de Categorías</h1>
-          <p className="text-slate-600 mt-2">
-            Administra las categorías de rifas del sistema
+          <h1 className="text-3xl font-bold text-white">Gestión de Categorías</h1>
+          <p className="text-neutral-400 mt-2">
+            Administra las categorías de Drops del sistema
           </p>
         </div>
         <Button
           onClick={() => setShowCreateModal(true)}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-gold hover:bg-gold-dark"
         >
           <Plus className="w-4 h-4 mr-2" />
           Nueva Categoría
@@ -100,10 +100,10 @@ export function CategoriesPage() {
       </div>
 
       {/* Filters */}
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Buscar
             </label>
             <Input
@@ -113,15 +113,16 @@ export function CategoriesPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
+              className="bg-dark text-white border-dark-lighter"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Estado
             </label>
             <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
               value={
                 isActiveFilter === undefined ? "" : isActiveFilter ? "true" : "false"
               }
@@ -142,7 +143,7 @@ export function CategoriesPage() {
       </Card>
 
       {/* Table */}
-      <Card>
+      <Card className="bg-dark-card border-dark-lighter">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner />
@@ -158,7 +159,7 @@ export function CategoriesPage() {
         ) : !data || !data.data || data.data.length === 0 ? (
           <div className="p-6">
             <EmptyState
-              icon={<Package className="w-12 h-12 text-slate-400" />}
+              icon={<Package className="w-12 h-12 text-neutral-500" />}
               title="No se encontraron categorías"
               description="Intenta ajustar los filtros de búsqueda"
             />
@@ -172,7 +173,7 @@ export function CategoriesPage() {
                   <TableHead>Nombre</TableHead>
                   <TableHead>Descripción</TableHead>
                   <TableHead>Icono</TableHead>
-                  <TableHead>Rifas</TableHead>
+                  <TableHead>Drops</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Fecha Creación</TableHead>
                   <TableHead className="text-center">Acciones</TableHead>
@@ -182,34 +183,34 @@ export function CategoriesPage() {
                 {data.data.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>
-                      <GripVertical className="w-4 h-4 text-slate-400 cursor-move" />
+                      <GripVertical className="w-4 h-4 text-neutral-500 cursor-move" />
                     </TableCell>
-                    <TableCell className="font-medium text-slate-900">
+                    <TableCell className="font-medium text-white">
                       {category.name}
                     </TableCell>
-                    <TableCell className="text-sm text-slate-600 max-w-md truncate">
+                    <TableCell className="text-sm text-neutral-400 max-w-md truncate">
                       {category.description || "—"}
                     </TableCell>
-                    <TableCell className="text-sm text-slate-600">
+                    <TableCell className="text-sm text-neutral-400">
                       {category.icon || "—"}
                     </TableCell>
                     <TableCell>
-                      <Badge className="bg-blue-100 text-blue-700">
-                        {category.raffle_count || 0} rifas
+                      <Badge className="bg-accent-blue/20 text-accent-blue">
+                        {category.raffle_count || 0} Drops
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
                         className={
                           category.is_active
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
+                            ? "bg-accent-green/20 text-accent-green"
+                            : "bg-dark-lighter text-neutral-400"
                         }
                       >
                         {category.is_active ? "Activa" : "Inactiva"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-slate-600">
+                    <TableCell className="text-sm text-neutral-400">
                       {category.created_at
                         ? format(new Date(category.created_at), "dd/MM/yyyy")
                         : "—"}
@@ -229,8 +230,8 @@ export function CategoriesPage() {
                           onClick={() => handleToggleActive(category)}
                           className={
                             category.is_active
-                              ? "text-amber-600 hover:text-amber-700"
-                              : "text-green-600 hover:text-green-700"
+                              ? "text-gold hover:text-gold-dark"
+                              : "text-accent-green hover:text-accent-green/80"
                           }
                         >
                           {category.is_active ? "Desactivar" : "Activar"}
@@ -252,8 +253,8 @@ export function CategoriesPage() {
 
             {/* Pagination */}
             {data.pagination && data.pagination.total_pages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200">
-                <p className="text-sm text-slate-600">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-dark-lighter">
+                <p className="text-sm text-neutral-400">
                   Mostrando {data.data.length} de {data.pagination.total} categorías
                 </p>
                 <div className="flex gap-2">
@@ -265,7 +266,7 @@ export function CategoriesPage() {
                   >
                     Anterior
                   </Button>
-                  <span className="px-4 py-2 text-sm text-slate-700">
+                  <span className="px-4 py-2 text-sm text-neutral-300">
                     Página {page} de {data.pagination.total_pages}
                   </span>
                   <Button
@@ -352,18 +353,18 @@ function CategoryFormModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-md bg-dark-card border-dark-lighter">
         <form onSubmit={handleSubmit}>
-          <div className="p-6 border-b border-slate-200">
-            <h2 className="text-xl font-semibold text-slate-900">
+          <div className="p-6 border-b border-dark-lighter">
+            <h2 className="text-xl font-semibold text-white">
               {category ? "Editar Categoría" : "Nueva Categoría"}
             </h2>
           </div>
 
           <div className="p-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Nombre *
               </label>
               <Input
@@ -372,15 +373,16 @@ function CategoryFormModal({
                 placeholder="Ej: Electrónica"
                 required
                 maxLength={100}
+                className="bg-dark text-white border-dark-lighter"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Descripción
               </label>
               <textarea
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/30"
                 rows={3}
                 value={formData.description}
                 onChange={(e) =>
@@ -392,13 +394,14 @@ function CategoryFormModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Icono (emoji o URL)
               </label>
               <Input
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                 placeholder="Ej: 📱 o https://..."
+                className="bg-dark text-white border-dark-lighter"
               />
             </div>
 
@@ -410,21 +413,21 @@ function CategoryFormModal({
                 onChange={(e) =>
                   setFormData({ ...formData, is_active: e.target.checked })
                 }
-                className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-gold border-dark-lighter rounded focus:ring-gold/30"
               />
-              <label htmlFor="is_active" className="text-sm font-medium text-slate-700">
+              <label htmlFor="is_active" className="text-sm font-medium text-neutral-300">
                 Categoría activa
               </label>
             </div>
           </div>
 
-          <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
+          <div className="p-6 border-t border-dark-lighter flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-gold hover:bg-gold-dark"
               disabled={isCreating || isUpdating}
             >
               {isCreating || isUpdating ? "Guardando..." : category ? "Actualizar" : "Crear"}

@@ -48,49 +48,49 @@ export function AuditLogsPage() {
     switch (severity) {
       case "info":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent-blue/20 text-accent-blue">
             <Info className="w-3 h-3" />
             Info
           </span>
         );
       case "warning":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gold/20 text-gold">
             <AlertTriangle className="w-3 h-3" />
             Advertencia
           </span>
         );
       case "error":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
             <XCircle className="w-3 h-3" />
             Error
           </span>
         );
       case "critical":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-200 text-red-900">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-500/30 text-red-300">
             <AlertCircle className="w-3 h-3" />
             Crítico
           </span>
         );
       default:
-        return <span className="text-xs text-slate-500">{severity}</span>;
+        return <span className="text-xs text-neutral-500">{severity}</span>;
     }
   };
 
   const getEntityTypeBadge = (entityType: string) => {
     const colors: Record<string, string> = {
-      user: "bg-purple-100 text-purple-700",
-      organizer: "bg-green-100 text-green-700",
-      raffle: "bg-blue-100 text-blue-700",
-      payment: "bg-yellow-100 text-yellow-700",
-      settlement: "bg-indigo-100 text-indigo-700",
-      category: "bg-slate-100 text-slate-700",
-      system: "bg-red-100 text-red-700",
+      user: "bg-accent-purple/20 text-accent-purple",
+      organizer: "bg-accent-green/20 text-accent-green",
+      raffle: "bg-accent-blue/20 text-accent-blue",
+      payment: "bg-gold/20 text-gold",
+      settlement: "bg-accent-purple/20 text-accent-purple",
+      category: "bg-dark-lighter text-neutral-300",
+      system: "bg-red-500/20 text-red-400",
     };
 
-    const colorClass = colors[entityType.toLowerCase()] || "bg-slate-100 text-slate-700";
+    const colorClass = colors[entityType.toLowerCase()] || "bg-dark-lighter text-neutral-400";
 
     return (
       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${colorClass}`}>
@@ -104,8 +104,8 @@ export function AuditLogsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Auditoría</h1>
-          <p className="text-slate-600 mt-2">Registro de acciones administrativas del sistema</p>
+          <h1 className="text-3xl font-bold text-white">Auditoría</h1>
+          <p className="text-neutral-400 mt-2">Registro de acciones administrativas del sistema</p>
         </div>
         <Button variant="outline" onClick={() => refetch()} disabled={isLoading}>
           <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
@@ -116,39 +116,39 @@ export function AuditLogsPage() {
       {/* Statistics */}
       {data && (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Card className="p-4">
-            <p className="text-sm font-medium text-slate-600">Total Registros</p>
-            <p className="text-2xl font-bold text-slate-900 mt-2">{data.Total}</p>
+          <Card className="p-4 bg-dark-card border-dark-lighter">
+            <p className="text-sm font-medium text-neutral-400">Total Registros</p>
+            <p className="text-2xl font-bold text-white mt-2">{data.Total}</p>
           </Card>
-          <Card className="p-4">
-            <p className="text-sm font-medium text-slate-600">Info</p>
-            <p className="text-2xl font-bold text-blue-600 mt-2">{data.InfoCount}</p>
+          <Card className="p-4 bg-dark-card border-dark-lighter">
+            <p className="text-sm font-medium text-neutral-400">Info</p>
+            <p className="text-2xl font-bold text-accent-blue mt-2">{data.InfoCount}</p>
           </Card>
-          <Card className="p-4">
-            <p className="text-sm font-medium text-slate-600">Advertencias</p>
-            <p className="text-2xl font-bold text-yellow-600 mt-2">{data.WarningCount}</p>
+          <Card className="p-4 bg-dark-card border-dark-lighter">
+            <p className="text-sm font-medium text-neutral-400">Advertencias</p>
+            <p className="text-2xl font-bold text-gold mt-2">{data.WarningCount}</p>
           </Card>
-          <Card className="p-4">
-            <p className="text-sm font-medium text-slate-600">Errores</p>
-            <p className="text-2xl font-bold text-red-600 mt-2">{data.ErrorCount}</p>
+          <Card className="p-4 bg-dark-card border-dark-lighter">
+            <p className="text-sm font-medium text-neutral-400">Errores</p>
+            <p className="text-2xl font-bold text-red-400 mt-2">{data.ErrorCount}</p>
           </Card>
-          <Card className="p-4">
-            <p className="text-sm font-medium text-slate-600">Críticos</p>
-            <p className="text-2xl font-bold text-red-900 mt-2">{data.CriticalCount}</p>
+          <Card className="p-4 bg-dark-card border-dark-lighter">
+            <p className="text-sm font-medium text-neutral-400">Críticos</p>
+            <p className="text-2xl font-bold text-red-300 mt-2">{data.CriticalCount}</p>
           </Card>
         </div>
       )}
 
       {/* Search and Filters */}
-      <Card className="p-4">
+      <Card className="p-4 bg-dark-card border-dark-lighter">
         <div className="space-y-4">
           {/* Search Bar */}
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-500" />
               <input
                 type="text"
-                className="w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 placeholder="Buscar en descripción, admin, acción..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -170,11 +170,11 @@ export function AuditLogsPage() {
 
           {/* Advanced Filters */}
           {showFilters && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-dark-lighter">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Severidad</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Severidad</label>
                 <select
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                   value={filters.severity || ""}
                   onChange={(e) => handleFilterChange("severity", e.target.value)}
                 >
@@ -187,16 +187,16 @@ export function AuditLogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Tipo de Entidad</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Tipo de Entidad</label>
                 <select
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                   value={filters.entity_type || ""}
                   onChange={(e) => handleFilterChange("entity_type", e.target.value)}
                 >
                   <option value="">Todas</option>
                   <option value="user">Usuario</option>
                   <option value="organizer">Organizador</option>
-                  <option value="raffle">Rifa</option>
+                  <option value="raffle">Drop</option>
                   <option value="payment">Pago</option>
                   <option value="settlement">Liquidación</option>
                   <option value="category">Categoría</option>
@@ -205,10 +205,10 @@ export function AuditLogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Acción</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Acción</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                   placeholder="ej: CREATE, UPDATE, DELETE"
                   value={filters.action || ""}
                   onChange={(e) => handleFilterChange("action", e.target.value)}
@@ -216,30 +216,30 @@ export function AuditLogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Fecha Desde</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Fecha Desde</label>
                 <input
                   type="datetime-local"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                   value={filters.date_from || ""}
                   onChange={(e) => handleFilterChange("date_from", e.target.value)}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Fecha Hasta</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Fecha Hasta</label>
                 <input
                   type="datetime-local"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                   value={filters.date_to || ""}
                   onChange={(e) => handleFilterChange("date_to", e.target.value)}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">ID de Admin</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">ID de Admin</label>
                 <input
                   type="number"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                   placeholder="ej: 1"
                   value={filters.admin_id || ""}
                   onChange={(e) => handleFilterChange("admin_id", e.target.value ? parseInt(e.target.value) : undefined)}
@@ -267,7 +267,7 @@ export function AuditLogsPage() {
       </Card>
 
       {/* Audit Logs Table */}
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner />
@@ -276,36 +276,36 @@ export function AuditLogsPage() {
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-50 border-b-2 border-slate-200">
+                <thead className="bg-dark-lighter border-b-2 border-dark-lighter">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       ID
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       Fecha
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       Admin
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       Acción
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       Entidad
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       Descripción
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                       Severidad
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-dark-lighter">
                   {data.Logs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-3 text-sm text-slate-900">#{log.id}</td>
-                      <td className="px-4 py-3 text-sm text-slate-600">
+                    <tr key={log.id} className="hover:bg-dark-lighter">
+                      <td className="px-4 py-3 text-sm text-white">#{log.id}</td>
+                      <td className="px-4 py-3 text-sm text-neutral-400">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {format(parseISO(log.created_at), "PPp", { locale: es })}
@@ -313,15 +313,15 @@ export function AuditLogsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <User className="w-3 h-3 text-slate-400" />
+                          <User className="w-3 h-3 text-neutral-500" />
                           <div>
-                            <p className="text-sm font-medium text-slate-900">{log.admin_name}</p>
-                            <p className="text-xs text-slate-500">{log.admin_email}</p>
+                            <p className="text-sm font-medium text-white">{log.admin_name}</p>
+                            <p className="text-xs text-neutral-500">{log.admin_email}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <code className="px-2 py-1 bg-slate-100 rounded text-xs font-mono text-slate-900">
+                        <code className="px-2 py-1 bg-dark-lighter rounded text-xs font-mono text-white">
                           {log.action}
                         </code>
                       </td>
@@ -329,18 +329,18 @@ export function AuditLogsPage() {
                         <div className="space-y-1">
                           {getEntityTypeBadge(log.entity_type)}
                           {log.entity_id && (
-                            <p className="text-xs text-slate-500">ID: {log.entity_id}</p>
+                            <p className="text-xs text-neutral-500">ID: {log.entity_id}</p>
                           )}
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-sm text-slate-900 max-w-md">{log.description}</p>
+                        <p className="text-sm text-white max-w-md">{log.description}</p>
                         {log.metadata && (
                           <details className="mt-1">
-                            <summary className="text-xs text-blue-600 cursor-pointer hover:text-blue-700">
+                            <summary className="text-xs text-gold cursor-pointer hover:text-gold-dark">
                               Ver metadatos
                             </summary>
-                            <pre className="mt-2 p-2 bg-slate-50 rounded text-xs font-mono overflow-x-auto">
+                            <pre className="mt-2 p-2 bg-dark-lighter rounded text-xs font-mono overflow-x-auto">
                               {log.metadata}
                             </pre>
                           </details>
@@ -355,8 +355,8 @@ export function AuditLogsPage() {
 
             {/* Pagination */}
             {data.TotalPages > 1 && (
-              <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-200">
-                <p className="text-sm text-slate-600">
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-dark-lighter">
+                <p className="text-sm text-neutral-400">
                   Página {data.Page} de {data.TotalPages} • {data.Total} registros totales
                 </p>
                 <div className="flex items-center gap-2">
@@ -382,7 +382,7 @@ export function AuditLogsPage() {
           </>
         ) : (
           <EmptyState
-            icon={<Shield className="w-12 h-12 text-slate-400" />}
+            icon={<Shield className="w-12 h-12 text-neutral-500" />}
             title="No hay registros de auditoría"
             description="No se encontraron registros que coincidan con los filtros aplicados"
           />
@@ -390,12 +390,12 @@ export function AuditLogsPage() {
       </Card>
 
       {/* Info Card */}
-      <Card className="p-6 bg-blue-50 border-blue-200">
+      <Card className="p-6 bg-gold/10 border-gold/30">
         <div className="flex items-start gap-3">
-          <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <Shield className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-blue-900 mb-1">Información</h3>
-            <p className="text-sm text-blue-800">
+            <h3 className="font-semibold text-gold mb-1">Información</h3>
+            <p className="text-sm text-gold/80">
               Los registros de auditoría muestran todas las acciones administrativas realizadas en el
               sistema. Esta información es crítica para seguridad y cumplimiento normativo.
             </p>

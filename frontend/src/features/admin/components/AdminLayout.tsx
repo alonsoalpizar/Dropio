@@ -35,11 +35,11 @@ const navItems: NavItem[] = [
   { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Usuarios", path: "/admin/users", icon: Users },
   { name: "Organizadores", path: "/admin/organizers", icon: UserCog },
-  { name: "Rifas", path: "/admin/raffles", icon: Ticket },
+  { name: "Drops", path: "/admin/raffles", icon: Ticket },
   { name: "Categorías", path: "/admin/categories", icon: FolderTree },
   { name: "Pagos", path: "/admin/payments", icon: CreditCard },
   { name: "Liquidaciones", path: "/admin/settlements", icon: DollarSign },
-  { name: "Billeteras", path: "/admin/wallets", icon: Wallet },
+  { name: "AloCoins", path: "/admin/wallets", icon: Wallet },
   { name: "Reportes", path: "/admin/reports", icon: BarChart3 },
   { name: "Notificaciones", path: "/admin/notifications", icon: Bell },
   { name: "Configuración", path: "/admin/system", icon: Settings },
@@ -61,44 +61,42 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-dark">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-30">
+      <header className="bg-dark-card border-b border-dark-lighter fixed top-0 left-0 right-0 z-30">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              className="lg:hidden p-2 text-neutral-400 hover:text-white hover:bg-dark-lighter rounded-lg transition-colors"
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
             <Link to="/admin/dashboard" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                </svg>
+              <div className="w-8 h-8 bg-gradient-to-br from-gold to-gold-dark rounded-lg flex items-center justify-center text-sm">
+                🪙
               </div>
-              <div>
-                <span className="font-semibold text-slate-900">Sorteos.club</span>
-                <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Admin</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-white">Dropio.club</span>
+                <span className="text-xs bg-red-600 text-white px-2 py-1 rounded-full font-medium">Admin</span>
               </div>
             </Link>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-slate-900">
+              <p className="text-sm font-medium text-white">
                 {user?.first_name} {user?.last_name}
               </p>
-              <p className="text-xs text-slate-500">{user?.role === "super_admin" ? "Super Admin" : "Admin"}</p>
+              <p className="text-xs text-neutral-500">{user?.role === "super_admin" ? "Super Admin" : "Admin"}</p>
             </div>
 
             <Link to="/explore">
               <Button
                 variant="outline"
                 size="sm"
-                className="text-slate-700 hover:text-blue-600 hover:border-blue-600"
+                className="border-dark-lighter text-neutral-300 hover:text-gold hover:border-gold bg-transparent"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Ver Sitio</span>
@@ -109,7 +107,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               variant="outline"
               size="sm"
               onClick={handleLogout}
-              className="text-slate-700 hover:text-red-600 hover:border-red-600"
+              className="border-dark-lighter text-neutral-300 hover:text-red-400 hover:border-red-400 bg-transparent"
             >
               <LogOut className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">Salir</span>
@@ -121,7 +119,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-14 left-0 bottom-0 w-64 bg-white border-r border-slate-200 z-20
+          fixed top-14 left-0 bottom-0 w-64 bg-dark-card border-r border-dark-lighter z-20
           transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
@@ -141,8 +139,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
                   ${
                     active
-                      ? "bg-blue-50 text-blue-700 font-medium"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                      ? "bg-gold/10 text-gold font-medium border border-gold/20"
+                      : "text-neutral-400 hover:bg-dark-lighter hover:text-white"
                   }
                 `}
               >
@@ -157,7 +155,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 z-10 lg:hidden"
+          className="fixed inset-0 bg-dark/80 z-10 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

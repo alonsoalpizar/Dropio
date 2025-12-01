@@ -25,7 +25,7 @@ function translateTransactionType(type: TransactionType): string {
   const types: Record<TransactionType, string> = {
     deposit: "Recarga",
     withdrawal: "Retiro",
-    purchase: "Compra de boletos",
+    purchase: "Compra de participaciones",
     refund: "Reembolso",
     prize_claim: "Premio ganado",
     settlement_payout: "Pago de liquidación",
@@ -48,12 +48,12 @@ function translateTransactionStatus(status: TransactionStatus): string {
 // Helper para obtener badge color según estado
 function getStatusBadgeClass(status: TransactionStatus): string {
   const classes: Record<TransactionStatus, string> = {
-    pending: "bg-yellow-100 text-yellow-700",
-    completed: "bg-green-100 text-green-700",
-    failed: "bg-red-100 text-red-700",
-    reversed: "bg-slate-100 text-slate-700",
+    pending: "bg-gold/20 text-gold",
+    completed: "bg-accent-green/20 text-accent-green",
+    failed: "bg-red-500/20 text-red-400",
+    reversed: "bg-dark-lighter text-neutral-400",
   };
-  return classes[status] || "bg-slate-100 text-slate-700";
+  return classes[status] || "bg-dark-lighter text-neutral-400";
 }
 
 export const TransactionHistory = () => {
@@ -67,8 +67,8 @@ export const TransactionHistory = () => {
 
   if (error) {
     return (
-      <Card className="p-6">
-        <div className="text-center text-red-600">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <div className="text-center text-red-400">
           <p>Error al cargar las transacciones</p>
           <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-4">
             Reintentar
@@ -80,7 +80,7 @@ export const TransactionHistory = () => {
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="flex items-center justify-center py-8">
           <LoadingSpinner />
         </div>
@@ -90,9 +90,9 @@ export const TransactionHistory = () => {
 
   if (!data || data.transactions.length === 0) {
     return (
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <EmptyState
-          icon={<History className="w-12 h-12 text-slate-400" />}
+          icon={<History className="w-12 h-12 text-neutral-500" />}
           title="No hay transacciones"
           description="Aún no has realizado ninguna transacción en tu billetera"
         />
@@ -108,7 +108,7 @@ export const TransactionHistory = () => {
     <div className="space-y-4">
       {/* Header con botón de refrescar */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-white">
           Historial de Transacciones ({data.pagination.total})
         </h2>
         <Button variant="ghost" size="sm" onClick={() => refetch()}>
@@ -117,45 +117,45 @@ export const TransactionHistory = () => {
       </div>
 
       {/* Tabla de transacciones (Desktop) */}
-      <Card className="overflow-hidden hidden md:block">
+      <Card className="overflow-hidden hidden md:block bg-dark-card border-dark-lighter">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-dark-lighter border-b border-dark-lighter">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                   Fecha
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                   Tipo
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                   Monto
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                   Estado
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                   Saldo después
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-slate-200">
+            <tbody className="divide-y divide-dark-lighter">
               {data.transactions.map((tx) => {
                 const isDebit = ["purchase", "withdrawal", "adjustment"].includes(tx.type);
                 const date = new Date(tx.created_at);
 
                 return (
-                  <tr key={tx.id} className="hover:bg-slate-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                  <tr key={tx.id} className="hover:bg-dark-lighter">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-400">
                       {format(date, "dd MMM yyyy, HH:mm", { locale: es })}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                       {translateTransactionType(tx.type)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span
                         className={`font-semibold ${
-                          isDebit ? "text-red-600" : "text-green-600"
+                          isDebit ? "text-red-400" : "text-accent-green"
                         }`}
                       >
                         {isDebit ? "-" : "+"} {formatCRC(tx.amount)}
@@ -170,7 +170,7 @@ export const TransactionHistory = () => {
                         {translateTransactionStatus(tx.status)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-400">
                       {formatCRC(tx.balance_after)}
                     </td>
                   </tr>
@@ -188,11 +188,11 @@ export const TransactionHistory = () => {
           const date = new Date(tx.created_at);
 
           return (
-            <Card key={tx.id} className="p-4">
+            <Card key={tx.id} className="p-4 bg-dark-card border-dark-lighter">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <p className="font-medium text-slate-900">{translateTransactionType(tx.type)}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="font-medium text-white">{translateTransactionType(tx.type)}</p>
+                  <p className="text-xs text-neutral-500">
                     {format(date, "dd MMM yyyy, HH:mm", { locale: es })}
                   </p>
                 </div>
@@ -204,13 +204,13 @@ export const TransactionHistory = () => {
                   {translateTransactionStatus(tx.status)}
                 </span>
               </div>
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-200">
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-dark-lighter">
                 <span
-                  className={`text-lg font-bold ${isDebit ? "text-red-600" : "text-green-600"}`}
+                  className={`text-lg font-bold ${isDebit ? "text-red-400" : "text-accent-green"}`}
                 >
                   {isDebit ? "-" : "+"} {formatCRC(tx.amount)}
                 </span>
-                <span className="text-sm text-slate-600">
+                <span className="text-sm text-neutral-400">
                   Saldo: {formatCRC(tx.balance_after)}
                 </span>
               </div>
@@ -221,9 +221,9 @@ export const TransactionHistory = () => {
 
       {/* Paginación */}
       {totalPages > 1 && (
-        <Card className="p-4">
+        <Card className="p-4 bg-dark-card border-dark-lighter">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-slate-600">
+            <div className="text-sm text-neutral-400">
               Página {page + 1} de {totalPages}
             </div>
             <div className="flex gap-2">

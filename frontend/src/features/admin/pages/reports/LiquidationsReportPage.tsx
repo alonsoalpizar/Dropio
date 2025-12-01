@@ -64,7 +64,7 @@ export function LiquidationsReportPage() {
   const getSettlementStatusBadge = (status?: string) => {
     if (!status) {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-dark-lighter text-neutral-300">
           <AlertCircle className="w-3 h-3" />
           Sin liquidación
         </span>
@@ -74,35 +74,35 @@ export function LiquidationsReportPage() {
     switch (status) {
       case "pending":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gold/20 text-gold">
             <Clock className="w-3 h-3" />
             Pendiente
           </span>
         );
       case "approved":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent-blue/20 text-accent-blue">
             <CheckCircle className="w-3 h-3" />
             Aprobada
           </span>
         );
       case "paid":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent-green/20 text-accent-green">
             <CheckCircle className="w-3 h-3" />
             Pagada
           </span>
         );
       case "rejected":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
             <XCircle className="w-3 h-3" />
             Rechazada
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-dark-lighter text-neutral-300">
             {status}
           </span>
         );
@@ -119,31 +119,31 @@ export function LiquidationsReportPage() {
             Volver
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-3xl font-bold text-white">
               Reporte de Liquidaciones
             </h1>
-            <p className="text-slate-600 mt-2">
-              Seguimiento de liquidaciones de rifas completadas
+            <p className="text-neutral-400 mt-2">
+              Seguimiento de liquidaciones de drops completados
             </p>
           </div>
         </div>
       </div>
 
       {/* Filtros */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5" />
           Filtros
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Fecha desde */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Fecha Desde
             </label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
               value={filters.date_from}
               onChange={(e) => handleFilterChange("date_from", e.target.value)}
             />
@@ -151,12 +151,12 @@ export function LiquidationsReportPage() {
 
           {/* Fecha hasta */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Fecha Hasta
             </label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
               value={filters.date_to}
               onChange={(e) => handleFilterChange("date_to", e.target.value)}
             />
@@ -164,12 +164,12 @@ export function LiquidationsReportPage() {
 
           {/* Estado de liquidación */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Estado Liquidación
             </label>
             <div className="flex gap-2">
               <select
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
                 value={filters.settlement_status || ""}
                 onChange={(e) =>
                   handleFilterChange(
@@ -199,11 +199,11 @@ export function LiquidationsReportPage() {
 
           {/* Ordenar por */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Ordenar Por
             </label>
             <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
               value={filters.order_by}
               onChange={(e) => handleFilterChange("order_by", e.target.value)}
             >
@@ -227,13 +227,13 @@ export function LiquidationsReportPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           {/* Organizador (opcional) */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Organizador (Opcional)
             </label>
             <div className="flex gap-2">
               <input
                 type="number"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
                 placeholder="ID del organizador"
                 value={filters.organizer_id || ""}
                 onChange={(e) =>
@@ -257,13 +257,13 @@ export function LiquidationsReportPage() {
 
           {/* Categoría (opcional) */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Categoría (Opcional)
             </label>
             <div className="flex gap-2">
               <input
                 type="number"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
                 placeholder="ID de categoría"
                 value={filters.category_id || ""}
                 onChange={(e) =>
@@ -311,26 +311,26 @@ export function LiquidationsReportPage() {
         <>
           {/* KPIs Resumen */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">
                 Ingresos Brutos Totales
               </p>
-              <p className="text-2xl font-bold text-green-600 mt-2">
+              <p className="text-2xl font-bold text-accent-green mt-2">
                 {formatCurrency(data.TotalGrossRevenue)}
               </p>
-              <p className="text-xs text-slate-500 mt-1">
-                {data.Total} rifas completadas
+              <p className="text-xs text-neutral-500 mt-1">
+                {data.Total} drops completados
               </p>
             </Card>
 
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">
                 Comisiones Plataforma
               </p>
-              <p className="text-2xl font-bold text-blue-600 mt-2">
+              <p className="text-2xl font-bold text-accent-blue mt-2">
                 {formatCurrency(data.TotalPlatformFees)}
               </p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-neutral-500 mt-1">
                 ~
                 {(
                   (data.TotalPlatformFees / (data.TotalGrossRevenue || 1)) *
@@ -340,64 +340,64 @@ export function LiquidationsReportPage() {
               </p>
             </Card>
 
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">
                 Ingresos Netos Organizadores
               </p>
-              <p className="text-2xl font-bold text-slate-900 mt-2">
+              <p className="text-2xl font-bold text-white mt-2">
                 {formatCurrency(data.TotalNetRevenue)}
               </p>
             </Card>
           </div>
 
           {/* Estado de Liquidaciones */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <Card className="p-6 bg-dark-card border-dark-lighter">
+            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5" />
               Estado de Liquidaciones
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
               <div className="text-center">
-                <p className="text-xs font-medium text-slate-600 mb-1">
+                <p className="text-xs font-medium text-neutral-400 mb-1">
                   Sin Liquidación
                 </p>
-                <p className="text-2xl font-bold text-slate-500">
+                <p className="text-2xl font-bold text-neutral-500">
                   {data.WithoutSettlement}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-slate-600 mb-1">
+                <p className="text-xs font-medium text-neutral-400 mb-1">
                   Pendientes
                 </p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-2xl font-bold text-gold">
                   {data.PendingCount}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-slate-600 mb-1">Aprobadas</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-xs font-medium text-neutral-400 mb-1">Aprobadas</p>
+                <p className="text-2xl font-bold text-accent-blue">
                   {data.ApprovedCount}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-slate-600 mb-1">Pagadas</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-xs font-medium text-neutral-400 mb-1">Pagadas</p>
+                <p className="text-2xl font-bold text-accent-green">
                   {data.PaidCount}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-slate-600 mb-1">
+                <p className="text-xs font-medium text-neutral-400 mb-1">
                   Rechazadas
                 </p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-red-400">
                   {data.RejectedCount}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-slate-600 mb-1">
+                <p className="text-xs font-medium text-neutral-400 mb-1">
                   Con Liquidación
                 </p>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-white">
                   {data.WithSettlement}
                 </p>
               </div>
@@ -405,9 +405,9 @@ export function LiquidationsReportPage() {
           </Card>
 
           {/* Tabla de Liquidaciones */}
-          <Card className="p-6">
+          <Card className="p-6 bg-dark-card border-dark-lighter">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
                 Liquidaciones Detalladas ({data.Total})
               </h2>
@@ -426,76 +426,76 @@ export function LiquidationsReportPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-50 border-b-2 border-slate-200">
+                  <thead className="bg-dark-lighter border-b-2 border-dark-lighter">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
-                        Rifa
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
+                        Drop
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Organizador
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Completada
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                         Ingresos Brutos
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                         Comisión
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                         Ingresos Netos
                       </th>
-                      <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-neutral-400 uppercase">
                         Estado Liquidación
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Pagada
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200">
+                  <tbody className="divide-y divide-dark-lighter">
                     {data.Rows.map((row) => (
-                      <tr key={row.raffle_id} className="hover:bg-slate-50">
+                      <tr key={row.raffle_id} className="hover:bg-dark-lighter">
                         <td className="px-4 py-3">
                           <div>
-                            <p className="text-sm font-medium text-slate-900">
+                            <p className="text-sm font-medium text-white">
                               {row.raffle_title}
                             </p>
-                            <p className="text-xs text-slate-500">ID: {row.raffle_id}</p>
+                            <p className="text-xs text-neutral-500">ID: {row.raffle_id}</p>
                           </div>
                         </td>
                         <td className="px-4 py-3">
                           <div>
-                            <p className="text-sm text-slate-900">
+                            <p className="text-sm text-white">
                               {row.organizer_name}
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-neutral-500">
                               {row.organizer_email}
                             </p>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate-600">
+                        <td className="px-4 py-3 text-sm text-neutral-400">
                           {format(new Date(row.completed_at), "PPp", {
                             locale: es,
                           })}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right font-semibold text-green-600">
+                        <td className="px-4 py-3 text-sm text-right font-semibold text-accent-green">
                           {formatCurrency(row.gross_revenue)}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right text-blue-600">
+                        <td className="px-4 py-3 text-sm text-right text-accent-blue">
                           {formatCurrency(row.platform_fee)}
-                          <span className="text-xs text-slate-500 ml-1">
+                          <span className="text-xs text-neutral-500 ml-1">
                             ({row.platform_fee_percent}%)
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-right font-semibold text-slate-900">
+                        <td className="px-4 py-3 text-sm text-right font-semibold text-white">
                           {formatCurrency(row.net_revenue)}
                         </td>
                         <td className="px-4 py-3 text-center">
                           {getSettlementStatusBadge(row.settlement_status)}
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate-600">
+                        <td className="px-4 py-3 text-sm text-neutral-400">
                           {row.paid_at
                             ? format(new Date(row.paid_at), "PPp", { locale: es })
                             : "-"}

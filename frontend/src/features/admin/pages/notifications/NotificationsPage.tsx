@@ -67,47 +67,47 @@ export function NotificationsPage() {
     switch (status) {
       case "sent":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent-green/20 text-accent-green">
             <CheckCircle className="w-3 h-3" />
             Enviado
           </span>
         );
       case "queued":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gold/20 text-gold">
             <Clock className="w-3 h-3" />
             En cola
           </span>
         );
       case "scheduled":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent-blue/20 text-accent-blue">
             <Clock className="w-3 h-3" />
             Programado
           </span>
         );
       case "failed":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
             <XCircle className="w-3 h-3" />
             Fallido
           </span>
         );
       default:
-        return <span className="text-xs text-slate-500">{status}</span>;
+        return <span className="text-xs text-neutral-500">{status}</span>;
     }
   };
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case "high":
-        return <span className="text-xs font-medium text-red-600">Alta</span>;
+        return <span className="text-xs font-medium text-red-400">Alta</span>;
       case "normal":
-        return <span className="text-xs text-slate-600">Normal</span>;
+        return <span className="text-xs text-neutral-400">Normal</span>;
       case "low":
-        return <span className="text-xs text-slate-500">Baja</span>;
+        return <span className="text-xs text-neutral-500">Baja</span>;
       default:
-        return <span className="text-xs text-slate-500">{priority}</span>;
+        return <span className="text-xs text-neutral-500">{priority}</span>;
     }
   };
 
@@ -115,19 +115,19 @@ export function NotificationsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Notificaciones</h1>
-        <p className="text-slate-600 mt-2">Envía emails administrativos y revisa el historial</p>
+        <h1 className="text-3xl font-bold text-white">Notificaciones</h1>
+        <p className="text-neutral-400 mt-2">Envía emails administrativos y revisa el historial</p>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200">
+      <div className="border-b border-dark-lighter">
         <div className="flex gap-4">
           <button
             onClick={() => setActiveTab("send")}
             className={`pb-3 px-2 border-b-2 font-medium transition-colors ${
               activeTab === "send"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-slate-600 hover:text-slate-900"
+                ? "border-gold text-gold"
+                : "border-transparent text-neutral-400 hover:text-white"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -139,8 +139,8 @@ export function NotificationsPage() {
             onClick={() => setActiveTab("history")}
             className={`pb-3 px-2 border-b-2 font-medium transition-colors ${
               activeTab === "history"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-slate-600 hover:text-slate-900"
+                ? "border-gold text-gold"
+                : "border-transparent text-neutral-400 hover:text-white"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -153,40 +153,40 @@ export function NotificationsPage() {
 
       {/* Send Email Tab */}
       {activeTab === "send" && (
-        <Card className="p-6">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center gap-3 mb-6">
-            <Mail className="w-6 h-6 text-blue-600" />
+            <Mail className="w-6 h-6 text-gold" />
             <div>
-              <h2 className="text-xl font-semibold text-slate-900">Enviar Email</h2>
-              <p className="text-sm text-slate-600">Envía un email a uno o varios destinatarios</p>
+              <h2 className="text-xl font-semibold text-white">Enviar Email</h2>
+              <p className="text-sm text-neutral-400">Envía un email a uno o varios destinatarios</p>
             </div>
           </div>
 
           <form onSubmit={handleSendEmail} className="space-y-4">
             {/* Recipients */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Destinatarios *
               </label>
               <textarea
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 rows={3}
                 placeholder="ejemplo@email.com, otro@email.com (separados por comas o saltos de línea)"
                 value={recipients}
                 onChange={(e) => setRecipients(e.target.value)}
                 required
               />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-neutral-500 mt-1">
                 Puedes ingresar múltiples emails separados por comas o saltos de línea
               </p>
             </div>
 
             {/* Subject */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Asunto *</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Asunto *</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 placeholder="Asunto del email"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
@@ -196,9 +196,9 @@ export function NotificationsPage() {
 
             {/* Body */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Mensaje *</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Mensaje *</label>
               <textarea
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 rows={8}
                 placeholder="Escribe el contenido del email..."
                 value={body}
@@ -209,9 +209,9 @@ export function NotificationsPage() {
 
             {/* Priority */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Prioridad</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Prioridad</label>
               <select
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dark text-white border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as "low" | "normal" | "high")}
               >
@@ -222,7 +222,7 @@ export function NotificationsPage() {
             </div>
 
             {/* Submit */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-dark-lighter">
               <Button
                 type="button"
                 variant="outline"
@@ -261,33 +261,33 @@ export function NotificationsPage() {
           {/* Statistics */}
           {historyData?.statistics && (
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <Card className="p-4">
-                <p className="text-sm font-medium text-slate-600">Total Enviados</p>
-                <p className="text-2xl font-bold text-green-600 mt-2">
+              <Card className="p-4 bg-dark-card border-dark-lighter">
+                <p className="text-sm font-medium text-neutral-400">Total Enviados</p>
+                <p className="text-2xl font-bold text-accent-green mt-2">
                   {historyData.statistics.total_sent}
                 </p>
               </Card>
-              <Card className="p-4">
-                <p className="text-sm font-medium text-slate-600">Total Fallidos</p>
-                <p className="text-2xl font-bold text-red-600 mt-2">
+              <Card className="p-4 bg-dark-card border-dark-lighter">
+                <p className="text-sm font-medium text-neutral-400">Total Fallidos</p>
+                <p className="text-2xl font-bold text-red-400 mt-2">
                   {historyData.statistics.total_failed}
                 </p>
               </Card>
-              <Card className="p-4">
-                <p className="text-sm font-medium text-slate-600">En Cola</p>
-                <p className="text-2xl font-bold text-yellow-600 mt-2">
+              <Card className="p-4 bg-dark-card border-dark-lighter">
+                <p className="text-sm font-medium text-neutral-400">En Cola</p>
+                <p className="text-2xl font-bold text-gold mt-2">
                   {historyData.statistics.total_queued}
                 </p>
               </Card>
-              <Card className="p-4">
-                <p className="text-sm font-medium text-slate-600">Programados</p>
-                <p className="text-2xl font-bold text-blue-600 mt-2">
+              <Card className="p-4 bg-dark-card border-dark-lighter">
+                <p className="text-sm font-medium text-neutral-400">Programados</p>
+                <p className="text-2xl font-bold text-accent-blue mt-2">
                   {historyData.statistics.total_scheduled}
                 </p>
               </Card>
-              <Card className="p-4">
-                <p className="text-sm font-medium text-slate-600">Tasa de Éxito</p>
-                <p className="text-2xl font-bold text-slate-900 mt-2">
+              <Card className="p-4 bg-dark-card border-dark-lighter">
+                <p className="text-sm font-medium text-neutral-400">Tasa de Éxito</p>
+                <p className="text-2xl font-bold text-white mt-2">
                   {historyData.statistics.success_rate.toFixed(1)}%
                 </p>
               </Card>
@@ -295,8 +295,8 @@ export function NotificationsPage() {
           )}
 
           {/* History Table */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <Card className="p-6 bg-dark-card border-dark-lighter">
+            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
               <History className="w-5 h-5" />
               Historial de Notificaciones ({historyData?.total_count || 0})
             </h2>
@@ -308,54 +308,54 @@ export function NotificationsPage() {
             ) : historyData?.notifications && historyData.notifications.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-50 border-b-2 border-slate-200">
+                  <thead className="bg-dark-lighter border-b-2 border-dark-lighter">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         ID
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Asunto
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Destinatarios
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Prioridad
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Estado
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Enviado
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                         Admin
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200">
+                  <tbody className="divide-y divide-dark-lighter">
                     {historyData.notifications.map((notification) => (
-                      <tr key={notification.id} className="hover:bg-slate-50">
-                        <td className="px-4 py-3 text-sm text-slate-900">#{notification.id}</td>
+                      <tr key={notification.id} className="hover:bg-dark-lighter">
+                        <td className="px-4 py-3 text-sm text-white">#{notification.id}</td>
                         <td className="px-4 py-3">
-                          <p className="text-sm font-medium text-slate-900 max-w-md truncate">
+                          <p className="text-sm font-medium text-white max-w-md truncate">
                             {notification.subject || "-"}
                           </p>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex items-center gap-1 text-sm text-slate-600">
+                          <div className="flex items-center gap-1 text-sm text-neutral-400">
                             <Users className="w-4 h-4" />
                             {notification.recipient_count}
                           </div>
                         </td>
                         <td className="px-4 py-3">{getPriorityBadge(notification.priority)}</td>
                         <td className="px-4 py-3">{getStatusBadge(notification.status)}</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">
+                        <td className="px-4 py-3 text-sm text-neutral-400">
                           {notification.sent_at
                             ? format(parseISO(notification.sent_at), "PPp", { locale: es })
                             : "-"}
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate-600">
+                        <td className="px-4 py-3 text-sm text-neutral-400">
                           {notification.admin_email}
                         </td>
                       </tr>
@@ -365,7 +365,7 @@ export function NotificationsPage() {
               </div>
             ) : (
               <EmptyState
-                icon={<History className="w-12 h-12 text-slate-400" />}
+                icon={<History className="w-12 h-12 text-neutral-500" />}
                 title="No hay notificaciones"
                 description="No se encontraron notificaciones en el historial"
               />

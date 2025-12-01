@@ -1,1035 +1,263 @@
 # Contexto del Proyecto para Claude AI
 
-**Proyecto:** Plataforma de Sorteos/Rifas en Línea
+**Proyecto:** Dropio.club - Plataforma de AloCoins y Drops
 **Propietario:** Ing. Alonso Alpízar
 **Stack:** Go + React + PostgreSQL + Redis
-**Estado:** Documentación técnica completa (100%)
-**Skill:** sorteos-context (instalado en `/opt/.claude/skills/`)
+**URL:** https://dropio.club
+**Puerto:** 8081
 
 ---
 
-## 🎯 Propósito de este Archivo
+## Concepto del Producto
 
-Este archivo proporciona contexto rápido a Claude AI para trabajar eficientemente en el proyecto sin necesidad de leer toda la documentación cada vez.
+### AloCoins (ALO)
+**AloCoins** es la moneda digital del Club Dropio. Los usuarios compran AloCoins y los utilizan para:
+- **Drops**: Participar en sorteos exclusivos de premios
+- **Shop**: Canjear por productos exclusivos
+- **Transferir**: Enviar coins a amigos/familia
+- **Coleccionar**: Acumular para subir de nivel
 
----
+**Valor fijo:** 1 ALO = ₡1 (colón costarricense)
 
-## ⚡ SKILL: sorteos-context
+### Sistema de Niveles
+| Nivel | Rango ALO | Beneficios |
+|-------|-----------|------------|
+| Novato | 0 - 999 | Acceso básico |
+| Dropper | 1K - 9,999 | 5% descuento Shop |
+| Veterano | 10K - 49,999 | 10% + Early access |
+| Elite | 50K - 99,999 | 15% + Drops VIP |
+| Leyenda | 100K+ | 20% + NFT gratis |
 
-### 🚨 ACTIVAR SIEMPRE
-
-**IMPORTANTE:** Este proyecto tiene un skill dedicado que DEBE activarse:
-
-```bash
-# Al INICIO de CADA sesión, cargar:
-cat /opt/.claude/skills/sorteos-context/SKILL.md
-```
-
-**El skill contiene las 7 REGLAS CRÍTICAS que Claude debe respetar SIEMPRE:**
-
-1. ❌ **COLORES PROHIBIDOS** - NUNCA morado/rosa, SOLO azul/gris
-2. 🏛️ **Arquitectura Hexagonal** - domain NO importa GORM/Gin
-3. 🔒 **Locks Distribuidos** - Redis SETNX obligatorio en reservas
-4. 🔑 **Idempotencia** - Header Idempotency-Key en pagos
-5. 🖥️ **Instalación Nativa** - NO Docker, usar systemd
-6. 📝 **Naming** - snake_case Go, PascalCase React
-7. ✅ **Validación Dual** - Backend + Frontend
-
-### Cuándo Activar el Skill
-
-**SIEMPRE activar en:**
-- ✅ Inicio de sesión nueva
-- ✅ Cuando necesites contexto del proyecto
-- ✅ Antes de sugerir código de UI (colores)
-- ✅ Antes de crear nuevos archivos (estructura)
-- ✅ Antes de implementar reservas o pagos
-- ✅ Cuando no recuerdes las convenciones
-
-**Cargar referencias adicionales (bajo demanda):**
-```bash
-# Arquitectura hexagonal
-cat /opt/.claude/skills/sorteos-context/references/architecture.md
-
-# Reglas de negocio
-cat /opt/.claude/skills/sorteos-context/references/business-rules.md
-
-# Estado actual
-cat /opt/.claude/skills/sorteos-context/references/current-status.md
-```
-
-**Validar proyecto:**
-```bash
-/opt/.claude/skills/sorteos-context/scripts/validate-structure.sh
-```
+### Terminología
+- **Drop** = Sorteo/Rifa (el producto a ganar)
+- **AloCoins / ALO** = Moneda virtual para participar
+- **Participación** = Compra de boletos con AloCoins
+- **Holder** = Usuario que acumula coins
 
 ---
 
-## 📋 Información Esencial
+## Stack Técnico
 
-### Arquitectura
-
-- **Backend:** Go 1.22+ con Gin (arquitectura hexagonal)
-- **Frontend:** React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui
-- **Base de Datos:** PostgreSQL 16 (transaccional) - **INSTALACIÓN LOCAL**
-- **Cache/Locks:** Redis 7 (locks distribuidos, rate limiting) - **INSTALACIÓN LOCAL**
-- **Pagos:** Stripe (MVP) → PayPal (Fase 2)
+- **Backend:** Go 1.22+ con Gin (puerto 8081)
+- **Frontend:** React 18 + TypeScript + Vite + Tailwind CSS
+- **Base de Datos:** PostgreSQL 16 (dropio_db / dropio_user)
+- **Cache:** Redis 7 (DB 1 - separado de Sorteos)
 - **Servidor Web:** Nginx (reverse proxy + SSL)
 
-### Estructura de Carpetas
+---
+
+## Paleta de Colores - Dropio (Dark Theme)
+
+### Primary (Gold)
+```css
+--gold: #F4B942;
+--gold-light: #FFD76E;
+--gold-dark: #C9952E;
+```
+
+**Tailwind equivalentes:**
+- `amber-400` (#FBBF24) - aproximado a gold
+- `yellow-500` (#EAB308) - alternativo
+
+### Dark Theme
+```css
+--dark: #0D0D0D;           /* Background principal */
+--dark-card: #1A1A1A;      /* Cards */
+--dark-lighter: #252525;   /* Bordes */
+```
+
+### Neutrals
+```css
+--white: #FFFFFF;
+--gray: #888888;
+--gray-light: #AAAAAA;
+```
+
+### Acentos (Estados)
+```css
+--accent-green: #4ADE80;   /* Success, activo */
+--accent-blue: #60A5FA;    /* Info, disponible */
+--accent-purple: #A78BFA;  /* Special, utilizado */
+```
+
+**Tailwind:**
+- `green-400` (#4ADE80) - Success
+- `blue-400` (#60A5FA) - Info
+- `violet-400` (#A78BFA) - Special
+
+### Typography
+- **Principal:** 'Outfit' (Google Fonts)
+- **Monospace:** 'Space Mono' (valores numéricos)
+
+---
+
+## Estructura de Carpetas
 
 ```
-/opt/Sorteos/
+/opt/Dropio/
 ├── backend/
 │   ├── cmd/api/              # Entry point
 │   ├── internal/
-│   │   ├── domain/           # Entidades (User, Raffle, Reservation, Payment)
-│   │   ├── usecase/          # Casos de uso (CreateRaffle, ReserveNumbers, etc.)
-│   │   └── adapters/         # HTTP, DB, Payments, Notifier
-│   ├── pkg/                  # Logger, Config, Errors
-│   ├── migrations/           # SQL migrations
+│   │   ├── domain/           # Entidades
+│   │   ├── usecase/          # Casos de uso
+│   │   └── adapters/         # HTTP, DB, Notifier
+│   ├── templates/email/      # Plantillas de email
 │   ├── uploads/              # Archivos subidos
 │   ├── .env                  # Variables de entorno
-│   └── sorteos-api           # Binario compilado
+│   └── dropio-api            # Binario compilado
 ├── frontend/
 │   ├── src/
-│   │   ├── app/              # Router, providers
-│   │   ├── features/         # auth, raffles, checkout
-│   │   ├── components/ui/    # shadcn/ui components
+│   │   ├── features/         # auth, drops, checkout
+│   │   ├── components/       # UI components
 │   │   └── lib/              # Utilidades
-│   ├── dist/                 # Build de producción (servido por backend)
-│   └── public/
-└── Documentacion/            # 10 documentos técnicos (181 KB)
+│   └── dist/                 # Build de producción
+└── Documentacion/
 ```
 
 ---
 
-## 🚨 RESTRICCIONES OBLIGATORIAS
-
-### 1. Colores (CRÍTICO)
-
-**⚠️ PROHIBIDO ABSOLUTAMENTE:**
-- Morado, púrpura, violeta (#8B5CF6, #A855F7, etc.)
-- Rosa, pink, magenta (#EC4899, #F472B6, etc.)
-- Fucsia (#D946EF, #E879F9)
-- Gradientes arcoíris o neón
-
-**✅ PERMITIDO:**
-- **Primary:** Azul #3B82F6 (confianza, profesionalismo)
-- **Secondary:** Slate #64748B (elegancia, corporativo)
-- **Neutral:** Grises #171717 a #FAFAFA
-- **Success:** Verde #10B981 (solo confirmaciones)
-- **Warning:** Ámbar #F59E0B (solo advertencias)
-- **Error:** Rojo #EF4444 (solo errores)
-
-**Referencias:** Stripe.com, Linear.app, Vercel.com, Coinbase.com
-
-Ver: `Documentacion/estandar_visual.md` y `Documentacion/.paleta-visual-aprobada.md`
-
-### 2. Seguridad
-
-- **JWT:** Access token 15 min, Refresh token 7 días
-- **Passwords:** bcrypt cost 12
-- **Rate Limiting:** Redis (5-60 req/min según endpoint)
-- **NUNCA:** Almacenar números de tarjeta (usar tokens de Stripe)
-- **PCI DSS:** Delegado a Stripe
-- **GDPR:** Derecho al olvido implementado
-
-### 3. Concurrencia (CRÍTICO)
-
-**Problema:** Doble venta de números de sorteo
-
-**Solución obligatoria:**
-1. Lock distribuido en Redis (SETNX con TTL)
-2. Verificación en PostgreSQL (transacción)
-3. Reserva temporal (5 min)
-
-```go
-// Ejemplo de lock distribuido
-lockKey := fmt.Sprintf("lock:raffle:%d:num:%s", raffleID, number)
-acquired := rdb.SetNX(ctx, lockKey, userID, 30*time.Second)
-if !acquired {
-    return errors.New("número ya reservado")
-}
-defer rdb.Del(ctx, lockKey)
-```
-
-Ver: `Documentacion/modulos.md` sección "Reserva y Compra"
-
----
-
-## 📚 Documentación Disponible
-
-1. **arquitecturaIdeaGeneral.md** - Visión general, concurrencia, flujos
-2. **stack_tecnico.md** - Tecnologías, dependencias, versiones
-3. **roadmap.md** - Fases de desarrollo (MVP → Fase 3)
-4. **modulos.md** - 7 módulos con código y casos de uso
-5. **estandar_visual.md** - Design system (Tailwind + shadcn/ui)
-6. **seguridad.md** - JWT, RBAC, rate limiting, OWASP Top 10
-7. **pagos_integraciones.md** - Stripe, webhooks, idempotencia
-8. **parametrizacion_reglas.md** - Parámetros dinámicos (80+)
-9. **operacion_backoffice.md** - Dashboard admin, liquidaciones
-10. **terminos_y_condiciones_impacto.md** - GDPR, PCI DSS
-
----
-
-## 🔑 Entidades Principales
-
-### User
-```go
-type User struct {
-    ID           int64
-    Email        string
-    Phone        string
-    PasswordHash string
-    Role         UserRole // user, admin
-    KYCLevel     KYCLevel // none, email_verified, phone_verified, full_kyc
-    Status       UserStatus
-}
-```
-
-### Raffle
-```go
-type Raffle struct {
-    ID            int64
-    UserID        int64 // owner
-    Title         string
-    Status        RaffleStatus // draft, active, suspended, completed
-    DrawDate      time.Time
-    PricePerNumber decimal.Decimal
-    TotalNumbers  int
-    SoldCount     int
-}
-```
-
-### Reservation
-```go
-type Reservation struct {
-    ID             int64
-    RaffleID       int64
-    UserID         int64
-    Numbers        []string
-    Status         ReservationStatus // pending, confirmed, expired
-    IdempotencyKey string
-    ExpiresAt      time.Time
-}
-```
-
-### Payment
-```go
-type Payment struct {
-    ID             int64
-    ReservationID  int64
-    Provider       string // "stripe"
-    Amount         decimal.Decimal
-    Status         PaymentStatus
-    ExternalID     string
-    IdempotencyKey string
-}
-```
-
----
-
-## 🛠️ Comandos Útiles - INSTALACIÓN LOCAL
+## Comandos Esenciales
 
 ### Backend (Go)
 ```bash
-cd /opt/Sorteos/backend
+cd /opt/Dropio/backend
 
-# Compilar binario
-go build -o sorteos-api ./cmd/api
+# Compilar
+go build -o dropio-api ./cmd/api
 
 # Reiniciar servicio
-systemctl restart sorteos-api
+sudo systemctl restart dropio-api
 
 # Ver logs
-journalctl -xeu sorteos-api -f
+sudo journalctl -u dropio-api -f
 
 # Ver estado
-systemctl status sorteos-api
+sudo systemctl status dropio-api
 ```
 
 ### Frontend (React)
 ```bash
-cd /opt/Sorteos/frontend
-
-# Desarrollo local
-npm run dev           # Puerto 5173
+cd /opt/Dropio/frontend
 
 # Build producción (10 segundos)
-npm run build         # Output: dist/
-
-# El backend ya sirve automáticamente desde dist/
-```
-
-### Servicios del Sistema
-```bash
-# PostgreSQL 16
-systemctl status postgresql
-psql -U sorteos_user -d sorteos_db
-
-# Redis 7
-systemctl status redis-server
-redis-cli ping
-
-# Backend API
-systemctl status sorteos-api
-systemctl restart sorteos-api
-```
-
-### Nginx (NO TOCAR - Ya configurado)
-```bash
-# Ver configuración
-cat /etc/nginx/sites-available/sorteos.club
-
-# Recargar (solo si es necesario)
-nginx -t && systemctl reload nginx
-```
-
----
-
-## 🎨 Guía Rápida de UI
-
-### Componentes Base (shadcn/ui)
-
-```tsx
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-
-// Button primary (azul)
-<Button variant="default">Comprar Boleto</Button>
-
-// Button secondary (slate/gris)
-<Button variant="secondary">Ver Detalles</Button>
-
-// Card profesional
-<Card className="border-neutral-200">
-  <CardHeader>
-    <CardTitle className="text-neutral-900">Título</CardTitle>
-  </CardHeader>
-  <CardContent>
-    Contenido
-  </CardContent>
-</Card>
-
-// Badge de estado
-<Badge className="bg-primary-100 text-primary-700">
-  Activo
-</Badge>
-```
-
-### Estados de Color
-
-```tsx
-// Success (verde)
-<Alert className="bg-success/10 border-success/20 text-success">
-  ✓ Operación exitosa
-</Alert>
-
-// Warning (ámbar)
-<Alert className="bg-warning/10 border-warning/20 text-warning">
-  ⚠ Advertencia
-</Alert>
-
-// Error (rojo)
-<Alert className="bg-error/10 border-error/20 text-error">
-  ✗ Error crítico
-</Alert>
-```
-
----
-
-## 🔐 Endpoints Críticos
-
-### Auth
-- `POST /auth/register` - Registro con verificación email/SMS
-- `POST /auth/login` - Login con JWT
-- `POST /auth/refresh` - Refresh token
-
-### Raffles
-- `POST /raffles` - Crear sorteo (requiere KYC >= email_verified)
-- `GET /raffles` - Listar (paginado, filtros)
-- `GET /raffles/:id` - Detalle con números disponibles
-- `POST /raffles/:id/publish` - Publicar (solo owner)
-
-### Reservations (CRÍTICO - Alta concurrencia)
-- `POST /raffles/:id/reservations` - **Reservar números con lock distribuido**
-- `GET /reservations/:id` - Ver reserva
-- `DELETE /reservations/:id` - Cancelar
-
-### Payments
-- `POST /payments` - Crear pago (idempotente con header `Idempotency-Key`)
-- `POST /webhooks/stripe` - Webhook de Stripe (verificar firma)
-
-### Admin
-- `PATCH /admin/raffles/:id/suspend` - Suspender sorteo
-- `PATCH /admin/users/:id/kyc` - Verificar KYC
-- `POST /admin/settlements` - Crear liquidación
-
----
-
-## ⚡ Flujos Críticos
-
-### 1. Reserva y Compra de Números
-
-```
-Usuario → Selecciona números
-       → POST /raffles/:id/reservations
-          ├─ Lock Redis (SETNX) - 30s
-          ├─ Verificar en DB (transacción)
-          ├─ Crear reserva (expires_at = now + 5min)
-          └─ Liberar lock
-       → Frontend muestra timer 5 min
-       → POST /payments (con Idempotency-Key)
-          ├─ Stripe.js tokeniza tarjeta
-          ├─ Backend crea PaymentIntent
-          └─ Webhook confirma → marca números como sold
-```
-
-### 2. Publicación de Sorteo
-
-```
-Usuario → Crea sorteo (draft)
-       → Sube imágenes
-       → POST /raffles/:id/publish
-          ├─ Validar parámetros (ver parametrizacion_reglas.md)
-          ├─ Verificar KYC >= email_verified
-          ├─ Validar max sorteos activos (default: 10)
-          ├─ Generar números (00-99 o configurable)
-          └─ status = active
-```
-
-### 3. Selección de Ganador
-
-```
-Cron job (diario a las 00:00)
-  → Consultar Lotería Nacional CR API
-  → Extraer número ganador (últimos 2 dígitos)
-  → Buscar número en raffle_numbers
-  → Si vendido:
-      ├─ Actualizar raffle.winner_id
-      ├─ Notificar ganador (email/SMS)
-      └─ Crear settlement (calcular neto)
-    Si no vendido:
-      └─ raffle.winner_id = null
-```
-
----
-
-## 🧪 Tests Críticos
-
-### Backend
-```bash
-# Test de concurrencia (reservas)
-go test -v -race ./internal/usecase -run TestReserveNumbers_Concurrent
-
-# Test de idempotencia (pagos)
-go test -v ./internal/usecase -run TestCreatePayment_Idempotent
-```
-
-### Frontend
-```bash
-# Tests de componentes
-npm run test
-
-# Tests e2e (Playwright/Cypress)
-npm run test:e2e
-```
-
-### Pruebas de Carga
-```bash
-# 1000 usuarios concurrentes comprando
-k6 run scripts/load-test-reservations.js
-```
-
-**Criterio de éxito:** 0% de doble venta en 1000 requests concurrentes
-
----
-
-## 📊 Métricas Clave
-
-### Sistema
-- `http_requests_total{method, path, status}` - Total requests
-- `reservation_duration_seconds` - Latencia de reservas
-- `payment_success_rate` - Tasa de éxito de pagos
-- `active_reservations_gauge` - Reservas activas
-
-### Negocio
-- MAU (Monthly Active Users)
-- Tasa de conversión reserva → pago (objetivo: 70%)
-- Sorteos completados / mes
-- Revenue total / comisiones
-
----
-
-## ✅ Estado Actual del Sistema (2025-11-13)
-
-### Infraestructura - MIGRACIÓN COMPLETADA: Docker → Local
-
-**Antes (Docker):**
-- 6 paquetes Docker + dependencias (464 MB overhead)
-- Rebuild frontend: 3+ minutos
-- Debugging complejo (logs en contenedores, exec, etc.)
-
-**Ahora (Instalación Local):**
-- ✅ PostgreSQL 16 nativo (puerto 5432)
-- ✅ Redis 7 nativo (puerto 6379)
-- ✅ Backend Go como servicio systemd (puerto 8080)
-- ✅ Frontend servido por backend desde `frontend/dist/`
-- ✅ Nginx como reverse proxy con SSL
-- ✅ Rebuild frontend: **10 segundos** (`npm run build`)
-- ✅ Logs centralizados en journalctl
-- ✅ Debugging directo con herramientas estándar
-
-### Servicios Activos
-
-```bash
-# Verificación de servicios
-systemctl is-active postgresql redis-server sorteos-api nginx
-# postgresql: active
-# redis-server: active
-# sorteos-api: active
-# nginx: active
-```
-
-### Configuración de Servicios
-
-**PostgreSQL:**
-- Host: localhost:5432
-- Database: sorteos_db
-- User: sorteos_user
-- Ubicación: /var/lib/postgresql/16/main
-
-**Redis:**
-- Host: localhost:6379
-- Sin password
-- Persistence: RDB + AOF
-
-**Backend API (systemd):**
-- Servicio: sorteos-api.service
-- WorkingDirectory: /opt/Sorteos
-- Binario: /opt/Sorteos/backend/sorteos-api
-- Puerto: 8080
-- Auto-start: enabled
-
-**Nginx:**
-- Proxy: https://sorteos.club → localhost:8080
-- SSL: Configurado (certbot)
-- Static files: Servidos por backend Go
-
----
-
-## 🔧 Flujo de Trabajo de Desarrollo
-
-### Cambios en Backend (Go)
-
-```bash
-cd /opt/Sorteos/backend
-
-# 1. Hacer cambios en archivos .go
-
-# 2. Compilar (verifica errores)
-go build -o sorteos-api ./cmd/api
-
-# 3. Reiniciar servicio
-systemctl restart sorteos-api
-
-# 4. Verificar logs
-journalctl -xeu sorteos-api -f
-
-# 5. Health check
-curl http://localhost:8080/health
-```
-
-**Tiempo total:** ~5-10 segundos
-
-### Cambios en Frontend (React/TypeScript)
-
-```bash
-cd /opt/Sorteos/frontend
-
-# 1. Hacer cambios en archivos .tsx/.ts
-
-# 2. Build (solo 10 segundos!)
 npm run build
 
-# 3. El backend ya está sirviendo el nuevo build
-# No se requiere reiniciar nada
-
-# 4. Verificar
-curl -I https://sorteos.club/
+# El backend sirve automáticamente desde dist/
 ```
 
-**Tiempo total:** ~10 segundos (vs 3+ minutos con Docker)
-
-### Cambios en Base de Datos
-
+### Deploy Completo
 ```bash
-# Crear nueva migración
-cd /opt/Sorteos/backend/migrations
-touch 010_nueva_migracion.up.sql
-touch 010_nueva_migracion.down.sql
+# Frontend
+cd /opt/Dropio/frontend && npm run build
 
-# Aplicar migración (si usas migrate CLI)
-migrate -path ./migrations -database "postgresql://sorteos_user:sorteos_password@localhost:5432/sorteos_db?sslmode=disable" up
-
-# O aplicar manualmente
-psql -U sorteos_user -d sorteos_db -f migrations/010_nueva_migracion.up.sql
-```
-
-### Verificaciones Post-Deploy
-
-```bash
-# 1. Servicios corriendo
-systemctl is-active postgresql redis-server sorteos-api nginx
-
-# 2. Health checks
-curl http://localhost:8080/health
-curl http://localhost:8080/api/v1/ping
-
-# 3. Frontend
-curl -I https://sorteos.club/
-
-# 4. API pública
-curl https://sorteos.club/api/v1/ping
-
-# 5. Logs sin errores
-journalctl -xeu sorteos-api --since "5 minutes ago"
+# Backend
+cd /opt/Dropio/backend && \
+go build -o dropio-api ./cmd/api && \
+sudo systemctl restart dropio-api
 ```
 
 ---
 
-## 🔍 Debugging y Troubleshooting
+## Configuración
 
-### Ver Logs
-
-```bash
-# Backend API
-journalctl -xeu sorteos-api -f
-journalctl -xeu sorteos-api --since "1 hour ago"
-
-# PostgreSQL
-journalctl -xeu postgresql -f
-
-# Redis
-journalctl -xeu redis-server -f
-
-# Nginx
-tail -f /var/log/nginx/error.log
-tail -f /var/log/nginx/access.log
-```
-
-### Conectar a Bases de Datos
+### Variables de Entorno (.env)
 
 ```bash
-# PostgreSQL
-psql -U sorteos_user -d sorteos_db
-
-# Redis
-redis-cli
-> PING
-> KEYS *
-> GET user:session:12345
-```
-
-### Verificar Puertos
-
-```bash
-# Ver qué está escuchando en cada puerto
-ss -tlnp | grep -E "5432|6379|8080|80|443"
-
-# PostgreSQL (5432)
-# Redis (6379)
-# Backend API (8080)
-# Nginx (80, 443)
-```
-
-### Reiniciar Todo (Emergency)
-
-```bash
-# Reiniciar servicios en orden
-systemctl restart postgresql
-systemctl restart redis-server
-systemctl restart sorteos-api
-systemctl restart nginx
-
-# Verificar estado
-systemctl status postgresql redis-server sorteos-api nginx
-```
-
----
-
-## 📝 Variables de Entorno
-
-Archivo: `/opt/Sorteos/backend/.env`
-
-**Críticas:**
-```bash
-# Base de Datos
-CONFIG_DB_HOST=localhost      # Era "postgres" en Docker
-CONFIG_DB_PORT=5432
-CONFIG_DB_USER=sorteos_user
-CONFIG_DB_PASSWORD=sorteos_password
-CONFIG_DB_NAME=sorteos_db
-
-# Redis
-CONFIG_REDIS_HOST=localhost   # Era "redis" en Docker
-CONFIG_REDIS_PORT=6379
-CONFIG_REDIS_PASSWORD=
-
-# JWT
-CONFIG_JWT_SECRET=change-this-to-a-secure-random-string-min-32-chars
-CONFIG_JWT_ACCESS_TOKEN_EXPIRY=15m
-CONFIG_JWT_REFRESH_TOKEN_EXPIRY=168h
-
 # Server
-CONFIG_ENV=development
-CONFIG_PORT=8080
+CONFIG_PORT=8081
+CONFIG_SERVER_PORT=8081
 
-# Uploads
-CONFIG_STORAGE_PATH=/opt/Sorteos/backend/uploads  # Ruta absoluta
+# Database
+CONFIG_DB_HOST=localhost
+CONFIG_DB_PORT=5432
+CONFIG_DB_USER=dropio_user
+CONFIG_DB_PASSWORD=dropio_password
+CONFIG_DB_NAME=dropio_db
+
+# Redis (DB 1 - separado de Sorteos)
+CONFIG_REDIS_HOST=localhost
+CONFIG_REDIS_PORT=6379
+CONFIG_REDIS_DB=1
+
+# Email
+CONFIG_EMAIL_PROVIDER=smtp
+CONFIG_SMTP_HOST=mail.dropio.club
+CONFIG_SMTP_PORT=587
+CONFIG_SMTP_USERNAME=noreply@dropio.club
+CONFIG_SMTP_FROM_EMAIL=noreply@dropio.club
+CONFIG_SMTP_FROM_NAME=Dropio.club
+
+# Frontend URL
+CONFIG_FRONTEND_URL=https://dropio.club
 ```
+
+### Servicios
+
+| Servicio | Puerto | Estado |
+|----------|--------|--------|
+| dropio-api | 8081 | systemd |
+| PostgreSQL | 5432 | dropio_db |
+| Redis | 6379 | DB 1 |
+| Nginx | 443 | SSL proxy |
 
 ---
 
-## 📦 Arquitectura de Compilación y Archivos Estáticos
+## Verificaciones
 
-### Estructura de Archivos (Actualizada 2025-11-21)
-
-```
-/opt/Sorteos/
-├── backend/
-│   ├── sorteos-api              # Binario compilado (NO en git)
-│   ├── bin/
-│   │   └── sorteos-api          # Binario generado por make build
-│   ├── uploads/                 # ⭐ TODAS las imágenes aquí
-│   │   └── raffles/
-│   │       └── {raffle_id}/
-│   │           ├── original/    # Imágenes originales
-│   │           ├── large/       # 800x800 WebP
-│   │           ├── medium/      # 400x400 WebP
-│   │           └── thumbnail/   # 150x150 WebP
-│   ├── cmd/api/
-│   │   └── main.go              # Entry point
-│   └── .env                     # CONFIG_STORAGE_PATH=/opt/Sorteos/backend/uploads
-│
-├── frontend/
-│   ├── dist/                    # ⭐ Build de producción (servido por backend)
-│   │   ├── index.html
-│   │   └── assets/
-│   │       ├── index-{hash}.js
-│   │       └── index-{hash}.css
-│   └── src/
-│
-└── Documentacion/
-```
-
-### Flujo de Compilación y Despliegue
-
-#### 1. Frontend (React + Vite)
-
-**Comando:**
 ```bash
-cd /opt/Sorteos/frontend
-npm run build
+# Servicios activos
+systemctl is-active dropio-api postgresql redis-server nginx
+
+# Health check
+curl http://localhost:8081/health
+curl http://localhost:8081/api/v1/ping
+
+# Frontend
+curl -I https://dropio.club/
+
+# API pública
+curl https://dropio.club/api/v1/ping
+
+# Logs recientes
+sudo journalctl -u dropio-api --since "5 minutes ago"
 ```
 
-**Resultado:**
-- ✅ Build generado en `/opt/Sorteos/frontend/dist/` (10 segundos)
-- ✅ Backend **automáticamente** sirve los archivos nuevos
-- ✅ **NO requiere** reiniciar servicios
-- ✅ **NO requiere** reload de Nginx
+---
 
-**Configuración en Backend:**
-```go
-// cmd/api/main.go
-router.Static("/assets", "./frontend/dist/assets")
-router.StaticFile("/favicon.ico", "./frontend/dist/favicon.ico")
+## Diferencias con Sorteos.club
 
-// SPA support: todas las rutas no-API sirven index.html
-router.NoRoute(func(c *gin.Context) {
-    if !strings.HasPrefix(c.Request.URL.Path, "/api") {
-        c.File("./frontend/dist/index.html")
-    }
-})
-```
+| Aspecto | Sorteos.club | Dropio.club |
+|---------|--------------|-------------|
+| Concepto | Rifas directas | AloCoins + Drops |
+| Puerto | 8080 | 8081 |
+| Servicio | sorteos-api | dropio-api |
+| Base de datos | sorteos_db | dropio_db |
+| Usuario DB | sorteos_user | dropio_user |
+| Redis DB | 0 | 1 |
+| Theme | Light (Blue) | Dark (Gold) |
+| Moneda | Colones directo | AloCoins (1:1 ₡) |
+| Email | @sorteos.club | @dropio.club |
 
-**Ventaja:**
-- `npm run build` → Los cambios se reflejan inmediatamente
-- Sin Docker, sin Nginx reload, sin complejidad
+---
 
-#### 2. Backend (Go)
+## Debugging
 
-**Comando:**
 ```bash
-cd /opt/Sorteos/backend
-make build
-sudo systemctl restart sorteos-api
+# Ver logs backend
+sudo journalctl -u dropio-api -f
+
+# Conectar a PostgreSQL
+psql -U dropio_user -d dropio_db
+
+# Conectar a Redis (DB 1)
+redis-cli -n 1
+
+# Ver puertos
+ss -tlnp | grep -E "8081|5432|6379"
 ```
-
-**Makefile:**
-```makefile
-build: ## Compilar aplicación
-	@echo "🔨 Compilando sorteos-api..."
-	go build -o bin/sorteos-api ./cmd/api
-	@echo "✅ Binario creado en bin/sorteos-api"
-```
-
-**Resultado:**
-- ✅ Binario generado en `bin/sorteos-api`
-- ✅ Copiar manualmente a raíz: `cp bin/sorteos-api sorteos-api`
-- ✅ Reiniciar servicio: `sudo systemctl restart sorteos-api`
-
-**Servicio systemd:**
-```ini
-# /etc/systemd/system/sorteos-api.service
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/opt/Sorteos
-EnvironmentFile=/opt/Sorteos/backend/.env
-ExecStart=/opt/Sorteos/backend/sorteos-api
-Restart=always
-```
-
-#### 3. Imágenes (Uploads)
-
-**URLs Relativas (Solución Multi-Dominio):**
-
-**Problema anterior:**
-- URLs absolutas: `http://localhost:8080/uploads/raffles/4/thumbnail/imagen.webp`
-- ❌ No funcionaba en otros dominios/dispositivos
-
-**Solución implementada:**
-```go
-// backend/internal/infrastructure/image/processor.go:156
-// ANTES:
-url := fmt.Sprintf("%s/uploads/raffles/%d/%s/%s", p.baseURL, raffleID, variant, filename)
-
-// DESPUÉS:
-url := fmt.Sprintf("/uploads/raffles/%d/%s/%s", raffleID, variant, filename)
-```
-
-**Beneficios:**
-- ✅ Funciona en cualquier dominio (sorteos.club, localhost, IP, etc.)
-- ✅ Respeta automáticamente el protocolo (HTTP/HTTPS)
-- ✅ Compatible con CDN o proxies reversos
-- ✅ Sin configuración de baseURL necesaria
-
-**Configuración de Nginx:**
-```nginx
-# /etc/nginx/sites-available/sorteos
-location /uploads/ {
-    alias /opt/Sorteos/backend/uploads/;
-    access_log off;
-
-    # Cache agresivo para imágenes
-    expires 1y;
-    add_header Cache-Control "public, immutable";
-
-    # CORS para imágenes
-    add_header Access-Control-Allow-Origin "*";
-
-    # Solo archivos de imagen
-    location ~ \.(jpg|jpeg|png|gif|webp|ico)$ {
-        try_files $uri =404;
-    }
-}
-```
-
-**Ejemplo de URLs generadas:**
-```
-/uploads/raffles/5/original/74b54a03-4348-40fc-bc8f-9e64cc3eb51b.jpg
-/uploads/raffles/5/large/74b54a03-4348-40fc-bc8f-9e64cc3eb51b.webp
-/uploads/raffles/5/medium/74b54a03-4348-40fc-bc8f-9e64cc3eb51b.webp
-/uploads/raffles/5/thumbnail/74b54a03-4348-40fc-bc8f-9e64cc3eb51b.webp
-```
-
-**Migración de URLs antiguas:**
-```sql
--- backend/migrations/fix_image_urls.sql
-UPDATE raffle_images
-SET
-    url_original = REPLACE(url_original, 'http://localhost:8080', ''),
-    url_large = REPLACE(url_large, 'http://localhost:8080', ''),
-    url_medium = REPLACE(url_medium, 'http://localhost:8080', ''),
-    url_thumbnail = REPLACE(url_thumbnail, 'http://localhost:8080', '');
-```
-
-### Configuración de Nginx (Resumen)
-
-**Ubicación:** `/etc/nginx/sites-available/sorteos`
-
-**Responsabilidades:**
-1. **Uploads:** Sirve desde `/opt/Sorteos/backend/uploads/`
-2. **Proxy:** Redirige todo lo demás al backend (localhost:8080)
-3. **SSL:** Terminación SSL con Let's Encrypt
-4. **HTTPS:** Fuerza redirect de HTTP → HTTPS
-
-**Regla importante:**
-```nginx
-# Frontend y API: Proxy al backend
-location / {
-    proxy_pass http://localhost:8080;
-    # Headers para WebSockets, HTTPS, etc.
-}
-
-# Uploads: Servir archivos estáticos directamente
-location /uploads/ {
-    alias /opt/Sorteos/backend/uploads/;
-}
-```
-
-### Workflow de Desarrollo Simplificado
-
-#### Cambio en Frontend:
-```bash
-cd /opt/Sorteos/frontend
-# Editar archivos en src/
-npm run build        # 10 segundos
-# ✅ Listo! Ya está publicado
-```
-
-#### Cambio en Backend:
-```bash
-cd /opt/Sorteos/backend
-# Editar archivos .go
-make build
-cp bin/sorteos-api sorteos-api
-sudo systemctl restart sorteos-api
-# ✅ Listo!
-```
-
-#### Subir imagen a rifa:
-```bash
-# Desde la UI de admin:
-1. Crear/editar rifa
-2. Subir imagen
-3. Se guarda en: /opt/Sorteos/backend/uploads/raffles/{id}/
-4. URL generada: /uploads/raffles/{id}/thumbnail/...
-5. ✅ Accesible desde cualquier dispositivo
-```
-
-### Ventajas de esta Arquitectura
-
-1. **Simplicidad:**
-   - Sin Docker
-   - Sin builds complejos
-   - Sin múltiples capas de proxy
-
-2. **Velocidad:**
-   - Frontend build: 10 segundos (vs 3+ minutos con Docker)
-   - Backend build: 5 segundos
-   - Hot reload no necesario en producción
-
-3. **Debugging:**
-   - Logs centralizados: `journalctl -xeu sorteos-api`
-   - Acceso directo a archivos
-   - Sin necesidad de `docker exec`
-
-4. **Portabilidad:**
-   - URLs relativas funcionan en cualquier entorno
-   - Fácil migración a CDN (solo cambiar Nginx)
-   - Compatible con load balancers
 
 ---
 
-## 🆘 En Caso de Duda
-
-1. **Colores:** Si no es azul/gris/verde/ámbar/rojo → NO USAR
-2. **Concurrencia:** Siempre usar locks de Redis para reservas
-3. **Pagos:** Siempre usar Idempotency-Key
-4. **Seguridad:** Rate limiting en endpoints sensibles
-5. **GDPR:** Nunca eliminar físicamente, siempre anonimizar
-
-**Consultar:**
-- `Documentacion/` (10 documentos con toda la info)
-- `README.md` (setup instructions)
-- `.paleta-visual-aprobada.md` (guía rápida de colores)
-
----
-
-## 🚀 Próximos Pasos
-
-### Sprint Actual: Sistema de Pagos Completo
-
-1. **Backend:**
-   - Integración completa de Stripe
-   - Integración de PayPal
-   - Webhooks con verificación de firma
-   - Tests de concurrencia
-
-2. **Frontend:**
-   - Checkout flow completo
-   - Integración Stripe Elements
-   - Manejo de estados de pago
-   - Recovery de pagos fallidos
-
-Ver: `Documentacion/roadmap.md` para detalles completos
-
----
-
-## 🔄 Actualizaciones de este Archivo
-
-Cuando agregues features importantes:
-1. Actualizar sección de Entidades (si hay nuevas)
-2. Actualizar Endpoints Críticos
-3. Actualizar Flujos Críticos
-4. Mantener sincronizado con documentación principal
-
----
-
-## 📝 Resumen Ejecutivo
-
-**Migración Docker → Local (2025-11-13):**
-- ✅ PostgreSQL 16 instalado y configurado localmente
-- ✅ Redis 7 instalado y configurado localmente
-- ✅ Backend Go como servicio systemd (sorteos-api.service)
-- ✅ Docker completamente eliminado (464 MB liberados)
-- ✅ Rebuild frontend: 3+ min → 10 segundos
-- ✅ Debugging simplificado con journalctl
-- ✅ Stack nativo, rápido y mantenible
-
-**Stack Actual:**
-- Backend: Go 1.22 (binario nativo)
-- Frontend: React 18 + Vite (servido por Go)
-- DB: PostgreSQL 16 (systemd)
-- Cache: Redis 7 (systemd)
-- Proxy: Nginx + SSL
-
-**URLs Activas:**
-- Frontend: https://sorteos.club
-- API: https://sorteos.club/api/v1/
-- Health: https://sorteos.club/health
-
----
-
-## 🚨 RECORDATORIO FINAL: ACTIVAR SKILL
-
-```
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃  ⚠️  AL INICIO DE CADA SESIÓN, EJECUTAR:                      ┃
-┃                                                                ┃
-┃  cat /opt/.claude/skills/sorteos-context/SKILL.md             ┃
-┃                                                                ┃
-┃  ✅ Esto carga las 7 REGLAS CRÍTICAS del proyecto             ┃
-┃  ✅ Evita errores comunes (colores, arquitectura, locks)      ┃
-┃  ✅ Mantiene consistencia en el código                        ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-```
-
-**TOP 3 Reglas Más Violadas:**
-1. 🎨 **Colores:** Claude sugiere morado/rosa → Debe ser azul/gris
-2. 🏛️ **Imports:** domain/ importa GORM/Gin → Prohibido
-3. 🔒 **Locks:** Reservas sin Redis SETNX → Obligatorio
-
-**Documentación Completa del Skill:**
-- `/opt/.claude/skills/INSTALACION_SKILL.md` - Guía completa
-- `/opt/Sorteos/SKILL_QUICK_REFERENCE.md` - Referencia rápida
-
----
-
-**Última actualización:** 2025-11-21 (Arquitectura de archivos estáticos documentada)
-**Versión:** 2.2 - URLs relativas + Workflow simplificado
-**Contacto:** Ing. Alonso Alpízar
-**Despliegue:** https://sorteos.club
+**Última actualización:** 2025-11-30
+**Versión:** 2.0 (AloCoins)
+**URL:** https://dropio.club

@@ -2,8 +2,6 @@ import { DollarSign, TrendingUp, Percent, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useEarnings } from "../hooks/useWallet";
-import { useUserMode } from "@/contexts/UserModeContext";
-import { cn } from "@/lib/utils";
 
 // Helper para formatear CRC
 function formatCRC(amount: number | string): string {
@@ -18,12 +16,10 @@ function formatCRC(amount: number | string): string {
 
 export const Earnings = () => {
   const { data, isLoading } = useEarnings();
-  const { mode } = useUserMode();
-  const isOrganizer = mode === 'organizer';
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
         <div className="flex items-center justify-center">
           <LoadingSpinner />
         </div>
@@ -39,17 +35,14 @@ export const Earnings = () => {
   return (
     <div className="space-y-6">
       {/* Info alert */}
-      <div className={cn(
-        "rounded-lg p-4 flex items-start gap-3 border",
-        isOrganizer ? "bg-teal-50 border-teal-200" : "bg-blue-50 border-blue-200"
-      )}>
-        <AlertCircle className={cn("w-5 h-5 flex-shrink-0 mt-0.5", isOrganizer ? "text-teal-600" : "text-blue-600")} />
-        <div className={cn("text-sm", isOrganizer ? "text-teal-900" : "text-blue-900")}>
-          <p className="font-medium mb-1">¿Cómo funcionan las ganancias?</p>
+      <div className="rounded-lg p-4 flex items-start gap-3 border bg-gold/10 border-gold/30">
+        <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-gold" />
+        <div className="text-sm text-gold/90">
+          <p className="font-medium mb-1 text-gold">¿Cómo funcionan las ganancias?</p>
           <p>
-            Aquí puedes ver las <strong>ganancias de tus sorteos completados</strong>. El monto mostrado es el
+            Aquí puedes ver las <strong>ganancias de tus Drops completados</strong>. El monto mostrado es el
             total recolectado menos la comisión de la plataforma. Las ganancias se depositan automáticamente en
-            tu billetera cuando el sorteo finaliza.
+            tu billetera cuando el Drop finaliza.
           </p>
         </div>
       </div>
@@ -57,62 +50,62 @@ export const Earnings = () => {
       {/* Resumen de ganancias */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Total recolectado */}
-        <Card className="p-6">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-600">Total Recolectado</span>
-            <DollarSign className={cn("w-5 h-5", isOrganizer ? "text-teal-600" : "text-blue-600")} />
+            <span className="text-sm font-medium text-neutral-400">Total Recolectado</span>
+            <DollarSign className="w-5 h-5 text-gold" />
           </div>
-          <p className="text-2xl font-bold text-slate-900">{formatCRC(totalCollected)}</p>
-          <p className="text-xs text-slate-500 mt-1">
-            De {completedRafflesCount} sorteo{completedRafflesCount !== 1 ? "s" : ""} completado
+          <p className="text-2xl font-bold text-white">{formatCRC(totalCollected)}</p>
+          <p className="text-xs text-neutral-500 mt-1">
+            De {completedRafflesCount} Drop{completedRafflesCount !== 1 ? "s" : ""} completado
             {completedRafflesCount !== 1 ? "s" : ""}
           </p>
         </Card>
 
         {/* Comisión de plataforma */}
-        <Card className="p-6 bg-orange-50 border-orange-200">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-orange-700">Comisión Plataforma</span>
-            <Percent className="w-5 h-5 text-orange-600" />
+            <span className="text-sm font-medium text-neutral-400">Comisión Plataforma</span>
+            <Percent className="w-5 h-5 text-red-400" />
           </div>
-          <p className="text-2xl font-bold text-orange-900">-{formatCRC(platformCommission)}</p>
-          <p className="text-xs text-orange-600 mt-1">Según tarifas de plataforma</p>
+          <p className="text-2xl font-bold text-red-400">-{formatCRC(platformCommission)}</p>
+          <p className="text-xs text-neutral-500 mt-1">Según tarifas de plataforma</p>
         </Card>
 
         {/* Ganancias netas */}
-        <Card className="p-6 bg-green-50 border-green-200">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-green-700">Ganancias Netas</span>
-            <TrendingUp className="w-5 h-5 text-green-600" />
+            <span className="text-sm font-medium text-neutral-400">Ganancias Netas</span>
+            <TrendingUp className="w-5 h-5 text-accent-green" />
           </div>
-          <p className="text-2xl font-bold text-green-900">{formatCRC(netEarnings)}</p>
-          <p className="text-xs text-green-600 mt-1">Disponible en tu billetera</p>
+          <p className="text-2xl font-bold text-accent-green">{formatCRC(netEarnings)}</p>
+          <p className="text-xs text-neutral-500 mt-1">Disponible en tu billetera</p>
         </Card>
       </div>
 
       {/* Desglose por sorteo */}
-      <Card className="p-6">
-        <h3 className="font-semibold text-slate-900 mb-4">Desglose por Sorteo</h3>
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <h3 className="font-semibold text-white mb-4">Desglose por Drop</h3>
 
         {!data?.raffles || data.raffles.length === 0 ? (
           <div className="text-center py-8">
-            <DollarSign className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 font-medium">No tienes sorteos completados aún</p>
-            <p className="text-sm text-slate-400 mt-1">
-              Cuando tus sorteos finalicen, verás aquí el desglose de tus ganancias
+            <DollarSign className="w-12 h-12 text-neutral-600 mx-auto mb-3" />
+            <p className="text-neutral-400 font-medium">No tienes Drops completados aún</p>
+            <p className="text-sm text-neutral-500 mt-1">
+              Cuando tus Drops finalicen, verás aquí el desglose de tus ganancias
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left py-3 px-2 text-sm font-semibold text-slate-700">Sorteo</th>
-                  <th className="text-left py-3 px-2 text-sm font-semibold text-slate-700">Fecha</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Recaudado</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Comisión</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Ganancia Neta</th>
-                  <th className="text-center py-3 px-2 text-sm font-semibold text-slate-700">Estado</th>
+                <tr className="border-b border-dark-lighter">
+                  <th className="text-left py-3 px-2 text-sm font-semibold text-neutral-400">Drop</th>
+                  <th className="text-left py-3 px-2 text-sm font-semibold text-neutral-400">Fecha</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-neutral-400">Recaudado</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-neutral-400">Comisión</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-neutral-400">Ganancia Neta</th>
+                  <th className="text-center py-3 px-2 text-sm font-semibold text-neutral-400">Estado</th>
                 </tr>
               </thead>
               <tbody>
@@ -127,25 +120,25 @@ export const Earnings = () => {
                   });
 
                   return (
-                    <tr key={raffle.raffle_id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <tr key={raffle.raffle_id} className="border-b border-dark-lighter hover:bg-dark-lighter">
                       <td className="py-3 px-2">
-                        <div className="font-medium text-slate-900">{raffle.title}</div>
-                        <div className="text-xs text-slate-500">ID: {raffle.raffle_uuid.substring(0, 8)}</div>
+                        <div className="font-medium text-white">{raffle.title}</div>
+                        <div className="text-xs text-neutral-500">ID: {raffle.raffle_uuid.substring(0, 8)}</div>
                       </td>
-                      <td className="py-3 px-2 text-sm text-slate-600">{drawDate}</td>
-                      <td className="py-3 px-2 text-right font-semibold text-slate-900">
+                      <td className="py-3 px-2 text-sm text-neutral-400">{drawDate}</td>
+                      <td className="py-3 px-2 text-right font-semibold text-white">
                         {formatCRC(revenue)}
                       </td>
-                      <td className="py-3 px-2 text-right font-semibold text-orange-600">
+                      <td className="py-3 px-2 text-right font-semibold text-red-400">
                         -{formatCRC(commission)}
                       </td>
-                      <td className="py-3 px-2 text-right font-semibold text-green-700">{formatCRC(net)}</td>
+                      <td className="py-3 px-2 text-right font-semibold text-accent-green">{formatCRC(net)}</td>
                       <td className="py-3 px-2 text-center">
                         <span
                           className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             raffle.settlement_status === "completed"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-amber-100 text-amber-800"
+                              ? "bg-accent-green/20 text-accent-green"
+                              : "bg-gold/20 text-gold"
                           }`}
                         >
                           {raffle.settlement_status === "completed" ? "Liquidado" : "Pendiente"}

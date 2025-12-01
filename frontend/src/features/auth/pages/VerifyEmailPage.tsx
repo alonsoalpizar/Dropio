@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { useVerifyEmail, useUser } from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/api";
+import * as authApi from "@/api/auth";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 
 export const VerifyEmailPage = () => {
@@ -15,6 +16,31 @@ export const VerifyEmailPage = () => {
   const verifyEmailMutation = useVerifyEmail();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [resendSuccess, setResendSuccess] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Mutation para reenviar código
+  const resendMutation = useMutation({
+    mutationFn: () => authApi.resendVerificationCode(user?.id || 0),
+    onSuccess: (data) => {
+      setResendSuccess(data.message);
+      setError("");
+      // Cooldown de 60 segundos
+      setResendCooldown(60);
+    },
+    onError: (err) => {
+      setError(getErrorMessage(err));
+      setResendSuccess("");
+    },
+  });
+
+  // Efecto para el countdown del cooldown
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
 
   useEffect(() => {
     if (!user) {
@@ -65,93 +91,124 @@ export const VerifyEmailPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-dark p-4 relative overflow-hidden">
+      {/* Background gradients */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[10%] left-[10%] w-[400px] h-[400px] bg-gold/[0.06] rounded-full blur-[100px]" />
+        <div className="absolute bottom-[10%] right-[10%] w-[300px] h-[300px] bg-gold/[0.04] rounded-full blur-[100px]" />
+      </div>
+
       {/* Logo/Link al landing */}
       <Link
         to="/"
-        className="absolute top-6 left-6 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors"
+        className="absolute top-6 left-6 flex items-center gap-2 z-10"
       >
-        Sorteos.club
+        <div className="w-8 h-8 bg-gradient-to-br from-gold to-gold-dark rounded-lg flex items-center justify-center text-sm">
+          🪙
+        </div>
+        <span className="text-xl font-bold text-white">
+          Dropio<span className="text-gold">.club</span>
+        </span>
       </Link>
 
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-center">
+      {/* Card */}
+      <div className="w-full max-w-md bg-dark-card border border-dark-lighter rounded-2xl p-8 relative z-10">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">📧</span>
+          </div>
+          <h1 className="text-3xl font-bold text-white mb-2">
             Verificar Email
-          </CardTitle>
-          <CardDescription className="text-center">
+          </h1>
+          <p className="text-neutral-400">
             Ingresa el código de 6 dígitos que enviamos a{" "}
-            <span className="font-semibold text-foreground">{user.email}</span>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {verifyEmailMutation.isSuccess && (
-              <Alert variant="success">
-                <AlertDescription>
-                  ¡Email verificado exitosamente! Redirigiendo...
-                </AlertDescription>
-              </Alert>
-            )}
+            <span className="font-semibold text-gold">{user.email}</span>
+          </p>
+        </div>
 
-            {(error || verifyEmailMutation.isError) && (
-              <Alert variant="destructive">
-                <AlertDescription>
-                  {error || getErrorMessage(verifyEmailMutation.error)}
-                </AlertDescription>
-              </Alert>
-            )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {verifyEmailMutation.isSuccess && (
+            <Alert variant="success" className="bg-accent-green/10 border-accent-green/30 text-accent-green">
+              <AlertDescription>
+                ¡Email verificado exitosamente! Redirigiendo...
+              </AlertDescription>
+            </Alert>
+          )}
 
-            <div className="space-y-2">
-              <Label htmlFor="code" required>
-                Código de Verificación
-              </Label>
-              <Input
-                id="code"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="123456"
-                value={code}
-                onChange={handleCodeChange}
-                maxLength={6}
-                className="text-center text-2xl tracking-widest font-mono"
-                autoComplete="off"
-              />
-              <p className="text-xs text-muted-foreground text-center">
-                El código expira en 15 minutos
-              </p>
-            </div>
+          {resendSuccess && (
+            <Alert variant="success" className="bg-accent-green/10 border-accent-green/30 text-accent-green">
+              <AlertDescription>
+                {resendSuccess}
+              </AlertDescription>
+            </Alert>
+          )}
 
-            <Button
-              type="submit"
-              className="w-full"
-              loading={verifyEmailMutation.isPending}
-              disabled={
-                verifyEmailMutation.isPending ||
-                code.length !== 6 ||
-                verifyEmailMutation.isSuccess
-              }
+          {(error || verifyEmailMutation.isError) && (
+            <Alert variant="destructive">
+              <AlertDescription>
+                {error || getErrorMessage(verifyEmailMutation.error)}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="code" required className="text-neutral-300">
+              Código de Verificación
+            </Label>
+            <Input
+              id="code"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="000000"
+              value={code}
+              onChange={handleCodeChange}
+              maxLength={6}
+              className="text-center text-3xl tracking-[0.5em] font-mono bg-dark border-dark-lighter text-white placeholder:text-neutral-600 focus:border-gold focus:ring-gold/20 h-16"
+              autoComplete="off"
+            />
+            <p className="text-xs text-neutral-500 text-center">
+              El código expira en 15 minutos
+            </p>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full bg-gradient-to-br from-gold to-gold-dark text-dark font-semibold hover:shadow-[0_10px_30px_rgba(244,185,66,0.3)] transition-all"
+            loading={verifyEmailMutation.isPending}
+            disabled={
+              verifyEmailMutation.isPending ||
+              code.length !== 6 ||
+              verifyEmailMutation.isSuccess
+            }
+          >
+            Verificar Email
+          </Button>
+
+          <div className="text-center">
+            <button
+              type="button"
+              className={`text-sm font-medium transition-colors ${
+                resendMutation.isPending || resendCooldown > 0
+                  ? "text-neutral-500 cursor-not-allowed"
+                  : "text-gold hover:text-gold-light"
+              }`}
+              onClick={() => {
+                setResendSuccess("");
+                setError("");
+                resendMutation.mutate();
+              }}
+              disabled={resendMutation.isPending || resendCooldown > 0}
             >
-              Verificar Email
-            </Button>
-
-            <div className="text-center">
-              <Button
-                type="button"
-                variant="link"
-                className="text-sm"
-                onClick={() => {
-                  // TODO: Implement resend verification code
-                  alert("Funcionalidad de reenvío próximamente");
-                }}
-              >
-                ¿No recibiste el código? Reenviar
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              {resendMutation.isPending
+                ? "Enviando..."
+                : resendCooldown > 0
+                ? `Reenviar código (${resendCooldown}s)`
+                : "¿No recibiste el código? Reenviar"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

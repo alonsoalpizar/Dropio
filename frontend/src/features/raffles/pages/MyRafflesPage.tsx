@@ -5,6 +5,7 @@ import { useUser } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { ArrowLeft, Plus, Package } from 'lucide-react';
 import type { RaffleStatus, Raffle } from '@/types/raffle';
 
 const statusLabels: Record<RaffleStatus, string> = {
@@ -16,11 +17,11 @@ const statusLabels: Record<RaffleStatus, string> = {
 };
 
 const statusColors: Record<RaffleStatus, string> = {
-  draft: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-  active: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  suspended: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  completed: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
-  cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  draft: 'bg-dark-lighter text-neutral-300',
+  active: 'bg-accent-green/20 text-accent-green',
+  suspended: 'bg-gold/20 text-gold',
+  completed: 'bg-accent-blue/20 text-accent-blue',
+  cancelled: 'bg-red-500/20 text-red-400',
 };
 
 export function MyRafflesPage() {
@@ -28,21 +29,21 @@ export function MyRafflesPage() {
   const user = useUser();
   const [filterStatus, setFilterStatus] = useState<RaffleStatus | 'all'>('all');
 
-  // Fetch raffles created by current user
+  // Fetch Drops created by current user
   const { data: rafflesData, isLoading, error } = useRafflesList({
     user_id: user?.id,
     status: filterStatus === 'all' ? undefined : filterStatus,
   });
 
   if (isLoading) {
-    return <LoadingSpinner text="Cargando tus sorteos..." />;
+    return <LoadingSpinner text="Cargando tus Drops..." />;
   }
 
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600 dark:text-red-400">
-          Error al cargar tus sorteos. Por favor, intenta nuevamente.
+        <p className="text-red-400">
+          Error al cargar tus Drops. Por favor, intenta nuevamente.
         </p>
       </div>
     );
@@ -53,43 +54,39 @@ export function MyRafflesPage() {
   return (
     <div className="space-y-6">
       {/* Back Link */}
-      <Link to="/organizer" className="inline-flex items-center text-teal-600 hover:text-teal-700">
-        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
+      <Link to="/organizer" className="inline-flex items-center text-gold hover:text-gold-light">
+        <ArrowLeft className="w-5 h-5 mr-2" />
         Volver al panel
       </Link>
 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Mis Sorteos
+          <h1 className="text-4xl font-bold text-white">
+            Mis Drops
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Gestiona los sorteos que has creado
+          <p className="text-neutral-400 mt-2">
+            Gestiona los Drops que has creado
           </p>
         </div>
-        <Button onClick={() => navigate('/organizer/raffles/new')} className="bg-teal-600 hover:bg-teal-700">
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Crear Sorteo
+        <Button onClick={() => navigate('/organizer/raffles/new')}>
+          <Plus className="w-5 h-5 mr-2" />
+          Crear Drop
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+      <div className="bg-dark-card rounded-xl border border-dark-lighter p-4">
         <div className="flex items-center gap-2 overflow-x-auto">
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
+          <span className="text-sm font-medium text-neutral-300 whitespace-nowrap">
             Filtrar por:
           </span>
           <button
             onClick={() => setFilterStatus('all')}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap ${
               filterStatus === 'all'
-                ? 'bg-teal-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                ? 'bg-gradient-to-br from-gold to-gold-dark text-dark'
+                : 'bg-dark-lighter text-neutral-300 hover:text-white'
             }`}
           >
             Todos
@@ -98,10 +95,10 @@ export function MyRafflesPage() {
             <button
               key={status}
               onClick={() => setFilterStatus(status as RaffleStatus)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap ${
                 filterStatus === status
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-gradient-to-br from-gold to-gold-dark text-dark'
+                  : 'bg-dark-lighter text-neutral-300 hover:text-white'
               }`}
             >
               {label}
@@ -112,50 +109,48 @@ export function MyRafflesPage() {
 
       {/* Raffles List */}
       {raffles.length === 0 ? (
-        <EmptyState
-          icon={
-            <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-            </svg>
-          }
-          title={filterStatus === 'all' ? 'No tienes sorteos' : `No tienes sorteos ${statusLabels[filterStatus]?.toLowerCase()}`}
-          description={filterStatus === 'all' ? 'Crea tu primer sorteo para comenzar' : 'Intenta cambiar el filtro para ver otros sorteos'}
-          action={
-            filterStatus === 'all'
-              ? {
-                  label: 'Crear Sorteo',
-                  onClick: () => navigate('/organizer/raffles/new'),
-                }
-              : undefined
-          }
-        />
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-8">
+          <EmptyState
+            icon={<Package className="w-12 h-12 text-gold" />}
+            title={filterStatus === 'all' ? 'No tienes Drops' : `No tienes Drops ${statusLabels[filterStatus]?.toLowerCase()}`}
+            description={filterStatus === 'all' ? 'Crea tu primer Drop para comenzar' : 'Intenta cambiar el filtro para ver otros Drops'}
+            action={
+              filterStatus === 'all'
+                ? {
+                    label: 'Crear Drop',
+                    onClick: () => navigate('/organizer/raffles/new'),
+                  }
+                : undefined
+            }
+          />
+        </div>
       ) : (
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+              <thead className="bg-dark-lighter border-b border-dark-lighter">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Sorteo
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
+                    Drop
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                     Estado
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                     Progreso
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
                     Ingresos
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Sorteo
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-400 uppercase tracking-wider">
+                    Fecha
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-neutral-400 uppercase tracking-wider">
                     Acciones
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              <tbody className="divide-y divide-dark-lighter">
                 {raffles.map((raffle: Raffle) => {
                   const soldPercentage = (raffle.sold_count / raffle.total_numbers) * 100;
                   const daysUntilDraw = Math.ceil(
@@ -165,15 +160,15 @@ export function MyRafflesPage() {
                   return (
                     <tr
                       key={raffle.id}
-                      className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
+                      className="hover:bg-dark-lighter/50 transition-colors cursor-pointer"
                       onClick={() => navigate(`/raffles/${raffle.uuid}`)}
                     >
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-medium text-slate-900 dark:text-white">
+                          <p className="font-medium text-white">
                             {raffle.title}
                           </p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
+                          <p className="text-sm text-neutral-500">
                             {raffle.total_numbers} números
                           </p>
                         </div>
@@ -190,16 +185,16 @@ export function MyRafflesPage() {
                       <td className="px-6 py-4">
                         <div className="space-y-1">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-slate-600 dark:text-slate-400">
+                            <span className="text-neutral-400">
                               {raffle.sold_count} vendidos
                             </span>
-                            <span className="font-medium text-slate-900 dark:text-white">
+                            <span className="font-medium text-white">
                               {soldPercentage.toFixed(0)}%
                             </span>
                           </div>
-                          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                          <div className="w-full bg-dark-lighter rounded-full h-2">
                             <div
-                              className="bg-teal-600 h-2 rounded-full transition-all"
+                              className="bg-gradient-to-r from-gold to-gold-dark h-2 rounded-full transition-all"
                               style={{ width: `${soldPercentage}%` }}
                             />
                           </div>
@@ -207,21 +202,21 @@ export function MyRafflesPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-semibold text-slate-900 dark:text-white">
-                            ₡{parseFloat(raffle.total_revenue || '0').toLocaleString()}
+                          <p className="font-semibold text-gold flex items-center gap-1">
+                            🪙 {parseFloat(raffle.total_revenue || '0').toLocaleString()}
                           </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            ₡{parseFloat(raffle.price_per_number).toFixed(2)}/número
+                          <p className="text-xs text-neutral-500">
+                            🪙 {parseFloat(raffle.price_per_number).toFixed(0)}/número
                           </p>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div>
-                          <p className="text-sm text-slate-900 dark:text-white">
+                          <p className="text-sm text-white">
                             {new Date(raffle.draw_date).toLocaleDateString()}
                           </p>
                           {raffle.status === 'active' && daysUntilDraw > 0 && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-neutral-500">
                               En {daysUntilDraw} {daysUntilDraw === 1 ? 'día' : 'días'}
                             </p>
                           )}
@@ -230,7 +225,7 @@ export function MyRafflesPage() {
                       <td className="px-6 py-4 text-right">
                         <Button
                           size="sm"
-                          variant="outline"
+                          variant="gold"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/raffles/${raffle.uuid}`);
@@ -258,7 +253,7 @@ export function MyRafflesPage() {
           >
             Anterior
           </Button>
-          <span className="text-sm text-slate-600 dark:text-slate-400">
+          <span className="text-sm text-neutral-400">
             Página {rafflesData.pagination.page} de {rafflesData.pagination.total_pages}
           </span>
           <Button

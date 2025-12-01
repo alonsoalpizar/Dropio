@@ -61,8 +61,8 @@ export function RevenueReportPage() {
             Volver
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Reporte de Ingresos</h1>
-            <p className="text-slate-600 mt-2">
+            <h1 className="text-3xl font-bold text-white">Reporte de Ingresos</h1>
+            <p className="text-neutral-400 mt-2">
               Análisis de ingresos y métricas de rendimiento
             </p>
           </div>
@@ -70,20 +70,20 @@ export function RevenueReportPage() {
       </div>
 
       {/* Filtros */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5" />
           Filtros
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Fecha desde */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Fecha Desde
             </label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
               value={filters.date_from}
               onChange={(e) => handleFilterChange("date_from", e.target.value)}
             />
@@ -91,12 +91,12 @@ export function RevenueReportPage() {
 
           {/* Fecha hasta */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Fecha Hasta
             </label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
               value={filters.date_to}
               onChange={(e) => handleFilterChange("date_to", e.target.value)}
             />
@@ -104,11 +104,11 @@ export function RevenueReportPage() {
 
           {/* Agrupar por */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Agrupar Por
             </label>
             <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
               value={filters.group_by}
               onChange={(e) =>
                 handleFilterChange("group_by", e.target.value as "day" | "week" | "month")
@@ -122,13 +122,13 @@ export function RevenueReportPage() {
 
           {/* Organizador (opcional) */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Organizador (Opcional)
             </label>
             <div className="flex gap-2">
               <input
                 type="number"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
                 placeholder="ID del organizador"
                 value={filters.organizer_id || ""}
                 onChange={(e) =>
@@ -154,13 +154,13 @@ export function RevenueReportPage() {
         {/* Filtro de categoría (segunda fila) */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Categoría (Opcional)
             </label>
             <div className="flex gap-2">
               <input
                 type="number"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-dark-lighter rounded-lg focus:ring-2 focus:ring-gold/30 focus:border-transparent bg-dark text-white"
                 placeholder="ID de categoría"
                 value={filters.category_id || ""}
                 onChange={(e) =>
@@ -205,51 +205,51 @@ export function RevenueReportPage() {
         <>
           {/* KPIs Resumen */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">Ingresos Brutos</p>
-              <p className="text-2xl font-bold text-green-600 mt-2">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">Ingresos Brutos</p>
+              <p className="text-2xl font-bold text-accent-green mt-2">
                 {formatCurrency(data.TotalGrossRevenue)}
               </p>
             </Card>
 
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">Comisiones Plataforma</p>
-              <p className="text-2xl font-bold text-blue-600 mt-2">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">Comisiones Plataforma</p>
+              <p className="text-2xl font-bold text-accent-blue mt-2">
                 {formatCurrency(data.TotalPlatformFees)}
               </p>
             </Card>
 
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">Ingresos Netos</p>
-              <p className="text-2xl font-bold text-slate-900 mt-2">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">Ingresos Netos</p>
+              <p className="text-2xl font-bold text-white mt-2">
                 {formatCurrency(data.TotalNetRevenue)}
               </p>
             </Card>
 
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">Total Pagos</p>
-              <p className="text-2xl font-bold text-purple-600 mt-2">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">Total Pagos</p>
+              <p className="text-2xl font-bold text-accent-purple mt-2">
                 {data.TotalPayments.toLocaleString()}
               </p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-neutral-500 mt-1">
                 Promedio: {formatCurrency(data.TotalGrossRevenue / (data.TotalPayments || 1))}
               </p>
             </Card>
 
-            <Card className="p-4">
-              <p className="text-sm font-medium text-slate-600">Total Rifas</p>
-              <p className="text-2xl font-bold text-orange-600 mt-2">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
+              <p className="text-sm font-medium text-neutral-400">Total Drops</p>
+              <p className="text-2xl font-bold text-gold mt-2">
                 {data.TotalRaffles.toLocaleString()}
               </p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-neutral-500 mt-1">
                 Promedio: {formatCurrency(data.AverageRevenuePerRaffle)}
               </p>
             </Card>
           </div>
 
           {/* Chart y Estadísticas */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-slate-900 mb-6 flex items-center gap-2">
+          <Card className="p-6 bg-dark-card border-dark-lighter">
+            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
               Tendencia de Ingresos
             </h2>
@@ -273,24 +273,24 @@ export function RevenueReportPage() {
                     return (
                       <div key={index} className="space-y-1">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium text-slate-700">
+                          <span className="font-medium text-neutral-300">
                             {point.date ? format(parseISO(point.date), "PPP", { locale: es }) : "Fecha inválida"}
                           </span>
                           <div className="flex items-center gap-4">
-                            <span className="text-green-600 font-semibold">
+                            <span className="text-accent-green font-semibold">
                               {formatCurrency(point.gross_revenue)}
                             </span>
-                            <span className="text-blue-600 text-xs">
+                            <span className="text-accent-blue text-xs">
                               Fee: {formatCurrency(point.platform_fees)}
                             </span>
-                            <span className="text-slate-600 text-xs">
+                            <span className="text-neutral-400 text-xs">
                               {point.payment_count} pagos
                             </span>
                           </div>
                         </div>
-                        <div className="h-8 bg-slate-100 rounded-lg overflow-hidden">
+                        <div className="h-8 bg-dark-lighter rounded-lg overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-lg transition-all duration-300"
+                            className="h-full bg-gradient-to-r from-gold to-gold-dark rounded-lg transition-all duration-300"
                             style={{ width: `${widthPercent}%` }}
                           />
                         </div>
@@ -301,52 +301,52 @@ export function RevenueReportPage() {
 
                 {/* Tabla de datos */}
                 <div className="mt-8">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  <h3 className="text-lg font-semibold text-white mb-4">
                     Datos Detallados
                   </h3>
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead className="bg-slate-50 border-b-2 border-slate-200">
+                      <thead className="bg-dark-lighter border-b-2 border-dark-lighter">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-400 uppercase">
                             Fecha
                           </th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                             Ingresos Brutos
                           </th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                             Comisión
                           </th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                             Ingresos Netos
                           </th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
                             Pagos
                           </th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">
-                            Rifas
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-neutral-400 uppercase">
+                            Drops
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-200">
+                      <tbody className="divide-y divide-dark-lighter">
                         {data.DataPoints.map((point, index) => (
-                          <tr key={index} className="hover:bg-slate-50">
-                            <td className="px-4 py-3 text-sm text-slate-900">
+                          <tr key={index} className="hover:bg-dark-lighter">
+                            <td className="px-4 py-3 text-sm text-white">
                               {point.date ? format(parseISO(point.date), "PPP", { locale: es }) : "Fecha inválida"}
                             </td>
-                            <td className="px-4 py-3 text-sm text-right font-semibold text-green-600">
+                            <td className="px-4 py-3 text-sm text-right font-semibold text-accent-green">
                               {formatCurrency(point.gross_revenue)}
                             </td>
-                            <td className="px-4 py-3 text-sm text-right text-blue-600">
+                            <td className="px-4 py-3 text-sm text-right text-accent-blue">
                               {formatCurrency(point.platform_fees)}
                             </td>
-                            <td className="px-4 py-3 text-sm text-right font-semibold text-slate-900">
+                            <td className="px-4 py-3 text-sm text-right font-semibold text-white">
                               {formatCurrency(point.net_revenue)}
                             </td>
-                            <td className="px-4 py-3 text-sm text-right text-slate-600">
+                            <td className="px-4 py-3 text-sm text-right text-neutral-400">
                               {point.payment_count}
                             </td>
-                            <td className="px-4 py-3 text-sm text-right text-slate-600">
+                            <td className="px-4 py-3 text-sm text-right text-neutral-400">
                               {point.raffle_count}
                             </td>
                           </tr>
@@ -361,38 +361,38 @@ export function RevenueReportPage() {
 
           {/* Métricas adicionales */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-4">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
               <div className="flex items-center gap-3 mb-2">
-                <DollarSign className="w-5 h-5 text-green-600" />
-                <p className="text-sm font-medium text-slate-600">
+                <DollarSign className="w-5 h-5 text-accent-green" />
+                <p className="text-sm font-medium text-neutral-400">
                   Ingreso Promedio por Día
                 </p>
               </div>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-2xl font-bold text-white">
                 {formatCurrency(data.AverageRevenuePerDay)}
               </p>
             </Card>
 
-            <Card className="p-4">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
               <div className="flex items-center gap-3 mb-2">
-                <Package className="w-5 h-5 text-orange-600" />
-                <p className="text-sm font-medium text-slate-600">
-                  Ingreso Promedio por Rifa
+                <Package className="w-5 h-5 text-gold" />
+                <p className="text-sm font-medium text-neutral-400">
+                  Ingreso Promedio por Drop
                 </p>
               </div>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-2xl font-bold text-white">
                 {formatCurrency(data.AverageRevenuePerRaffle)}
               </p>
             </Card>
 
-            <Card className="p-4">
+            <Card className="p-4 bg-dark-card border-dark-lighter">
               <div className="flex items-center gap-3 mb-2">
-                <Users className="w-5 h-5 text-blue-600" />
-                <p className="text-sm font-medium text-slate-600">
+                <Users className="w-5 h-5 text-accent-blue" />
+                <p className="text-sm font-medium text-neutral-400">
                   Tasa de Comisión Promedio
                 </p>
               </div>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-2xl font-bold text-white">
                 {((data.TotalPlatformFees / (data.TotalGrossRevenue || 1)) * 100).toFixed(
                   2
                 )}

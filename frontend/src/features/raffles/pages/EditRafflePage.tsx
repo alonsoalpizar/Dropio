@@ -8,6 +8,7 @@ import { Label } from '../../../components/ui/Label';
 import { LoadingSpinner } from '../../../components/ui/LoadingSpinner';
 import { Alert } from '../../../components/ui/Alert';
 import { ImageUploader } from '../../../components/ImageUploader';
+import { ArrowLeft, Info, AlertTriangle } from 'lucide-react';
 import type { UpdateRaffleInput, DrawMethod } from '../../../types/raffle';
 
 export function EditRafflePage() {
@@ -30,7 +31,7 @@ export function EditRafflePage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Cargar datos del sorteo cuando se obtienen
+  // Cargar datos del Drop cuando se obtienen
   useEffect(() => {
     if (data?.raffle) {
       const drawDate = new Date(data.raffle.draw_date);
@@ -50,13 +51,13 @@ export function EditRafflePage() {
   }, [data]);
 
   if (isLoading) {
-    return <LoadingSpinner text="Cargando sorteo..." />;
+    return <LoadingSpinner text="Cargando Drop..." />;
   }
 
   if (error || !data) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600 dark:text-red-400">Error al cargar el sorteo</p>
+        <p className="text-red-400">Error al cargar el Drop</p>
       </div>
     );
   }
@@ -68,13 +69,18 @@ export function EditRafflePage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <Alert variant="warning">
-          <p className="font-semibold">No se puede editar</p>
-          <p className="text-sm mt-1">
-            Solo se pueden editar sorteos en estado borrador. Este sorteo ya ha sido publicado.
-          </p>
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">No se puede editar</p>
+              <p className="text-sm mt-1">
+                Solo se pueden editar Drops en estado borrador. Este Drop ya ha sido publicado.
+              </p>
+            </div>
+          </div>
         </Alert>
         <Button onClick={() => navigate(`/raffles/${id}`)} className="mt-4">
-          Volver al sorteo
+          Volver al Drop
         </Button>
       </div>
     );
@@ -92,12 +98,12 @@ export function EditRafflePage() {
     }
 
     if (!formData.draw_date) {
-      newErrors.draw_date = 'La fecha del sorteo es requerida';
+      newErrors.draw_date = 'La fecha del Drop es requerida';
     } else {
       const drawDate = new Date(formData.draw_date);
       const now = new Date();
       if (drawDate <= now) {
-        newErrors.draw_date = 'La fecha del sorteo debe ser en el futuro';
+        newErrors.draw_date = 'La fecha del Drop debe ser en el futuro';
       }
     }
 
@@ -123,13 +129,13 @@ export function EditRafflePage() {
       // Usar el ID numérico del raffle, no el parámetro de la URL (que puede ser UUID)
       await updateMutation.mutateAsync({ id: data.raffle.id, input: payload });
 
-      alert('Sorteo actualizado exitosamente');
+      alert('Drop actualizado exitosamente');
 
-      // Navegar usando el ID o UUID del sorteo actualizado
+      // Navegar usando el ID o UUID del Drop actualizado
       // Forzar recarga de la página para que se vean los cambios
       window.location.href = `/raffles/${id}`;
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Error al actualizar sorteo');
+      alert(error instanceof Error ? error.message : 'Error al actualizar Drop');
     }
   };
 
@@ -152,38 +158,36 @@ export function EditRafflePage() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       {/* Header */}
       <div className="mb-8">
-        <Link to={`/raffles/${id}`} className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Volver al sorteo
+        <Link to={`/raffles/${id}`} className="inline-flex items-center text-gold hover:text-gold-light mb-4">
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Volver al Drop
         </Link>
 
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-          Editar Sorteo
+        <h1 className="text-4xl font-bold text-white">
+          Editar Drop
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 mt-2">
-          Modifica la información del sorteo antes de publicarlo.
+        <p className="text-neutral-400 mt-2">
+          Modifica la información del Drop antes de publicarlo.
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-lg shadow p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-dark-card rounded-xl border border-dark-lighter p-6 space-y-6">
         {/* Title */}
         <div>
           <Label htmlFor="title">
-            Título del Sorteo <span className="text-red-500">*</span>
+            Título del Drop <span className="text-red-400">*</span>
           </Label>
           <Input
             id="title"
             type="text"
-            placeholder="Ej: Sorteo iPhone 15 Pro Max 256GB"
+            placeholder="Ej: Drop iPhone 15 Pro Max 256GB"
             value={formData.title}
             onChange={(e) => handleChange('title', e.target.value)}
             error={errors.title}
             maxLength={255}
           />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-neutral-500 mt-1">
             Mínimo 5 caracteres, máximo 255
           </p>
         </div>
@@ -191,19 +195,19 @@ export function EditRafflePage() {
         {/* Description */}
         <div>
           <Label htmlFor="description">
-            Descripción <span className="text-red-500">*</span>
+            Descripción <span className="text-red-400">*</span>
           </Label>
           <textarea
             id="description"
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
-            placeholder="Describe detalladamente el premio y las condiciones del sorteo..."
+            className="w-full px-4 py-3 rounded-xl border border-dark-lighter bg-dark text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors min-h-[120px]"
+            placeholder="Describe detalladamente el premio y las condiciones del Drop..."
             value={formData.description}
             onChange={(e) => handleChange('description', e.target.value)}
           />
           {errors.description && (
-            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+            <p className="text-sm text-red-400 mt-1">{errors.description}</p>
           )}
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-neutral-500 mt-1">
             Mínimo 20 caracteres
           </p>
         </div>
@@ -211,11 +215,11 @@ export function EditRafflePage() {
         {/* Category */}
         <div>
           <Label htmlFor="category_id">
-            Categoría <span className="text-red-500">*</span>
+            Categoría <span className="text-red-400">*</span>
           </Label>
           <select
             id="category_id"
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 rounded-xl border border-dark-lighter bg-dark text-white focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors"
             value={formData.category_id || ''}
             onChange={(e) => handleChange('category_id', e.target.value ? Number(e.target.value) : undefined)}
             disabled={categoriesLoading}
@@ -228,10 +232,10 @@ export function EditRafflePage() {
             ))}
           </select>
           {errors.category_id && (
-            <p className="text-sm text-red-500 mt-1">{errors.category_id}</p>
+            <p className="text-sm text-red-400 mt-1">{errors.category_id}</p>
           )}
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Ayuda a los usuarios a encontrar tu sorteo
+          <p className="text-xs text-neutral-500 mt-1">
+            Ayuda a los usuarios a encontrar tu Drop
           </p>
         </div>
 
@@ -239,7 +243,7 @@ export function EditRafflePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="draw_date">
-              Fecha del Sorteo <span className="text-red-500">*</span>
+              Fecha del Drop <span className="text-red-400">*</span>
             </Label>
             <Input
               id="draw_date"
@@ -252,11 +256,11 @@ export function EditRafflePage() {
 
           <div>
             <Label htmlFor="draw_method">
-              Método de Sorteo <span className="text-red-500">*</span>
+              Método de Sorteo <span className="text-red-400">*</span>
             </Label>
             <select
               id="draw_method"
-              className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 rounded-xl border border-dark-lighter bg-dark text-white focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors"
               value={formData.draw_method}
               onChange={(e) => handleChange('draw_method', e.target.value as DrawMethod)}
             >
@@ -269,19 +273,24 @@ export function EditRafflePage() {
 
         {/* Read-only fields info */}
         <Alert variant="info">
-          <p className="font-semibold">Nota</p>
-          <p className="text-sm mt-1">
-            El precio por número y la cantidad total de números no se pueden modificar una vez creado el sorteo.
-            Estas son: <strong>{raffle.total_numbers} números</strong> a <strong>₡{Number(raffle.price_per_number).toLocaleString()}</strong> cada uno.
-          </p>
+          <div className="flex items-start gap-2">
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">Nota</p>
+              <p className="text-sm mt-1">
+                El precio por número y la cantidad total de números no se pueden modificar una vez creado el Drop.
+                Estas son: <strong className="text-white">{raffle.total_numbers} números</strong> a <strong className="text-gold">🪙 {Number(raffle.price_per_number).toLocaleString()} AloCoins</strong> cada uno.
+              </p>
+            </div>
+          </div>
         </Alert>
 
         {/* Images Section */}
-        <div className="border-t pt-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Imágenes del Sorteo
+        <div className="border-t border-dark-lighter pt-6">
+          <h3 className="text-lg font-semibold text-white mb-4">
+            Imágenes del Drop
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-sm text-neutral-400 mb-4">
             Agrega hasta 5 imágenes. La primera imagen será la principal por defecto.
           </p>
           <ImageUploader

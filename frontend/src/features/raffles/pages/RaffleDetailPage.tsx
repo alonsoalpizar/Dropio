@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useRaffleDetail, usePublishRaffle, useDeleteRaffle } from '../../../hooks/useRaffles';
 import { useAuth } from '../../../hooks/useAuth';
 import { useRaffleWebSocket } from '../../../hooks/useRaffleWebSocket';
-import { useUserMode } from '../../../contexts/UserModeContext';
 import { NumberGrid } from '../components/NumberGrid';
 import { Button } from '../../../components/ui/Button';
 import { LoadingSpinner } from '../../../components/ui/LoadingSpinner';
@@ -12,26 +11,25 @@ import { RaffleImageGallery } from '../../../components/RaffleImageGallery';
 import { reservationService, Reservation } from '../../../services/reservationService';
 import { toast } from 'sonner';
 import {
-  cn,
   formatCurrency,
   formatDateTime,
   getStatusLabel,
   getDrawMethodLabel,
 } from '../../../lib/utils';
+import { ArrowLeft, Check, Clock, Trash2, Pause, Play, Calendar, Edit } from 'lucide-react';
 
 const statusColors = {
-  draft: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-  active: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  suspended: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  completed: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  draft: 'bg-neutral-700 text-neutral-300',
+  active: 'bg-accent-green/20 text-accent-green border border-accent-green/30',
+  suspended: 'bg-gold/20 text-gold border border-gold/30',
+  completed: 'bg-accent-blue/20 text-accent-blue border border-accent-blue/30',
+  cancelled: 'bg-red-500/20 text-red-400 border border-red-500/30',
 };
 
 export function RaffleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { colors } = useUserMode();
 
   const { data, isLoading, error, refetch } = useRaffleDetail(id!, {
     includeNumbers: true,
@@ -41,7 +39,6 @@ export function RaffleDetailPage() {
   const publishMutation = usePublishRaffle();
   const deleteMutation = useDeleteRaffle();
 
-  // Reservation state (única fuente de verdad)
   const [activeReservation, setActiveReservation] = useState<Reservation | null>(null);
   const [selectedNumbers, setSelectedNumbers] = useState<string[]>([]);
   const [isLoadingReservation, setIsLoadingReservation] = useState(false);
@@ -50,25 +47,15 @@ export function RaffleDetailPage() {
   const isOwner = user && data?.raffle && user.id === data.raffle.user_id;
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
 
-  // WebSocket connection for real-time updates
   const { isConnected, onNumberUpdate, onReservationExpired } = useRaffleWebSocket(data?.raffle?.uuid);
 
-  // Listen for WebSocket number updates (available, reserved, sold)
   useEffect(() => {
     if (!isConnected) return;
 
     const unsubscribeNumberUpdate = onNumberUpdate((update) => {
-      console.log('[WebSocket] Number update:', update);
-
-      // Solo refrescar si la actualización NO es del usuario actual
-      // Si es del usuario actual, el estado ya se actualizó localmente
       const isMyUpdate = update.user_id === user?.id;
-
       if (!isMyUpdate) {
-        // Refrescar los datos del sorteo para actualizar la grilla
         refetch();
-
-        // Mostrar notificación según el estado
         if (update.status === 'sold') {
           toast.info(`Número ${update.number_id} vendido`);
         } else if (update.status === 'reserved') {
@@ -79,10 +66,7 @@ export function RaffleDetailPage() {
       }
     });
 
-    const unsubscribeExpired = onReservationExpired((data) => {
-      console.log('[WebSocket] Reservation expired:', data);
-
-      // Refrescar datos
+    const unsubscribeExpired = onReservationExpired(() => {
       refetch();
     });
 
@@ -92,33 +76,22 @@ export function RaffleDetailPage() {
     };
   }, [isConnected, onNumberUpdate, onReservationExpired, refetch, user?.id]);
 
-  // Al montar componente: Cargar reserva activa si existe
   useEffect(() => {
     const loadOrCleanup = async () => {
       if (!data || !user || isOwner) return;
-
       try {
         const prevReservation = await reservationService.getActiveForRaffle(data.raffle.uuid);
-
         if (prevReservation) {
-          // Ya tiene reserva activa - cargarla en lugar de cancelarla
           setActiveReservation(prevReservation);
           setSelectedNumbers(prevReservation.number_ids);
-          console.log('Reserva activa cargada:', prevReservation.id);
         }
       } catch (error) {
         console.error('Error al cargar reserva activa:', error);
       }
     };
-
     loadOrCleanup();
-
-    // NO hacemos cleanup automático aquí
-    // La reserva se cancela explícitamente con el botón "Limpiar selección"
-    // o expira automáticamente después de 10 minutos
   }, [data, user, isOwner]);
 
-  // Monitorear timeout de reserva (10 minutos)
   useEffect(() => {
     if (!activeReservation) return;
 
@@ -127,52 +100,32 @@ export function RaffleDetailPage() {
       const now = new Date();
       const timeLeft = expiresAt.getTime() - now.getTime();
 
-      // Si ya expiró
       if (timeLeft <= 0) {
-        toast.error('Tu reserva ha expirado', {
-          description: 'Los números han sido liberados',
-        });
+        toast.error('Tu reserva ha expirado', { description: 'Los números han sido liberados' });
         setActiveReservation(null);
         setSelectedNumbers([]);
         return;
       }
 
-      // Alerta 1 minuto antes de expirar
       if (timeLeft <= 60 * 1000 && timeLeft > 59 * 1000) {
-        toast.warning('¡Queda 1 minuto!', {
-          description: 'Tu reserva está por expirar. Completa tu compra ahora.',
-          duration: 10000,
-        });
+        toast.warning('¡Queda 1 minuto!', { description: 'Tu reserva está por expirar.', duration: 10000 });
       }
 
-      // Alerta 30 segundos antes de expirar
       if (timeLeft <= 30 * 1000 && timeLeft > 29 * 1000) {
-        toast.warning('¡30 segundos!', {
-          description: 'Tu reserva expirará pronto',
-          duration: 10000,
-        });
+        toast.warning('¡30 segundos!', { description: 'Tu reserva expirará pronto', duration: 10000 });
       }
     };
 
-    // Verificar cada segundo
     const interval = setInterval(checkExpiration, 1000);
-
     return () => clearInterval(interval);
   }, [activeReservation]);
 
-  // Manejar selección de números
   const handleNumberSelect = async (numberStr: string) => {
-    // No permitir selección si es owner o no está autenticado
     if (isOwner || !user) {
-      if (!user) {
-        toast.info('Inicia sesión para reservar números');
-      }
+      if (!user) toast.info('Inicia sesión para reservar números');
       return;
     }
-
-    if (isLoadingReservation) {
-      return;
-    }
+    if (isLoadingReservation) return;
 
     const isAlreadySelected = selectedNumbers.includes(numberStr);
 
@@ -180,92 +133,49 @@ export function RaffleDetailPage() {
       setIsLoadingReservation(true);
 
       if (isAlreadySelected) {
-        // REMOVER número de reserva
         if (activeReservation) {
-          // Si es el último número, cancelar toda la reserva
           if (selectedNumbers.length === 1) {
             await reservationService.cancel(activeReservation.id);
             setActiveReservation(null);
             setSelectedNumbers([]);
             toast.info('Reserva cancelada');
-            refetch(); // Refrescar datos del raffle
+            refetch();
           } else {
-            // Remover número específico
-            const updatedReservation = await reservationService.removeNumber(
-              activeReservation.id,
-              numberStr
-            );
-
+            const updatedReservation = await reservationService.removeNumber(activeReservation.id, numberStr);
             setActiveReservation(updatedReservation);
             setSelectedNumbers(prev => prev.filter(n => n !== numberStr));
-
-            toast.success('Número liberado', {
-              description: `Has des-reservado el número ${numberStr}`,
-            });
-            refetch(); // Refrescar datos del raffle
+            toast.success('Número liberado');
+            refetch();
           }
         } else {
-          // Solo está en estado local
           setSelectedNumbers(prev => prev.filter(n => n !== numberStr));
         }
       } else {
-        // AGREGAR número
         const isFirstNumber = selectedNumbers.length === 0;
-
         if (isFirstNumber) {
-          // CREAR NUEVA RESERVA con primer número
           const reservation = await reservationService.create({
             raffle_id: data!.raffle.uuid,
             number_ids: [numberStr],
             session_id: sessionId,
           });
-
           setActiveReservation(reservation);
           setSelectedNumbers([numberStr]);
           await refetch();
-
-          toast.success('Número reservado', {
-            description: 'Tienes 10 minutos para completar tu compra',
-          });
+          toast.success('Número reservado', { description: 'Tienes 10 minutos para completar tu compra' });
         } else {
-          // AGREGAR a reserva existente
-          if (!activeReservation) {
-            throw new Error('No hay reserva activa');
-          }
-
-          const updatedReservation = await reservationService.addNumber(
-            activeReservation.id,
-            numberStr
-          );
-
+          if (!activeReservation) throw new Error('No hay reserva activa');
+          const updatedReservation = await reservationService.addNumber(activeReservation.id, numberStr);
           setActiveReservation(updatedReservation);
           setSelectedNumbers(prev => [...prev, numberStr]);
         }
       }
     } catch (error: any) {
-      console.error('Error al manejar selección:', error);
-
-      // Manejo de errores específicos
       if (error.response?.status === 403) {
-        toast.error('Email no verificado', {
-          description: 'Verifica tu email para poder reservar números',
-        });
+        toast.error('Email no verificado', { description: 'Verifica tu email para poder reservar números' });
       } else if (error.response?.status === 409) {
-        toast.error('Número no disponible', {
-          description: 'Este número ya está reservado por otro usuario',
-        });
-      } else if (error.response?.status === 400 && error.response?.data?.code === 'CHECKOUT_PHASE') {
-        toast.error('No puedes des-reservar en fase de pago', {
-          description: 'Cancela la reserva completa o completa el pago',
-        });
-      } else if (error.response?.status === 400 && error.response?.data?.code === 'CANNOT_REMOVE_LAST') {
-        toast.info('Último número', {
-          description: 'No puedes remover el último número. La reserva se cancelará automáticamente',
-        });
+        toast.error('Número no disponible', { description: 'Este número ya está reservado por otro usuario' });
       } else {
-        toast.error('Error al procesar', {
-          description: 'No se pudo procesar la acción. Intenta de nuevo',
-        });
+        toast.error('Error al procesar', { description: 'No se pudo procesar la acción' });
       }
     } finally {
       setIsLoadingReservation(false);
@@ -274,103 +184,26 @@ export function RaffleDetailPage() {
 
   const handlePublish = async () => {
     if (!data?.raffle?.id) return;
-
-    const confirmed = confirm(
-      '⚠️ IMPORTANTE: Una vez publicado, el sorteo estará visible para todos los usuarios y NO podrás:\n\n' +
-      '• Modificar el título\n' +
-      '• Cambiar el precio por número\n' +
-      '• Alterar la cantidad de números\n' +
-      '• Eliminar el sorteo (solo suspender si hay problemas)\n\n' +
-      'Solo podrás modificar la descripción y la fecha del sorteo.\n\n' +
-      '¿Estás seguro de publicar este sorteo?'
-    );
-
+    const confirmed = confirm('¿Estás seguro de publicar este Drop? Una vez publicado será visible para todos.');
     if (!confirmed) return;
 
     try {
       await publishMutation.mutateAsync(data.raffle.id);
-      toast.success('Sorteo publicado exitosamente', {
-        description: 'Ahora es visible para todos los usuarios'
-      });
+      toast.success('Drop publicado exitosamente');
       refetch();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error al publicar sorteo');
+      toast.error(error instanceof Error ? error.message : 'Error al publicar');
     }
   };
 
   const handleDelete = async () => {
-    if (!data?.raffle?.id || !confirm('¿Estás seguro de eliminar este sorteo? Esta acción no se puede deshacer.'))
-      return;
-
+    if (!data?.raffle?.id || !confirm('¿Estás seguro de eliminar este Drop?')) return;
     try {
       await deleteMutation.mutateAsync(data.raffle.id);
-      toast.success('Sorteo eliminado exitosamente');
-      navigate('/raffles');
+      toast.success('Drop eliminado');
+      navigate('/explore');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error al eliminar sorteo');
-    }
-  };
-
-  const handleSuspend = async () => {
-    if (!id) return;
-
-    const reason = prompt('¿Por qué deseas suspender este sorteo?\n(Esta información será visible para los compradores)');
-    if (!reason) return;
-
-    try {
-      // TODO: Implementar useSuspendRaffle hook y API
-      toast.info('Funcionalidad de suspender sorteo en desarrollo');
-      // await suspendMutation.mutateAsync({ id: Number(id), reason });
-      // toast.success('Sorteo suspendido');
-      // refetch();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error al suspender sorteo');
-    }
-  };
-
-  const handleReactivate = async () => {
-    if (!id || !confirm('¿Deseas reactivar este sorteo?')) return;
-
-    try {
-      // TODO: Implementar reactivar sorteo en el backend
-      toast.info('Funcionalidad de reactivar sorteo en desarrollo');
-      // await reactivateMutation.mutateAsync(Number(id));
-      // toast.success('Sorteo reactivado');
-      // refetch();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error al reactivar sorteo');
-    }
-  };
-
-  const handleExtendDate = async () => {
-    if (!id) return;
-
-    const newDate = prompt('Ingresa la nueva fecha del sorteo (formato: YYYY-MM-DD HH:mm):');
-    if (!newDate) return;
-
-    try {
-      // TODO: Implementar extender fecha
-      toast.info('Funcionalidad de extender fecha en desarrollo');
-      // const isoDate = new Date(newDate).toISOString();
-      // await updateMutation.mutateAsync({ id: Number(id), input: { draw_date: isoDate } });
-      // toast.success('Fecha extendida exitosamente');
-      // refetch();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error al extender fecha');
-    }
-  };
-
-  const handleCloseDraw = async () => {
-    if (!id || !confirm('¿Estás seguro de cerrar este sorteo sin realizar el sorteo?\nEsta acción cancelará el sorteo y se devolverá el dinero a los compradores.')) return;
-
-    try {
-      // TODO: Implementar cerrar sorteo sin ganador
-      toast.info('Funcionalidad de cerrar sorteo en desarrollo');
-      // await closeMutation.mutateAsync(Number(id));
-      // toast.success('Sorteo cerrado. Se procesarán las devoluciones.');
-      // refetch();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Error al cerrar sorteo');
+      toast.error(error instanceof Error ? error.message : 'Error al eliminar');
     }
   };
 
@@ -382,7 +215,6 @@ export function RaffleDetailPage() {
         setSelectedNumbers([]);
         toast.info('Reserva cancelada');
       } catch (error) {
-        console.error('Error al cancelar reserva:', error);
         toast.error('Error al cancelar reserva');
       }
     } else {
@@ -391,14 +223,10 @@ export function RaffleDetailPage() {
   };
 
   const handlePayNow = async () => {
-    console.log('handlePayNow - activeReservation:', activeReservation);
-    console.log('handlePayNow - selectedNumbers:', selectedNumbers);
-
     if (!activeReservation) {
       toast.error('No tienes números reservados');
       return;
     }
-
     if (!user) {
       toast.info('Inicia sesión para continuar');
       navigate(`/login?redirect=/raffles/${id}`);
@@ -406,27 +234,15 @@ export function RaffleDetailPage() {
     }
 
     try {
-      // TODO: Implementar pago desde wallet (deducir balance)
-
-      // Confirmar reserva (marca como 'confirmed' y deja de contar timeout)
       await reservationService.confirm(activeReservation.id);
-
-      // Limpiar estado local
       setActiveReservation(null);
       setSelectedNumbers([]);
-
-      // Mostrar mensaje de éxito
       toast.success('¡Gracias por tu compra!', {
-        description: `Has comprado ${selectedNumbers.length} número(s). Redirigiendo a tus tickets...`,
+        description: `Has comprado ${selectedNumbers.length} número(s)`,
         duration: 3000,
       });
-
-      // Redirigir a /my-tickets después de 2 segundos
-      setTimeout(() => {
-        navigate('/my-tickets');
-      }, 2000);
+      setTimeout(() => navigate('/my-tickets'), 2000);
     } catch (error) {
-      console.error('Error al procesar pago:', error);
       toast.error('Error al procesar el pago');
     }
   };
@@ -434,21 +250,19 @@ export function RaffleDetailPage() {
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600 dark:text-red-400 font-medium mb-2">
-          Error al cargar el sorteo
-        </p>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+        <p className="text-red-400 font-medium mb-2">Error al cargar el Drop</p>
+        <p className="text-sm text-neutral-400 mb-4">
           {error instanceof Error ? error.message : 'Error desconocido'}
         </p>
-        <Link to="/raffles">
-          <Button variant="outline">Volver al listado</Button>
+        <Link to="/explore">
+          <Button variant="outline">Volver a explorar</Button>
         </Link>
       </div>
     );
   }
 
   if (isLoading || !data) {
-    return <LoadingSpinner text="Cargando sorteo..." />;
+    return <LoadingSpinner text="Cargando Drop..." />;
   }
 
   const { raffle, numbers = [], available_count, reserved_count, sold_count } = data;
@@ -462,31 +276,25 @@ export function RaffleDetailPage() {
       {/* Back button */}
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+        className="inline-flex items-center text-neutral-400 hover:text-gold transition-colors"
       >
-        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        Volver al listado
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Volver
       </button>
 
-      {/* Hero Section - color dinámico según modo */}
-      <div className={cn(
-        "rounded-xl overflow-hidden",
-        colors.gradient,
-        colors.gradientDark
-      )}>
+      {/* Hero Section */}
+      <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-gold/20 via-dark-card to-dark-card border border-gold/20">
         <div className="p-8 md:p-12">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            {/* Title and Status */}
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-4">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[raffle.status]}`}>
                   {getStatusLabel(raffle.status)}
                 </span>
                 {raffle.status === 'active' && daysUntilDraw > 0 && (
-                  <span className="px-3 py-1 bg-white/20 text-white rounded-full text-sm font-medium backdrop-blur-sm">
-                    {daysUntilDraw} {daysUntilDraw === 1 ? 'día' : 'días'} restantes
+                  <span className="px-3 py-1 bg-dark-lighter text-neutral-300 rounded-full text-sm font-medium flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {daysUntilDraw} {daysUntilDraw === 1 ? 'día' : 'días'}
                   </span>
                 )}
               </div>
@@ -495,40 +303,37 @@ export function RaffleDetailPage() {
                 {raffle.title}
               </h1>
 
-              <p className={cn("text-lg mb-6 max-w-2xl", colors.textMuted)}>
+              <p className="text-lg text-neutral-400 mb-6 max-w-2xl">
                 {raffle.description}
               </p>
 
-              {/* Price */}
-              <div className="inline-flex flex-col bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                <span className={cn("text-sm mb-1", colors.textMuted)}>Precio por número</span>
-                <span className="text-3xl font-bold text-white">
-                  {formatCurrency(Number(raffle.price_per_number))}
+              <div className="inline-flex flex-col bg-dark-lighter rounded-xl p-4 border border-dark-lighter">
+                <span className="text-sm text-neutral-500 mb-1">Precio por número</span>
+                <span className="text-3xl font-bold text-gold flex items-center gap-2">
+                  🪙 {formatCurrency(Number(raffle.price_per_number)).replace('₡', '')} AloCoins
                 </span>
               </div>
             </div>
 
-            {/* CTA */}
+            {/* CTA for participants */}
             {raffle.status === 'active' && available_count > 0 && !isOwner && (
               <div className="flex-shrink-0">
                 {selectedNumbers.length > 0 ? (
                   <div className="space-y-3">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                      <p className={cn("text-sm mb-1", colors.textMuted)}>Números reservados</p>
+                    <div className="bg-dark-lighter rounded-xl p-4 border border-gold/20">
+                      <p className="text-sm text-neutral-400 mb-1">Números reservados</p>
                       <p className="text-3xl font-bold text-white">{selectedNumbers.length}</p>
-                      <p className={cn("text-sm mt-2", colors.textMuted)}>
-                        Total: {formatCurrency(selectedNumbers.length * Number(raffle.price_per_number))}
+                      <p className="text-sm text-gold mt-2 flex items-center gap-1">
+                        🪙 {formatCurrency(selectedNumbers.length * Number(raffle.price_per_number)).replace('₡', '')} AloCoins
                       </p>
                     </div>
                     <Button
                       size="lg"
                       onClick={handlePayNow}
                       disabled={isLoadingReservation}
-                      className="bg-white text-blue-600 hover:bg-blue-50 shadow-lg w-full"
+                      className="w-full"
                     >
-                      <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <Check className="w-5 h-5 mr-2" />
                       Pagar Ahora
                     </Button>
                     <Button
@@ -536,22 +341,19 @@ export function RaffleDetailPage() {
                       variant="outline"
                       onClick={handleClearSelection}
                       disabled={isLoadingReservation}
-                      className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      className="w-full"
                     >
                       Limpiar selección
                     </Button>
                   </div>
                 ) : (
-                  <div className="text-center">
-                    <p className={cn("text-sm mb-3", colors.textMuted)}>
+                  <div className="text-center bg-dark-lighter rounded-xl p-6 border border-dark-lighter">
+                    <p className="text-sm text-neutral-400 mb-3">
                       Selecciona números en la grilla
                     </p>
-                    <div className={cn("flex items-center justify-center gap-2 text-xs", colors.textMuted)}>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                      </svg>
-                      <span>{available_count} números disponibles</span>
-                    </div>
+                    <p className="text-gold text-sm font-medium">
+                      {available_count} números disponibles
+                    </p>
                   </div>
                 )}
               </div>
@@ -560,113 +362,53 @@ export function RaffleDetailPage() {
             {/* Owner actions */}
             {isOwner && (
               <div className="flex flex-col gap-2">
-                {/* Draft: Editar, Publicar, Eliminar */}
                 {raffle.status === 'draft' && (
                   <>
                     <Link to={`/raffles/${id}/edit`}>
-                      <Button variant="outline" className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20">
+                      <Button variant="outline" className="w-full">
+                        <Edit className="w-4 h-4 mr-2" />
                         Editar
                       </Button>
                     </Link>
-                    <Button
-                      onClick={handlePublish}
-                      disabled={publishMutation.isPending}
-                      className="w-full bg-white text-blue-600 hover:bg-blue-50"
-                    >
+                    <Button onClick={handlePublish} disabled={publishMutation.isPending} className="w-full">
+                      <Play className="w-4 h-4 mr-2" />
                       {publishMutation.isPending ? 'Publicando...' : 'Publicar'}
                     </Button>
                     {raffle.sold_count === 0 && (
-                      <Button
-                        variant="outline"
-                        onClick={handleDelete}
-                        disabled={deleteMutation.isPending}
-                        className="w-full bg-red-600/10 border-red-400/20 text-red-100 hover:bg-red-600/20"
-                      >
-                        {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
+                      <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending} className="w-full">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Eliminar
                       </Button>
                     )}
                   </>
                 )}
-
-                {/* Active: Solo suspender si hay problemas */}
                 {raffle.status === 'active' && (
-                  <Button
-                    variant="outline"
-                    onClick={handleSuspend}
-                    className="w-full bg-yellow-600/10 border-yellow-400/20 text-yellow-100 hover:bg-yellow-600/20"
-                  >
-                    Suspender Sorteo
+                  <Button variant="outline" className="w-full border-gold/30 text-gold hover:bg-gold/10">
+                    <Pause className="w-4 h-4 mr-2" />
+                    Suspender
                   </Button>
-                )}
-
-                {/* Suspended: Reactivar o eliminar si no hay ventas */}
-                {raffle.status === 'suspended' && (
-                  <>
-                    <Button
-                      onClick={handleReactivate}
-                      className="w-full bg-green-600/10 border-green-400/20 text-green-100 hover:bg-green-600/20"
-                    >
-                      Reactivar Sorteo
-                    </Button>
-                    {raffle.sold_count === 0 && (
-                      <Button
-                        variant="outline"
-                        onClick={handleDelete}
-                        disabled={deleteMutation.isPending}
-                        className="w-full bg-red-600/10 border-red-400/20 text-red-100 hover:bg-red-600/20"
-                      >
-                        {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
-                      </Button>
-                    )}
-                  </>
-                )}
-
-                {/* Completed sin ganador: Extender o cerrar */}
-                {raffle.status === 'completed' && !raffle.winner_number && (
-                  <>
-                    <Button
-                      onClick={handleExtendDate}
-                      className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
-                    >
-                      Extender Fecha
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleCloseDraw}
-                      className="w-full bg-slate-600/10 border-slate-400/20 text-slate-100 hover:bg-slate-600/20"
-                    >
-                      Cerrar Sorteo
-                    </Button>
-                  </>
                 )}
               </div>
             )}
 
-            {/* Admin actions (only for suspended raffles) */}
             {isAdmin && !isOwner && (raffle.status === 'draft' || raffle.status === 'suspended') && raffle.sold_count === 0 && (
-              <div className="flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                  className="w-full bg-red-600/10 border-red-400/20 text-red-100 hover:bg-red-600/20"
-                >
-                  Eliminar (Admin)
-                </Button>
-              </div>
+              <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Eliminar (Admin)
+              </Button>
             )}
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="bg-white/10 backdrop-blur-sm px-8 md:px-12 py-4">
-          <div className={cn("flex items-center justify-between text-sm mb-2", colors.textMuted)}>
+        <div className="bg-dark-lighter px-8 md:px-12 py-4 border-t border-dark-lighter">
+          <div className="flex items-center justify-between text-sm text-neutral-400 mb-2">
             <span>Progreso de ventas</span>
-            <span className="font-semibold">{soldPercentage.toFixed(1)}%</span>
+            <span className="font-semibold text-white">{soldPercentage.toFixed(1)}%</span>
           </div>
-          <div className="w-full bg-white/20 rounded-full h-3">
+          <div className="w-full bg-dark rounded-full h-3">
             <div
-              className="bg-white rounded-full h-3 transition-all duration-500"
+              className="bg-gradient-to-r from-gold to-gold-dark rounded-full h-3 transition-all duration-500"
               style={{ width: `${soldPercentage}%` }}
             />
           </div>
@@ -675,109 +417,92 @@ export function RaffleDetailPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Disponibles</span>
-            <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <span className="text-sm text-neutral-400">Disponibles</span>
+            <div className="w-8 h-8 bg-accent-green/20 rounded-lg flex items-center justify-center">
+              <Check className="w-4 h-4 text-accent-green" />
+            </div>
           </div>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white">{available_count}</p>
+          <p className="text-3xl font-bold text-white">{available_count}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Vendidos</span>
-            <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
+            <span className="text-sm text-neutral-400">Vendidos</span>
+            <div className="w-8 h-8 bg-gold/20 rounded-lg flex items-center justify-center">
+              <span className="text-gold">🪙</span>
+            </div>
           </div>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white">{sold_count}</p>
+          <p className="text-3xl font-bold text-white">{sold_count}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Reservados</span>
-            <svg className="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <span className="text-sm text-neutral-400">Reservados</span>
+            <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
+              <Clock className="w-4 h-4 text-accent-blue" />
+            </div>
           </div>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white">{reserved_count}</p>
+          <p className="text-3xl font-bold text-white">{reserved_count}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">
-              {raffle.my_total_spent ? 'Mi Inversión' : raffle.total_revenue ? 'Recaudación' : 'Información'}
+            <span className="text-sm text-neutral-400">
+              {raffle.my_total_spent ? 'Mi Inversión' : raffle.total_revenue ? 'Recaudación' : 'Total'}
             </span>
-            <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <div className="w-8 h-8 bg-accent-purple/20 rounded-lg flex items-center justify-center">
+              <span className="text-accent-purple">💰</span>
+            </div>
           </div>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white">
+          <p className="text-2xl font-bold text-white">
             {raffle.my_total_spent
               ? formatCurrency(Number(raffle.my_total_spent))
               : raffle.total_revenue
               ? formatCurrency(Number(raffle.total_revenue))
               : '-'}
           </p>
-          {raffle.my_total_spent && raffle.my_numbers_count && (
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-              {raffle.my_numbers_count} número(s) comprado(s)
-            </p>
-          )}
         </div>
       </div>
 
       {/* Image Gallery */}
       {data.images && data.images.length > 0 && (
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">
-            Galería de Imágenes
-          </h2>
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Galería</h2>
           <RaffleImageGallery images={data.images} />
         </div>
       )}
 
       {/* Raffle Info */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">
-          Información del Sorteo
-        </h2>
+      <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
+        <h2 className="text-xl font-semibold text-white mb-6">Información del Drop</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Fecha del sorteo</p>
-            <p className="font-medium text-slate-900 dark:text-white">
-              {formatDateTime(raffle.draw_date)}
+            <p className="text-sm text-neutral-500 mb-1 flex items-center gap-2">
+              <Calendar className="w-4 h-4" /> Fecha del sorteo
             </p>
+            <p className="font-medium text-white">{formatDateTime(raffle.draw_date)}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Método de sorteo</p>
-            <p className="font-medium text-slate-900 dark:text-white">
-              {getDrawMethodLabel(raffle.draw_method)}
-            </p>
+            <p className="text-sm text-neutral-500 mb-1">Método de sorteo</p>
+            <p className="font-medium text-white">{getDrawMethodLabel(raffle.draw_method)}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total de números</p>
-            <p className="font-medium text-slate-900 dark:text-white">
-              {raffle.total_numbers}
-            </p>
+            <p className="text-sm text-neutral-500 mb-1">Total de números</p>
+            <p className="font-medium text-white">{raffle.total_numbers}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">UUID</p>
-            <p className="font-mono text-xs text-slate-600 dark:text-slate-400">
-              {raffle.uuid}
-            </p>
+            <p className="text-sm text-neutral-500 mb-1">UUID</p>
+            <p className="font-mono text-xs text-neutral-500">{raffle.uuid}</p>
           </div>
         </div>
       </div>
 
       {/* Numbers Grid */}
       {numbers.length > 0 && (
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">
-            Números del Sorteo
-          </h2>
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Números del Drop</h2>
           <NumberGrid
             numbers={numbers}
             selectedNumbers={selectedNumbers}

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from '../../../components/ui/Button';
 import { useCartStore } from '../../../store/cartStore';
+import { CheckCircle2, Sparkles } from 'lucide-react';
 
 export function PaymentSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -18,75 +19,73 @@ export function PaymentSuccessPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
+      <div className="bg-dark-card rounded-xl border border-dark-lighter p-8 text-center">
         {/* Success Icon with animation */}
         <div className="mb-6 relative">
-          <div className="w-24 h-24 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center animate-bounce">
-            <svg
-              className="w-12 h-12 text-green-600 dark:text-green-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+          <div className="w-24 h-24 mx-auto bg-accent-green/20 rounded-full flex items-center justify-center animate-bounce relative">
+            <CheckCircle2 className="w-12 h-12 text-accent-green" />
+            <Sparkles className="w-5 h-5 text-gold absolute -top-1 -right-1 animate-pulse" />
           </div>
         </div>
 
         {/* Success Message */}
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-          ¡Pago Exitoso!
+        <h1 className="text-3xl font-bold text-white mb-4">
+          ¡Participación Exitosa!
         </h1>
 
-        <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">
-          Tu pago ha sido procesado correctamente. Tus números han sido confirmados.
+        <p className="text-lg text-neutral-400 mb-6">
+          Tu pago ha sido procesado correctamente. Tus participaciones han sido confirmadas.
         </p>
 
         {/* Payment Details */}
         {(paymentId || reservationId) && (
-          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 mb-6 space-y-2">
+          <div className="bg-dark-lighter rounded-xl p-4 mb-6 space-y-2">
             {reservationId && (
               <div className="text-sm">
-                <span className="text-slate-600 dark:text-slate-400">ID de Reserva: </span>
-                <span className="font-mono text-slate-900 dark:text-white">{reservationId}</span>
+                <span className="text-neutral-400">ID de Reserva: </span>
+                <span className="font-mono text-white">{reservationId}</span>
               </div>
             )}
             {paymentId && (
               <div className="text-sm">
-                <span className="text-slate-600 dark:text-slate-400">ID de Pago: </span>
-                <span className="font-mono text-slate-900 dark:text-white">{paymentId}</span>
+                <span className="text-neutral-400">ID de Pago: </span>
+                <span className="font-mono text-white">{paymentId}</span>
               </div>
             )}
           </div>
         )}
 
         {/* Next Steps */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
-          <p className="text-sm text-blue-900 dark:text-blue-100 font-medium mb-2">
+        <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-6">
+          <p className="text-sm text-gold font-medium mb-2">
             ¿Qué sigue?
           </p>
-          <ul className="text-sm text-blue-800 dark:text-blue-200 text-left space-y-1">
-            <li>✓ Recibirás un correo de confirmación</li>
-            <li>✓ Puedes ver tus números en "Mis Compras"</li>
-            <li>✓ Te notificaremos cuando se realice el sorteo</li>
+          <ul className="text-sm text-neutral-300 text-left space-y-1">
+            <li className="flex items-center gap-2">
+              <span className="text-accent-green">✓</span>
+              Recibirás un correo de confirmación
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-accent-green">✓</span>
+              Puedes ver tus participaciones en "Mis Drops"
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-accent-green">✓</span>
+              Te notificaremos cuando se realice el Drop
+            </li>
           </ul>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link to="/dashboard/purchases">
+          <Link to="/my-tickets">
             <Button className="w-full sm:w-auto">
-              Ver Mis Compras
+              Ver Mis Drops
             </Button>
           </Link>
-          <Link to="/raffles">
+          <Link to="/explore">
             <Button variant="outline" className="w-full sm:w-auto">
-              Ver Más Sorteos
+              Explorar Más Drops
             </Button>
           </Link>
         </div>

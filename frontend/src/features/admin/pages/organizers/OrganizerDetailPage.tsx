@@ -90,22 +90,22 @@ export function OrganizerDetailPage() {
             Volver
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-3xl font-bold text-white">
               {organizer.profile.business_name}
             </h1>
-            <p className="text-slate-600 mt-1">
+            <p className="text-neutral-400 mt-1">
               {organizer.user.first_name} {organizer.user.last_name} · {organizer.user.email}
             </p>
           </div>
         </div>
 
         {organizer.profile.verified ? (
-          <Badge className="bg-green-100 text-green-700">
+          <Badge className="bg-accent-green/20 text-accent-green">
             <CheckCircle className="w-4 h-4 mr-2" />
             Verificado
           </Badge>
         ) : (
-          <Badge className="bg-amber-100 text-amber-700">
+          <Badge className="bg-gold/20 text-gold">
             <XCircle className="w-4 h-4 mr-2" />
             No Verificado
           </Badge>
@@ -114,44 +114,44 @@ export function OrganizerDetailPage() {
 
       {/* Profile Info & Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="p-6 lg:col-span-2">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">
+        <Card className="p-6 lg:col-span-2 bg-dark-card border-dark-lighter">
+          <h2 className="text-xl font-semibold text-white mb-4">
             Información del Perfil
           </h2>
           <dl className="grid grid-cols-2 gap-4">
             <div>
-              <dt className="text-sm font-medium text-slate-600">ID Usuario</dt>
-              <dd className="text-sm text-slate-900 mt-1">{organizer.user.id}</dd>
+              <dt className="text-sm font-medium text-neutral-400">ID Usuario</dt>
+              <dd className="text-sm text-white mt-1">{organizer.user.id}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Tax ID</dt>
-              <dd className="text-sm text-slate-900 mt-1 font-mono">
+              <dt className="text-sm font-medium text-neutral-400">Tax ID</dt>
+              <dd className="text-sm text-white mt-1 font-mono">
                 {organizer.profile.tax_id || "No proporcionado"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Banco</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Banco</dt>
+              <dd className="text-sm text-white mt-1">
                 {organizer.profile.bank_name || "No proporcionado"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Cuenta Bancaria</dt>
-              <dd className="text-sm text-slate-900 mt-1 font-mono">
+              <dt className="text-sm font-medium text-neutral-400">Cuenta Bancaria</dt>
+              <dd className="text-sm text-white mt-1 font-mono">
                 {organizer.profile.bank_account_number || "No proporcionado"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Comisión Personalizada</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Comisión Personalizada</dt>
+              <dd className="text-sm text-white mt-1">
                 {organizer.profile.commission_override
                   ? `${organizer.profile.commission_override}%`
                   : "Por defecto"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Frecuencia de Pago</dt>
-              <dd className="text-sm text-slate-900 mt-1 capitalize">
+              <dt className="text-sm font-medium text-neutral-400">Frecuencia de Pago</dt>
+              <dd className="text-sm text-white mt-1 capitalize">
                 {organizer.profile.payout_schedule || "Mensual"}
               </dd>
             </div>
@@ -159,8 +159,8 @@ export function OrganizerDetailPage() {
         </Card>
 
         {/* Actions */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
+          <h2 className="text-xl font-semibold text-white mb-4">
             Acciones Administrativas
           </h2>
           <div className="space-y-3">
@@ -168,8 +168,8 @@ export function OrganizerDetailPage() {
               variant="outline"
               className={`w-full justify-start ${
                 organizer.profile.verified
-                  ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50 hover:border-amber-600"
-                  : "text-green-600 hover:text-green-700 hover:bg-green-50 hover:border-green-600"
+                  ? "text-gold hover:text-gold hover:bg-dark-lighter hover:border-gold"
+                  : "text-accent-green hover:text-accent-green hover:bg-dark-lighter hover:border-accent-green"
               }`}
               onClick={handleToggleVerification}
             >
@@ -188,7 +188,7 @@ export function OrganizerDetailPage() {
 
             <Button
               variant="outline"
-              className="w-full justify-start text-blue-600 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-600"
+              className="w-full justify-start text-accent-blue hover:text-accent-blue hover:bg-dark-lighter hover:border-accent-blue"
               onClick={handleUpdateCommission}
             >
               <Percent className="w-4 h-4 mr-2" />
@@ -196,8 +196,8 @@ export function OrganizerDetailPage() {
             </Button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-xs text-slate-500">
+          <div className="mt-6 pt-6 border-t border-dark-lighter">
+            <p className="text-xs text-neutral-500">
               Las acciones administrativas se registran en los logs de auditoría.
             </p>
           </div>
@@ -205,54 +205,54 @@ export function OrganizerDetailPage() {
       </div>
 
       {/* Revenue Breakdown */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold text-slate-900 mb-4">
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-xl font-semibold text-white mb-4">
           Desglose de Ingresos
         </h2>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-sm font-medium text-slate-600">Ingresos Brutos</p>
-            <p className="text-2xl font-bold text-slate-900 mt-1">
-              {formatCurrency(organizer.revenue_breakdown.gross_revenue)}
+            <p className="text-sm font-medium text-neutral-400">Ingresos Brutos</p>
+            <p className="text-2xl font-bold text-white mt-1">
+              🪙 {formatCurrency(organizer.revenue_breakdown.gross_revenue)}
             </p>
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-600">Comisión Plataforma</p>
-            <p className="text-2xl font-bold text-red-600 mt-1">
-              -{formatCurrency(organizer.revenue_breakdown.platform_fees)}
+            <p className="text-sm font-medium text-neutral-400">Comisión Plataforma</p>
+            <p className="text-2xl font-bold text-red-400 mt-1">
+              -🪙 {formatCurrency(organizer.revenue_breakdown.platform_fees)}
             </p>
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-600">Ingresos Netos</p>
-            <p className="text-2xl font-bold text-green-600 mt-1">
-              {formatCurrency(organizer.revenue_breakdown.net_revenue)}
+            <p className="text-sm font-medium text-neutral-400">Ingresos Netos</p>
+            <p className="text-2xl font-bold text-accent-green mt-1">
+              🪙 {formatCurrency(organizer.revenue_breakdown.net_revenue)}
             </p>
           </div>
         </div>
       </Card>
 
       {/* Stats */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold text-slate-900 mb-4">
-          Métricas de Rifas
+      <Card className="p-6 bg-dark-card border-dark-lighter">
+        <h2 className="text-xl font-semibold text-white mb-4">
+          Métricas de Drops
         </h2>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-sm font-medium text-slate-600">Total Rifas</p>
-            <p className="text-2xl font-bold text-slate-900 mt-1">
+            <p className="text-sm font-medium text-neutral-400">Total Drops</p>
+            <p className="text-2xl font-bold text-white mt-1">
               {organizer.metrics.total_raffles}
             </p>
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-600">Pago Pendiente</p>
-            <p className="text-2xl font-bold text-blue-600 mt-1">
-              {formatCurrency(organizer.metrics.pending_payout)}
+            <p className="text-sm font-medium text-neutral-400">Pago Pendiente</p>
+            <p className="text-2xl font-bold text-accent-blue mt-1">
+              🪙 {formatCurrency(organizer.metrics.pending_payout)}
             </p>
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-600">Total Pagado</p>
-            <p className="text-2xl font-bold text-green-600 mt-1">
-              {formatCurrency(organizer.profile.total_payouts)}
+            <p className="text-sm font-medium text-neutral-400">Total Pagado</p>
+            <p className="text-2xl font-bold text-accent-green mt-1">
+              🪙 {formatCurrency(organizer.profile.total_payouts)}
             </p>
           </div>
         </div>

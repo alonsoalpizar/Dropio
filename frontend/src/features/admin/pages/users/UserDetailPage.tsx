@@ -9,7 +9,6 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { UserStatus, KYCLevel } from "../../types";
 import { format } from "date-fns";
-import { formatCurrency } from "@/lib/currency";
 
 export function UserDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -66,7 +65,7 @@ export function UserDetailPage() {
     return (
       <div className="p-6">
         <EmptyState
-          icon={<AlertCircle className="w-12 h-12 text-red-500" />}
+          icon={<AlertCircle className="w-12 h-12 text-red-400" />}
           title="Error al cargar usuario"
           description={error?.message || "Usuario no encontrado"}
         />
@@ -94,83 +93,83 @@ export function UserDetailPage() {
             Volver
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-3xl font-bold text-white">
               {user.first_name} {user.last_name}
             </h1>
-            <p className="text-slate-600 mt-1">{user.email}</p>
+            <p className="text-neutral-400 mt-1">{user.email}</p>
           </div>
         </div>
       </div>
 
       {/* User Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="p-6 lg:col-span-2">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">
+        <Card className="p-6 lg:col-span-2 bg-dark-card border-dark-lighter">
+          <h2 className="text-xl font-semibold text-white mb-4">
             Información del Usuario
           </h2>
           <dl className="grid grid-cols-2 gap-4">
             <div>
-              <dt className="text-sm font-medium text-slate-600">ID</dt>
-              <dd className="text-sm text-slate-900 mt-1">{user.id}</dd>
+              <dt className="text-sm font-medium text-neutral-400">ID</dt>
+              <dd className="text-sm text-white mt-1">{user.id}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">UUID</dt>
-              <dd className="text-sm text-slate-900 mt-1 font-mono">{user.uuid}</dd>
+              <dt className="text-sm font-medium text-neutral-400">UUID</dt>
+              <dd className="text-sm text-white mt-1 font-mono">{user.uuid}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Email</dt>
-              <dd className="text-sm text-slate-900 mt-1 flex items-center gap-2">
+              <dt className="text-sm font-medium text-neutral-400">Email</dt>
+              <dd className="text-sm text-white mt-1 flex items-center gap-2">
                 {user.email}
                 {user.email_verified && (
-                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <CheckCircle className="w-4 h-4 text-accent-green" />
                 )}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Teléfono</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Teléfono</dt>
+              <dd className="text-sm text-white mt-1">
                 {user.phone || "No proporcionado"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Cédula</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Cédula</dt>
+              <dd className="text-sm text-white mt-1">
                 {user.cedula || "No proporcionado"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Rol</dt>
-              <dd className="text-sm text-slate-900 mt-1">
-                <Badge className="bg-blue-100 text-blue-700">{user.role}</Badge>
+              <dt className="text-sm font-medium text-neutral-400">Rol</dt>
+              <dd className="text-sm text-white mt-1">
+                <Badge className="bg-accent-blue/20 text-accent-blue">{user.role}</Badge>
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Estado</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Estado</dt>
+              <dd className="text-sm text-white mt-1">
                 <Badge className={
-                  user.status === "active" ? "bg-green-100 text-green-700" :
-                  user.status === "suspended" ? "bg-amber-100 text-amber-700" :
-                  "bg-red-100 text-red-700"
+                  user.status === "active" ? "bg-accent-green/20 text-accent-green" :
+                  user.status === "suspended" ? "bg-gold/20 text-gold" :
+                  "bg-red-500/20 text-red-400"
                 }>
                   {user.status}
                 </Badge>
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Nivel KYC</dt>
-              <dd className="text-sm text-slate-900 mt-1">
-                <Badge className="bg-blue-100 text-blue-700">{user.kyc_level}</Badge>
+              <dt className="text-sm font-medium text-neutral-400">Nivel KYC</dt>
+              <dd className="text-sm text-white mt-1">
+                <Badge className="bg-accent-blue/20 text-accent-blue">{user.kyc_level}</Badge>
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Fecha de Registro</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Fecha de Registro</dt>
+              <dd className="text-sm text-white mt-1">
                 {user.created_at ? format(new Date(user.created_at), "dd/MM/yyyy HH:mm") : "N/A"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-slate-600">Última Actualización</dt>
-              <dd className="text-sm text-slate-900 mt-1">
+              <dt className="text-sm font-medium text-neutral-400">Última Actualización</dt>
+              <dd className="text-sm text-white mt-1">
                 {user.updated_at ? format(new Date(user.updated_at), "dd/MM/yyyy HH:mm") : "N/A"}
               </dd>
             </div>
@@ -178,15 +177,15 @@ export function UserDetailPage() {
         </Card>
 
         {/* Actions */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
+          <h2 className="text-xl font-semibold text-white mb-4">
             Acciones Administrativas
           </h2>
           <div className="space-y-3">
             {user.status === "active" ? (
               <Button
                 variant="outline"
-                className="w-full justify-start text-amber-600 hover:text-amber-700 hover:bg-amber-50 hover:border-amber-600"
+                className="w-full justify-start text-gold hover:text-gold hover:bg-gold/10 hover:border-gold"
                 onClick={() => handleUpdateStatus("suspended", "Suspendido por admin")}
               >
                 <Ban className="w-4 h-4 mr-2" />
@@ -195,7 +194,7 @@ export function UserDetailPage() {
             ) : (
               <Button
                 variant="outline"
-                className="w-full justify-start text-green-600 hover:text-green-700 hover:bg-green-50 hover:border-green-600"
+                className="w-full justify-start text-accent-green hover:text-accent-green hover:bg-accent-green/10 hover:border-accent-green"
                 onClick={() => handleUpdateStatus("active")}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
@@ -207,15 +206,15 @@ export function UserDetailPage() {
             {!showKYCSelector ? (
               <Button
                 variant="outline"
-                className="w-full justify-start text-blue-600 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-600"
+                className="w-full justify-start text-accent-blue hover:text-accent-blue hover:bg-accent-blue/10 hover:border-accent-blue"
                 onClick={() => setShowKYCSelector(true)}
               >
                 <Shield className="w-4 h-4 mr-2" />
                 Actualizar KYC
               </Button>
             ) : (
-              <div className="space-y-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <p className="text-sm font-medium text-slate-700">Seleccionar nivel KYC:</p>
+              <div className="space-y-2 p-3 bg-dark rounded-lg border border-dark-lighter">
+                <p className="text-sm font-medium text-neutral-300">Seleccionar nivel KYC:</p>
                 <div className="space-y-1">
                   {kycLevels.map((level) => (
                     <button
@@ -224,8 +223,8 @@ export function UserDetailPage() {
                       disabled={level.value === user.kyc_level}
                       className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
                         level.value === user.kyc_level
-                          ? "bg-blue-100 text-blue-700 font-medium cursor-default"
-                          : "hover:bg-slate-100 text-slate-700"
+                          ? "bg-gold/20 text-gold font-medium cursor-default"
+                          : "hover:bg-dark-lighter text-neutral-300"
                       }`}
                     >
                       {level.label}
@@ -247,7 +246,7 @@ export function UserDetailPage() {
             {/* Reset Password */}
             <Button
               variant="outline"
-              className="w-full justify-start text-amber-600 hover:text-amber-700 hover:bg-amber-50 hover:border-amber-600"
+              className="w-full justify-start text-gold hover:text-gold hover:bg-gold/10 hover:border-gold"
               onClick={handleResetPassword}
               disabled={resetPassword.isPending}
             >
@@ -256,8 +255,8 @@ export function UserDetailPage() {
             </Button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-xs text-slate-500">
+          <div className="mt-6 pt-6 border-t border-dark-lighter">
+            <p className="text-xs text-neutral-500">
               Las acciones administrativas se registran en los logs de auditoría.
             </p>
           </div>
@@ -266,33 +265,33 @@ export function UserDetailPage() {
 
       {/* Stats */}
       {user.raffle_stats && (
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">
-            Estadísticas de Rifas
+        <Card className="p-6 bg-dark-card border-dark-lighter">
+          <h2 className="text-xl font-semibold text-white mb-4">
+            Estadísticas de Drops
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p className="text-sm font-medium text-slate-600">Total Rifas</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">
+              <p className="text-sm font-medium text-neutral-400">Total Drops</p>
+              <p className="text-2xl font-bold text-white mt-1">
                 {user.raffle_stats.total_raffles}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-600">Rifas Activas</p>
-              <p className="text-2xl font-bold text-blue-600 mt-1">
+              <p className="text-sm font-medium text-neutral-400">Drops Activos</p>
+              <p className="text-2xl font-bold text-accent-blue mt-1">
                 {user.raffle_stats.active_raffles}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-600">Rifas Completadas</p>
-              <p className="text-2xl font-bold text-green-600 mt-1">
+              <p className="text-sm font-medium text-neutral-400">Drops Completados</p>
+              <p className="text-2xl font-bold text-accent-green mt-1">
                 {user.raffle_stats.completed_raffles}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-600">Ingresos Totales</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">
-                {formatCurrency(user.raffle_stats.total_revenue)}
+              <p className="text-sm font-medium text-neutral-400">AloCoins Generados</p>
+              <p className="text-2xl font-bold text-gold mt-1">
+                🪙 {user.raffle_stats.total_revenue?.toLocaleString() || 0}
               </p>
             </div>
           </div>
@@ -301,26 +300,26 @@ export function UserDetailPage() {
 
       {/* Payment Stats */}
       {user.payment_stats && (
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">
+        <Card className="p-6 bg-dark-card border-dark-lighter">
+          <h2 className="text-xl font-semibold text-white mb-4">
             Estadísticas de Pagos
           </h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <p className="text-sm font-medium text-slate-600">Total Pagos</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">
+              <p className="text-sm font-medium text-neutral-400">Total Pagos</p>
+              <p className="text-2xl font-bold text-white mt-1">
                 {user.payment_stats.total_payments}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-600">Total Gastado</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">
-                {formatCurrency(user.payment_stats.total_spent)}
+              <p className="text-sm font-medium text-neutral-400">AloCoins Gastados</p>
+              <p className="text-2xl font-bold text-gold mt-1">
+                🪙 {user.payment_stats.total_spent?.toLocaleString() || 0}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-600">Refunds</p>
-              <p className="text-2xl font-bold text-amber-600 mt-1">
+              <p className="text-sm font-medium text-neutral-400">Refunds</p>
+              <p className="text-2xl font-bold text-gold mt-1">
                 {user.payment_stats.refund_count}
               </p>
             </div>

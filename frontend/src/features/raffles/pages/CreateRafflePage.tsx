@@ -6,6 +6,7 @@ import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { Alert } from '../../../components/ui/Alert';
+import { ArrowLeft, Info } from 'lucide-react';
 import type { CreateRaffleInput, DrawMethod } from '../../../types/raffle';
 
 export function CreateRafflePage() {
@@ -45,12 +46,12 @@ export function CreateRafflePage() {
     }
 
     if (!formData.draw_date) {
-      newErrors.draw_date = 'La fecha del sorteo es requerida';
+      newErrors.draw_date = 'La fecha del Drop es requerida';
     } else {
       const drawDate = new Date(formData.draw_date);
       const now = new Date();
       if (drawDate <= now) {
-        newErrors.draw_date = 'La fecha del sorteo debe ser en el futuro';
+        newErrors.draw_date = 'La fecha del Drop debe ser en el futuro';
       }
     }
 
@@ -74,10 +75,10 @@ export function CreateRafflePage() {
       };
 
       const result = await createMutation.mutateAsync(payload);
-      alert('Sorteo creado exitosamente');
+      alert('Drop creado exitosamente');
       navigate(`/raffles/${result.raffle.id}`);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Error al crear sorteo');
+      alert(error instanceof Error ? error.message : 'Error al crear Drop');
     }
   };
 
@@ -100,38 +101,36 @@ export function CreateRafflePage() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       {/* Header */}
       <div className="mb-8">
-        <Link to="/organizer" className="inline-flex items-center text-teal-600 hover:text-teal-700 mb-4">
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+        <Link to="/organizer" className="inline-flex items-center text-gold hover:text-gold-light mb-4">
+          <ArrowLeft className="w-5 h-5 mr-2" />
           Volver al panel
         </Link>
 
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-          Crear Nuevo Sorteo
+        <h1 className="text-4xl font-bold text-white">
+          Crear Nuevo Drop
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 mt-2">
-          Completa la información del sorteo. Podrás editarla antes de publicarlo.
+        <p className="text-neutral-400 mt-2">
+          Completa la información del Drop. Podrás editarla antes de publicarlo.
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-lg shadow p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-dark-card rounded-xl border border-dark-lighter p-6 space-y-6">
         {/* Title */}
         <div>
           <Label htmlFor="title">
-            Título del Sorteo <span className="text-red-500">*</span>
+            Título del Drop <span className="text-red-400">*</span>
           </Label>
           <Input
             id="title"
             type="text"
-            placeholder="Ej: Sorteo iPhone 15 Pro Max 256GB"
+            placeholder="Ej: Drop iPhone 15 Pro Max 256GB"
             value={formData.title}
             onChange={(e) => handleChange('title', e.target.value)}
             error={errors.title}
             maxLength={255}
           />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-neutral-500 mt-1">
             Mínimo 5 caracteres, máximo 255
           </p>
         </div>
@@ -139,19 +138,19 @@ export function CreateRafflePage() {
         {/* Description */}
         <div>
           <Label htmlFor="description">
-            Descripción <span className="text-red-500">*</span>
+            Descripción <span className="text-red-400">*</span>
           </Label>
           <textarea
             id="description"
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 min-h-[120px]"
-            placeholder="Describe detalladamente el premio y las condiciones del sorteo..."
+            className="w-full px-4 py-3 rounded-xl border border-dark-lighter bg-dark text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors min-h-[120px]"
+            placeholder="Describe detalladamente el premio y las condiciones del Drop..."
             value={formData.description}
             onChange={(e) => handleChange('description', e.target.value)}
           />
           {errors.description && (
-            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+            <p className="text-sm text-red-400 mt-1">{errors.description}</p>
           )}
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-neutral-500 mt-1">
             Mínimo 20 caracteres
           </p>
         </div>
@@ -159,11 +158,11 @@ export function CreateRafflePage() {
         {/* Category */}
         <div>
           <Label htmlFor="category_id">
-            Categoría <span className="text-red-500">*</span>
+            Categoría <span className="text-red-400">*</span>
           </Label>
           <select
             id="category_id"
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full px-4 py-3 rounded-xl border border-dark-lighter bg-dark text-white focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors"
             value={formData.category_id || ''}
             onChange={(e) => handleChange('category_id', e.target.value ? Number(e.target.value) : undefined)}
             disabled={categoriesLoading}
@@ -176,10 +175,10 @@ export function CreateRafflePage() {
             ))}
           </select>
           {errors.category_id && (
-            <p className="text-sm text-red-500 mt-1">{errors.category_id}</p>
+            <p className="text-sm text-red-400 mt-1">{errors.category_id}</p>
           )}
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Ayuda a los usuarios a encontrar tu sorteo
+          <p className="text-xs text-neutral-500 mt-1">
+            Ayuda a los usuarios a encontrar tu Drop
           </p>
         </div>
 
@@ -187,7 +186,7 @@ export function CreateRafflePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="price_per_number">
-              Precio por Número <span className="text-red-500">*</span>
+              Precio por Número (AloCoins) <span className="text-red-400">*</span>
             </Label>
             <Input
               id="price_per_number"
@@ -203,7 +202,7 @@ export function CreateRafflePage() {
 
           <div>
             <Label htmlFor="total_numbers">
-              Total de Números <span className="text-red-500">*</span>
+              Total de Números <span className="text-red-400">*</span>
             </Label>
             <Input
               id="total_numbers"
@@ -216,7 +215,7 @@ export function CreateRafflePage() {
               max="10000"
               step="1"
             />
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-neutral-500 mt-1">
               Entre 10 y 10,000
             </p>
           </div>
@@ -226,7 +225,7 @@ export function CreateRafflePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="draw_date">
-              Fecha del Sorteo <span className="text-red-500">*</span>
+              Fecha del Drop <span className="text-red-400">*</span>
             </Label>
             <Input
               id="draw_date"
@@ -239,11 +238,11 @@ export function CreateRafflePage() {
 
           <div>
             <Label htmlFor="draw_method">
-              Método de Sorteo <span className="text-red-500">*</span>
+              Método de Sorteo <span className="text-red-400">*</span>
             </Label>
             <select
               id="draw_method"
-              className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 rounded-xl border border-dark-lighter bg-dark text-white focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors"
               value={formData.draw_method}
               onChange={(e) => handleChange('draw_method', e.target.value as DrawMethod)}
             >
@@ -256,31 +255,36 @@ export function CreateRafflePage() {
 
         {/* Info Alert */}
         <Alert variant="info">
-          <p className="font-semibold">Importante</p>
-          <p className="text-sm mt-1">
-            El sorteo se creará en estado "borrador". Podrás editarlo y agregar imágenes antes de publicarlo.
-            Una vez publicado, solo podrás modificar la descripción y la fecha.
-          </p>
+          <div className="flex items-start gap-2">
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">Importante</p>
+              <p className="text-sm mt-1">
+                El Drop se creará en estado "borrador". Podrás editarlo y agregar imágenes antes de publicarlo.
+                Una vez publicado, solo podrás modificar la descripción y la fecha.
+              </p>
+            </div>
+          </div>
         </Alert>
 
         {/* Summary */}
         {formData.total_numbers > 0 && formData.price_per_number > 0 && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-            <p className="text-sm font-medium text-slate-900 dark:text-white mb-2">
+          <div className="bg-gold/10 border border-gold/30 rounded-xl p-4">
+            <p className="text-sm font-medium text-white mb-2">
               Resumen
             </p>
-            <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
+            <div className="space-y-1 text-sm text-neutral-300">
               <p>
-                Total de números: <strong>{formData.total_numbers}</strong>
+                Total de números: <strong className="text-white">{formData.total_numbers}</strong>
               </p>
               <p>
-                Precio por número: <strong>₡{formData.price_per_number.toLocaleString()}</strong>
+                Precio por número: <strong className="text-gold">🪙 {formData.price_per_number.toLocaleString()} AloCoins</strong>
               </p>
-              <p className="text-base font-semibold text-blue-600 pt-2">
-                Recaudación potencial: ₡{(formData.total_numbers * formData.price_per_number).toLocaleString()}
+              <p className="text-base font-semibold text-gold pt-2">
+                Recaudación potencial: 🪙 {(formData.total_numbers * formData.price_per_number).toLocaleString()} AloCoins
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                (Comisión de plataforma 10%: ₡{((formData.total_numbers * formData.price_per_number) * 0.1).toLocaleString()})
+              <p className="text-xs text-neutral-400">
+                (Comisión de plataforma 10%: 🪙 {((formData.total_numbers * formData.price_per_number) * 0.1).toLocaleString()})
               </p>
             </div>
           </div>
@@ -293,7 +297,7 @@ export function CreateRafflePage() {
             disabled={createMutation.isPending}
             className="flex-1"
           >
-            {createMutation.isPending ? 'Creando...' : 'Crear Sorteo'}
+            {createMutation.isPending ? 'Creando...' : 'Crear Drop'}
           </Button>
           <Button
             type="button"

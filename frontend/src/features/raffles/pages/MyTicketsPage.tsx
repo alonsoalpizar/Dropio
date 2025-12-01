@@ -4,7 +4,7 @@ import { useUser } from '@/hooks/useAuth';
 import { useMyTickets } from '@/hooks/useRaffles';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Ticket, TrendingUp, Calendar, DollarSign } from 'lucide-react';
+import { Ticket, TrendingUp, Calendar, Trophy } from 'lucide-react';
 import { formatCurrency, formatDateTime } from '@/lib/utils';
 
 export const MyTicketsPage = () => {
@@ -16,24 +16,31 @@ export const MyTicketsPage = () => {
   const { data, isLoading, error } = useMyTickets(page, 20);
 
   if (!user) {
-    return <LoadingSpinner text="Cargando participaciones..." />;
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <LoadingSpinner text="Cargando..." />
+      </div>
+    );
   }
 
   if (isLoading) {
-    return <LoadingSpinner text="Cargando tus tickets..." />;
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <LoadingSpinner text="Cargando tus Drops..." />
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600 dark:text-red-400">Error al cargar tus tickets</p>
+        <p className="text-red-400">Error al cargar tus Drops</p>
       </div>
     );
   }
 
   const tickets = data?.tickets || [];
 
-  // Filtrar tickets según el tab activo
   const filteredTickets = tickets.filter((ticket) => {
     const now = new Date();
     const drawDate = new Date(ticket.raffle.draw_date);
@@ -48,7 +55,6 @@ export const MyTicketsPage = () => {
     return false;
   });
 
-  // Calcular estadísticas
   const totalTickets = tickets.reduce((sum, t) => sum + t.numbers.length, 0);
   const totalSpent = tickets.reduce((sum, t) => sum + parseFloat(t.total_spent || '0'), 0);
   const totalWon = tickets.filter(t => t.raffle.winner_user_id === user.id).length;
@@ -56,65 +62,64 @@ export const MyTicketsPage = () => {
   const tabs = [
     { id: 'active' as const, label: 'Activos', count: tickets.filter(t => t.raffle.status === 'active').length },
     { id: 'finished' as const, label: 'Finalizados', count: tickets.filter(t => t.raffle.status === 'completed').length },
-    { id: 'won' as const, label: 'Ganados 🎉', count: totalWon },
+    { id: 'won' as const, label: 'Ganados', count: totalWon },
   ];
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="animate-fade-in">
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-          Mis Números
-        </h1>
-        <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">
-          Gestiona tus participaciones en sorteos
+        <h1 className="text-4xl font-bold text-white">Mis Drops</h1>
+        <p className="text-lg text-neutral-400 mt-2">
+          Gestiona tus participaciones en Drops
         </p>
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Participaciones</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalTickets}</p>
+              <p className="text-sm text-neutral-400 mb-1">Total Participaciones</p>
+              <p className="text-3xl font-bold text-white">{totalTickets}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-              <Ticket className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="w-12 h-12 bg-gold/20 rounded-xl flex items-center justify-center">
+              <Ticket className="w-6 h-6 text-gold" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Invertido Total</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                {formatCurrency(totalSpent)}
+              <p className="text-sm text-neutral-400 mb-1">AloCoins Invertidos</p>
+              <p className="text-3xl font-bold text-white flex items-center gap-2">
+                <span className="text-gold">🪙</span>
+                {formatCurrency(totalSpent).replace('₡', '')}
               </p>
             </div>
-            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-accent-green" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <div className="bg-dark-card rounded-xl border border-dark-lighter p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Sorteos Ganados</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalWon}</p>
+              <p className="text-sm text-neutral-400 mb-1">Drops Ganados</p>
+              <p className="text-3xl font-bold text-white">{totalWon}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center">
-              <span className="text-2xl">🏆</span>
+            <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
+              <Trophy className="w-6 h-6 text-accent-purple" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div className="border-b border-slate-200 dark:border-slate-700">
+      <div className="bg-dark-card rounded-xl border border-dark-lighter overflow-hidden">
+        <div className="border-b border-dark-lighter">
           <nav className="flex gap-0">
             {tabs.map((tab) => (
               <button
@@ -122,18 +127,20 @@ export const MyTicketsPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 px-6 py-4 text-sm font-medium transition-colors relative ${
                   activeTab === tab.id
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'text-gold'
+                    : 'text-neutral-400 hover:text-white'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-slate-100 dark:bg-slate-700">
+                  <span className={`ml-2 px-2 py-0.5 text-xs rounded-full ${
+                    activeTab === tab.id ? 'bg-gold/20 text-gold' : 'bg-dark-lighter text-neutral-400'
+                  }`}>
                     {tab.count}
                   </span>
                 )}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400" />
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold" />
                 )}
               </button>
             ))}
@@ -144,23 +151,23 @@ export const MyTicketsPage = () => {
         <div className="p-6">
           {filteredTickets.length === 0 ? (
             <EmptyState
-              icon={<Ticket className="w-12 h-12" />}
+              icon={<Ticket className="w-12 h-12 text-gold" />}
               title={
                 activeTab === 'active'
                   ? '¡Empieza a participar!'
                   : activeTab === 'finished'
-                  ? 'No hay sorteos finalizados'
+                  ? 'No hay Drops finalizados'
                   : '¡Aún no has ganado!'
               }
               description={
                 activeTab === 'active'
-                  ? 'Explora los sorteos activos y compra números para participar. ¡La suerte te espera!'
+                  ? 'Explora los Drops activos y participa con tus AloCoins.'
                   : activeTab === 'finished'
-                  ? 'Los sorteos en los que has participado y ya finalizaron aparecerán aquí.'
-                  : 'Sigue participando en sorteos. ¡Tu momento llegará!'
+                  ? 'Los Drops en los que has participado y ya finalizaron aparecerán aquí.'
+                  : 'Sigue participando en Drops. ¡Tu momento llegará!'
               }
               action={{
-                label: 'Explorar sorteos',
+                label: 'Explorar Drops',
                 onClick: () => navigate('/explore'),
               }}
             />
@@ -169,27 +176,27 @@ export const MyTicketsPage = () => {
               {filteredTickets.map((ticket) => (
                 <div
                   key={ticket.raffle.id}
-                  className="border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+                  className="border border-dark-lighter rounded-xl p-6 hover:border-gold/30 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <Link
                         to={`/raffles/${ticket.raffle.id}`}
-                        className="text-lg font-semibold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="text-lg font-semibold text-white hover:text-gold transition-colors"
                       >
                         {ticket.raffle.title}
                       </Link>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      <p className="text-sm text-neutral-400 mt-1 line-clamp-2">
                         {ticket.raffle.description}
                       </p>
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         ticket.raffle.status === 'active'
-                          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                          ? 'bg-accent-green/20 text-accent-green'
                           : ticket.raffle.status === 'completed'
-                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                          : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                          ? 'bg-accent-blue/20 text-accent-blue'
+                          : 'bg-neutral-700 text-neutral-300'
                       }`}
                     >
                       {ticket.raffle.status === 'active' ? 'Activo' : 'Finalizado'}
@@ -197,46 +204,47 @@ export const MyTicketsPage = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-2 text-sm text-neutral-400">
                       <Calendar className="w-4 h-4" />
-                      <span>Sorteo: {formatDateTime(ticket.raffle.draw_date)}</span>
+                      <span>{formatDateTime(ticket.raffle.draw_date)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-2 text-sm text-neutral-400">
                       <Ticket className="w-4 h-4" />
                       <span>{ticket.numbers.length} número(s)</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                      <DollarSign className="w-4 h-4" />
-                      <span>Invertido: {formatCurrency(parseFloat(ticket.total_spent))}</span>
+                    <div className="flex items-center gap-2 text-sm text-gold">
+                      <span>🪙</span>
+                      <span>{formatCurrency(parseFloat(ticket.total_spent)).replace('₡', '')} AloCoins</span>
                     </div>
                   </div>
 
                   {/* Números comprados */}
-                  <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  <div className="border-t border-dark-lighter pt-4">
+                    <p className="text-sm font-medium text-neutral-300 mb-2">
                       Tus números:
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {ticket.numbers.map((num) => (
                         <span
                           key={num.id}
-                          className={`px-3 py-1 rounded-md text-sm font-mono font-semibold ${
+                          className={`px-3 py-1 rounded-lg text-sm font-mono font-semibold ${
                             ticket.raffle.winner_number === num.number
-                              ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 ring-2 ring-amber-400'
-                              : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                              ? 'bg-gold/20 text-gold ring-2 ring-gold/50'
+                              : 'bg-dark-lighter text-neutral-300'
                           }`}
                         >
                           {num.number}
-                          {ticket.raffle.winner_number === num.number && ' 🎉'}
+                          {ticket.raffle.winner_number === num.number && ' 🏆'}
                         </span>
                       ))}
                     </div>
                   </div>
 
                   {ticket.raffle.winner_user_id === user.id && (
-                    <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                      <p className="text-amber-800 dark:text-amber-200 font-semibold">
-                        🎉 ¡Felicidades! Has ganado este sorteo
+                    <div className="mt-4 bg-gold/10 border border-gold/30 rounded-xl p-4">
+                      <p className="text-gold font-semibold flex items-center gap-2">
+                        <Trophy className="w-5 h-5" />
+                        ¡Felicidades! Has ganado este Drop
                       </p>
                     </div>
                   )}
@@ -248,24 +256,24 @@ export const MyTicketsPage = () => {
       </div>
 
       {/* Help Section */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-          ¿Cómo funcionan los sorteos?
+      <div className="bg-dark-card rounded-xl border border-gold/20 p-6">
+        <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+          <span className="text-gold">🪙</span> ¿Cómo funcionan los Drops?
         </h3>
-        <p className="text-slate-600 dark:text-slate-400 mb-4">
-          Todos nuestros sorteos están basados en Lotería Nacional de Costa Rica, garantizando total transparencia y verificabilidad.
+        <p className="text-neutral-400 mb-4">
+          Todos nuestros Drops están basados en Lotería Nacional de Costa Rica, garantizando total transparencia y verificabilidad.
         </p>
-        <div className="flex gap-4 text-sm">
-          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+        <div className="flex flex-wrap gap-4 text-sm">
+          <div className="flex items-center gap-2 text-neutral-300">
+            <span className="w-2 h-2 bg-accent-green rounded-full"></span>
             100% Verificable
           </div>
-          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+          <div className="flex items-center gap-2 text-neutral-300">
+            <span className="w-2 h-2 bg-accent-green rounded-full"></span>
             Transparente
           </div>
-          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+          <div className="flex items-center gap-2 text-neutral-300">
+            <span className="w-2 h-2 bg-accent-green rounded-full"></span>
             Seguro
           </div>
         </div>

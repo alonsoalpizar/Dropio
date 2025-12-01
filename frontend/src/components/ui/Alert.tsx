@@ -3,20 +3,16 @@ import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
+  "relative w-full rounded-xl border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4",
   {
     variants: {
       variant: {
-        default: "bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-700",
-        success:
-          "border-green-500/50 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/10 [&>svg]:text-green-600",
-        warning:
-          "border-yellow-500/50 text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/10 [&>svg]:text-yellow-600",
-        error:
-          "border-red-500/50 text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/10 [&>svg]:text-red-600",
-        destructive:
-          "border-red-500/50 text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/10 [&>svg]:text-red-600",
-        info: "border-blue-500/50 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10 [&>svg]:text-blue-600",
+        default: "bg-dark-card text-white border-dark-lighter [&>svg]:text-neutral-400",
+        success: "border-accent-green/30 text-accent-green bg-accent-green/10 [&>svg]:text-accent-green",
+        warning: "border-gold/30 text-gold bg-gold/10 [&>svg]:text-gold",
+        error: "border-red-500/30 text-red-400 bg-red-500/10 [&>svg]:text-red-400",
+        destructive: "border-red-500/30 text-red-400 bg-red-500/10 [&>svg]:text-red-400",
+        info: "border-accent-blue/30 text-accent-blue bg-accent-blue/10 [&>svg]:text-accent-blue",
       },
     },
     defaultVariants: {
