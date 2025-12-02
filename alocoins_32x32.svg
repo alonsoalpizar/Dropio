@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="coinGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8C547"/>
+      <stop offset="50%" style="stop-color:#C9A227"/>
+      <stop offset="100%" style="stop-color:#AA8415"/>
+    </linearGradient>
+    <linearGradient id="coinShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D76E"/>
+      <stop offset="100%" style="stop-color:#C9A227"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer circle (coin edge) -->
+  <circle cx="16" cy="16" r="15" fill="url(#coinGold)" stroke="#AA8415" stroke-width="1"/>
+  
+  <!-- Inner circle -->
+  <circle cx="16" cy="16" r="12.5" fill="none" stroke="#C9A227" stroke-width="0.5"/>
+  
+  <!-- Arrow/A shape -->
+  <path d="M16 6 L22 18 L19 18 L19 22 L16 19 L13 22 L13 18 L10 18 Z" 
+        fill="none" stroke="#8B7012" stroke-width="1.2" stroke-linejoin="round"/>
+  
+  <!-- Inner drop shape -->
+  <ellipse cx="16" cy="16" rx="2" ry="3" fill="none" stroke="#8B7012" stroke-width="0.8"/>
+  
+  <!-- ALO text -->
+  <text x="16" y="28" font-family="Arial, sans-serif" font-size="5" font-weight="bold" 
+        fill="#8B7012" text-anchor="middle">ALO</text>
+</svg>
