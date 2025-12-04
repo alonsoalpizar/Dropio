@@ -87,3 +87,62 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* === ALOCOIN ANIMATIONS === */
+@keyframes coin-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Simple 2D spin (legacy) */
+@keyframes coin-spin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+/* 3D coin spin with proper perspective */
+@keyframes coin-spin-3d {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-12deg);
+  }
+}
+
+.animate-coin-float {
+  animation: coin-float 3s ease-in-out infinite;
+}
+
+/* Legacy 2D spin */
+.animate-coin-spin {
+  animation: coin-spin 8s linear infinite;
+  transform-style: preserve-3d;
+}
+
+/* 3D coin spin - for use with proper 3D coin structure */
+.animate-coin-spin-3d {
+  animation: coin-spin-3d 12s linear infinite;
+  transform-style: preserve-3d;
+}
+
+.animate-shine {
+  animation: shine 3s ease-in-out infinite;
+}

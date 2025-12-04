@@ -49,6 +49,7 @@ import { WalletPage } from "@/features/wallet/pages/WalletPage";
 import { CreditSuccess } from "@/features/wallet/pages/CreditSuccess";
 import { CreditFailed } from "@/features/wallet/pages/CreditFailed";
 import { CreditVerifying } from "@/features/wallet/pages/CreditVerifying";
+import { ManualPaymentInstructions } from "@/features/wallet/pages/ManualPaymentInstructions";
 
 // Profile pages
 import { ProfilePage } from "@/features/profile/components/ProfilePage";
@@ -276,6 +277,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <CreditVerifying />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/credits/manual-payment"
+            element={
+              <ProtectedRoute>
+                <ManualPaymentInstructions />
               </ProtectedRoute>
             }
           />

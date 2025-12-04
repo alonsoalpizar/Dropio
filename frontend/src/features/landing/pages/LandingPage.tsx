@@ -1,32 +1,67 @@
 import { Link } from 'react-router-dom';
 import { useIsAuthenticated } from '@/hooks/useAuth';
 
-// Componente de la moneda flotante
+// Componente de la moneda flotante 3D con grosor
 function AloCoin() {
-  return (
-    <div className="relative animate-float">
-      {/* Glow effect */}
-      <div className="absolute inset-0 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 bg-gold/20 rounded-full blur-3xl animate-glow-pulse" />
-
-      {/* Coin */}
-      <div className="relative w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full flex flex-col items-center justify-center"
+  // Create edge layers for 3D thickness effect
+  const thickness = 20; // pixels of thickness
+  const edgeLayers = [];
+  for (let i = 1; i <= thickness; i++) {
+    edgeLayers.push(
+      <div
+        key={i}
+        className="absolute inset-0 rounded-full"
         style={{
-          background: 'linear-gradient(145deg, #F4B942, #C9952E)',
-          boxShadow: '0 0 100px rgba(244, 185, 66, 0.3), inset 0 -10px 30px rgba(0, 0, 0, 0.3), inset 0 10px 30px rgba(255, 255, 255, 0.2)',
+          transform: `translateZ(${-i}px)`,
+          background: `linear-gradient(135deg, #B8860B 0%, #DAA520 50%, #CD853F 100%)`,
+          boxShadow: i === thickness ? '0 0 20px rgba(0,0,0,0.4)' : 'none',
         }}
-      >
-        {/* Inner border */}
-        <div className="absolute inset-[15px] border-[3px] border-white/30 rounded-full" />
+      />
+    );
+  }
 
-        {/* Symbol */}
-        <span className="text-[3.5rem] md:text-[5rem] font-black text-dark"
-          style={{ textShadow: '2px 2px 0 rgba(255, 255, 255, 0.3)' }}
+  return (
+    <div className="relative animate-float" style={{ perspective: "1200px" }}>
+      {/* Glow effect */}
+      <div className="absolute inset-0 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 bg-gold/30 rounded-full blur-3xl animate-glow-pulse" />
+
+      {/* 3D Coin Container */}
+      <div
+        className="relative w-[280px] h-[280px] md:w-[380px] md:h-[380px] animate-coin-spin-3d"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Front face */}
+        <div
+          className="absolute inset-0 rounded-full overflow-hidden"
+          style={{
+            backfaceVisibility: "hidden",
+            transform: "translateZ(1px)",
+          }}
         >
-          A
-        </span>
-        <span className="text-sm md:text-base font-bold text-dark tracking-[4px] uppercase mt-2">
-          AloCoins
-        </span>
+          <img
+            src="/assets/alocoin.png"
+            alt="AloCoin"
+            className="w-[150%] h-[150%] object-contain drop-shadow-[0_0_60px_rgba(244,185,66,0.4)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
+
+        {/* Edge layers for thickness */}
+        {edgeLayers}
+
+        {/* Back face - same image, not mirrored */}
+        <div
+          className="absolute inset-0 rounded-full overflow-hidden"
+          style={{
+            backfaceVisibility: "hidden",
+            transform: `rotateY(180deg) translateZ(${thickness + 1}px)`,
+          }}
+        >
+          <img
+            src="/assets/alocoin.png"
+            alt="AloCoin"
+            className="w-[150%] h-[150%] object-contain drop-shadow-[0_0_60px_rgba(244,185,66,0.4)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
       </div>
     </div>
   );

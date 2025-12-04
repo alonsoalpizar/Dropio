@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { CreditCard, Info, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { CreditCard, Info, ArrowRight, Smartphone, Building2 } from "lucide-react";
 import { useRechargeOptions, useAddFunds, usePurchaseCredits } from "../hooks/useWallet";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { useUserMode } from "@/contexts/UserModeContext";
 import { cn } from "@/lib/utils";
 
 // Helper para formatear CRC
@@ -14,7 +14,16 @@ function formatCRC(amount: number | string): string {
     style: "currency",
     currency: "CRC",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
+  }).format(num);
+}
+
+// Helper para formatear AloCoins
+function formatALO(amount: number | string): string {
+  const num = typeof amount === "string" ? parseFloat(amount) : amount;
+  return new Intl.NumberFormat("es-CR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(num);
 }
 
@@ -24,11 +33,10 @@ function generateIdempotencyKey(): string {
 }
 
 export const RechargeOptions = () => {
+  const navigate = useNavigate();
   const { data: optionsData, isLoading: optionsLoading } = useRechargeOptions();
   const addFundsMutation = useAddFunds();
   const purchaseCreditsMutation = usePurchaseCredits();
-  const { mode } = useUserMode();
-  const isOrganizer = mode === 'organizer';
 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "sinpe" | "transfer">("card");
@@ -37,6 +45,8 @@ export const RechargeOptions = () => {
     if (selectedOptionIndex === null || !optionsData) return;
 
     const selectedOption = optionsData.options[selectedOptionIndex];
+    const desiredCredit = parseFloat(selectedOption.desired_credit);
+    const chargeAmount = parseFloat(selectedOption.charge_amount);
 
     // Si el método de pago es tarjeta, usar Pagadito
     if (paymentMethod === "card") {
@@ -46,12 +56,9 @@ export const RechargeOptions = () => {
         idempotency_key: generateIdempotencyKey(),
       });
     } else {
-      // Para otros métodos de pago, usar el flujo anterior
-      addFundsMutation.mutate({
-        amount: selectedOption.desired_credit,
-        payment_method: paymentMethod,
-        idempotency_key: generateIdempotencyKey(),
-      });
+      // Para SINPE o Transferencia, redirigir a la página de instrucciones
+      const reference = `ALO-${Date.now().toString(36).toUpperCase()}`;
+      navigate(`/credits/manual-payment?method=${paymentMethod}&amount=${chargeAmount}&alocoins=${desiredCredit}&reference=${reference}`);
     }
   };
 
@@ -112,15 +119,12 @@ export const RechargeOptions = () => {
   return (
     <div className="space-y-6">
       {/* Info note */}
-      {optionsData.note && (
-        <div className={cn(
-          "rounded-lg p-4 flex items-start gap-3 border",
-          isOrganizer ? "bg-teal-50 border-teal-200" : "bg-blue-50 border-blue-200"
-        )}>
-          <Info className={cn("w-5 h-5 flex-shrink-0 mt-0.5", isOrganizer ? "text-teal-600" : "text-blue-600")} />
-          <p className={cn("text-sm", isOrganizer ? "text-teal-900" : "text-blue-900")}>{optionsData.note}</p>
-        </div>
-      )}
+      <div className="rounded-xl p-4 flex items-start gap-3 border border-gold/30 bg-gold/10">
+        <Info className="w-5 h-5 flex-shrink-0 mt-0.5 text-gold" />
+        <p className="text-sm text-neutral-300">
+          Los montos mostrados incluyen todas las comisiones. El crédito deseado es lo que recibirás en tu billetera.
+        </p>
+      </div>
 
       {/* Error alert */}
       {(addFundsMutation.isError || purchaseCreditsMutation.isError) && (
@@ -136,8 +140,8 @@ export const RechargeOptions = () => {
         </div>
       )}
 
-      {/* Opciones de recarga */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Opciones de compra de AloCoins */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {optionsData.options.map((option, index) => {
           const isSelected = selectedOptionIndex === index;
           const desiredCredit = parseFloat(option.desired_credit);
@@ -145,156 +149,179 @@ export const RechargeOptions = () => {
           const totalFees = parseFloat(option.total_fees);
 
           return (
-            <Card
+            <div
               key={index}
               className={cn(
-                "p-5 cursor-pointer transition-all",
+                "relative p-5 rounded-xl cursor-pointer transition-all border-2",
                 isSelected
-                  ? isOrganizer
-                    ? "ring-2 ring-teal-500 bg-teal-50"
-                    : "ring-2 ring-blue-500 bg-blue-50"
-                  : "hover:shadow-md"
+                  ? "border-gold bg-gold/10 shadow-lg shadow-gold/20"
+                  : "border-dark-lighter bg-dark-card hover:border-gold/50 hover:bg-dark-card/80"
               )}
               onClick={() => setSelectedOptionIndex(index)}
             >
               <div className="text-center">
-                {/* Crédito que recibirá */}
+                {/* Recibirás AloCoins */}
                 <div className="mb-3">
-                  <p className="text-sm text-slate-600 font-medium">Recibirás</p>
-                  <p className={cn("text-3xl font-bold", isOrganizer ? "text-teal-600" : "text-blue-600")}>
-                    {formatCRC(desiredCredit)}
-                  </p>
+                  <p className="text-xs text-neutral-400 font-medium uppercase tracking-wide">Recibirás</p>
+                  <div className="flex items-center justify-center gap-2 mt-1">
+                    <img
+                      src="/assets/alocoin.png"
+                      alt="ALO"
+                      className="w-8 h-8"
+                    />
+                    <span className={cn(
+                      "text-3xl font-bold",
+                      isSelected ? "text-gold" : "text-white"
+                    )}>
+                      {formatALO(desiredCredit)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-1">AloCoins</p>
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-slate-200 my-3"></div>
+                <div className="border-t border-dark-lighter my-3"></div>
 
-                {/* Monto a pagar */}
+                {/* Monto a pagar en colones */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Total a pagar:</span>
-                    <span className="font-semibold text-slate-900">{formatCRC(chargeAmount)}</span>
+                    <span className="text-neutral-400">Total a pagar:</span>
+                    <span className="font-semibold text-white">{formatCRC(chargeAmount)}</span>
                   </div>
-                  <div className="flex justify-between text-xs text-slate-500">
-                    <span>Comisión por servicio:</span>
+                  <div className="flex justify-between text-xs text-neutral-500">
+                    <span>Comisión:</span>
                     <span>{formatCRC(totalFees)}</span>
                   </div>
                 </div>
 
                 {/* Checkmark si está seleccionado */}
                 {isSelected && (
-                  <div className="mt-3">
-                    <div className={cn(
-                      "text-white rounded-full w-6 h-6 flex items-center justify-center mx-auto",
-                      isOrganizer ? "bg-teal-600" : "bg-blue-600"
-                    )}>
+                  <div className="absolute -top-2 -right-2">
+                    <div className="bg-gold text-dark rounded-full w-6 h-6 flex items-center justify-center font-bold text-sm">
                       ✓
                     </div>
                   </div>
                 )}
               </div>
-            </Card>
+            </div>
           );
         })}
       </div>
 
       {/* Desglose simplificado de la opción seleccionada */}
       {selectedOptionIndex !== null && (
-        <Card className="p-6 bg-slate-50">
-          <h3 className="font-semibold text-slate-900 mb-4">Desglose</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-600">Crédito deseado:</span>
-              <span className="font-medium">{formatCRC(optionsData.options[selectedOptionIndex].desired_credit)}</span>
+        <div className="p-5 rounded-xl bg-dark-card border border-dark-lighter">
+          <h3 className="font-semibold text-white mb-4">Resumen de tu compra</h3>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between items-center">
+              <span className="text-neutral-400">AloCoins a recibir:</span>
+              <div className="flex items-center gap-2">
+                <img src="/assets/alocoin.png" alt="ALO" className="w-5 h-5" />
+                <span className="font-semibold text-gold">{formatALO(optionsData.options[selectedOptionIndex].desired_credit)}</span>
+              </div>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-600">Comisión por servicio:</span>
-              <span className="font-medium">{formatCRC(optionsData.options[selectedOptionIndex].total_fees)}</span>
+              <span className="text-neutral-400">Precio base:</span>
+              <span className="text-white">{formatCRC(optionsData.options[selectedOptionIndex].desired_credit)}</span>
             </div>
-            <div className="border-t border-slate-300 my-2"></div>
+            <div className="flex justify-between">
+              <span className="text-neutral-400">Comisión por servicio:</span>
+              <span className="text-white">{formatCRC(optionsData.options[selectedOptionIndex].total_fees)}</span>
+            </div>
+            <div className="border-t border-dark-lighter my-2"></div>
             <div className="flex justify-between font-semibold text-base">
-              <span>Total a pagar:</span>
-              <span className={isOrganizer ? "text-teal-600" : "text-blue-600"}>
+              <span className="text-white">Total a pagar:</span>
+              <span className="text-gold">
                 {formatCRC(optionsData.options[selectedOptionIndex].charge_amount)}
               </span>
             </div>
           </div>
-        </Card>
+        </div>
       )}
 
       {/* Métodos de pago */}
       {selectedOptionIndex !== null && (
-        <Card className="p-6">
-          <h3 className="font-semibold text-slate-900 mb-4">Método de pago</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-5 rounded-xl bg-dark-card border border-dark-lighter">
+          <h3 className="font-semibold text-white mb-4">Método de pago</h3>
+          <div className="grid grid-cols-3 gap-3">
             <button
               onClick={() => setPaymentMethod("card")}
               className={cn(
-                "p-4 border-2 rounded-lg transition-all",
+                "p-4 border-2 rounded-xl transition-all",
                 paymentMethod === "card"
-                  ? isOrganizer
-                    ? "border-teal-500 bg-teal-50"
-                    : "border-blue-500 bg-blue-50"
-                  : "border-slate-200 hover:border-slate-300"
+                  ? "border-gold bg-gold/10"
+                  : "border-dark-lighter hover:border-gold/50"
               )}
             >
-              <CreditCard className={cn("w-6 h-6 mx-auto mb-2", isOrganizer ? "text-teal-600" : "text-blue-600")} />
-              <p className="text-sm font-medium">Tarjeta</p>
+              <CreditCard className={cn(
+                "w-6 h-6 mx-auto mb-2",
+                paymentMethod === "card" ? "text-gold" : "text-neutral-400"
+              )} />
+              <p className={cn(
+                "text-sm font-medium",
+                paymentMethod === "card" ? "text-gold" : "text-neutral-300"
+              )}>Tarjeta</p>
             </button>
             <button
               onClick={() => setPaymentMethod("sinpe")}
               className={cn(
-                "p-4 border-2 rounded-lg transition-all",
+                "p-4 border-2 rounded-xl transition-all",
                 paymentMethod === "sinpe"
-                  ? isOrganizer
-                    ? "border-teal-500 bg-teal-50"
-                    : "border-blue-500 bg-blue-50"
-                  : "border-slate-200 hover:border-slate-300"
+                  ? "border-gold bg-gold/10"
+                  : "border-dark-lighter hover:border-gold/50"
               )}
             >
-              <div className="w-6 h-6 mx-auto mb-2 text-2xl">💸</div>
-              <p className="text-sm font-medium">SINPE Móvil</p>
+              <Smartphone className={cn(
+                "w-6 h-6 mx-auto mb-2",
+                paymentMethod === "sinpe" ? "text-gold" : "text-neutral-400"
+              )} />
+              <p className={cn(
+                "text-sm font-medium",
+                paymentMethod === "sinpe" ? "text-gold" : "text-neutral-300"
+              )}>SINPE Móvil</p>
             </button>
             <button
               onClick={() => setPaymentMethod("transfer")}
               className={cn(
-                "p-4 border-2 rounded-lg transition-all",
+                "p-4 border-2 rounded-xl transition-all",
                 paymentMethod === "transfer"
-                  ? isOrganizer
-                    ? "border-teal-500 bg-teal-50"
-                    : "border-blue-500 bg-blue-50"
-                  : "border-slate-200 hover:border-slate-300"
+                  ? "border-gold bg-gold/10"
+                  : "border-dark-lighter hover:border-gold/50"
               )}
             >
-              <div className="w-6 h-6 mx-auto mb-2 text-2xl">🏦</div>
-              <p className="text-sm font-medium">Transferencia</p>
+              <Building2 className={cn(
+                "w-6 h-6 mx-auto mb-2",
+                paymentMethod === "transfer" ? "text-gold" : "text-neutral-400"
+              )} />
+              <p className={cn(
+                "text-sm font-medium",
+                paymentMethod === "transfer" ? "text-gold" : "text-neutral-300"
+              )}>Transferencia</p>
             </button>
           </div>
-        </Card>
+        </div>
       )}
 
       {/* Botón de confirmar */}
       {selectedOptionIndex !== null && (
-        <Button
+        <button
           onClick={handleRecharge}
           disabled={addFundsMutation.isPending || purchaseCreditsMutation.isPending}
-          className="w-full"
-          size="lg"
+          className="w-full py-4 px-6 bg-gold hover:bg-gold-light disabled:opacity-50 disabled:cursor-not-allowed text-dark font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-lg"
         >
           {(addFundsMutation.isPending || purchaseCreditsMutation.isPending) ? (
             <>
-              <div className="w-5 h-5 mr-2 inline-block">
-                <LoadingSpinner />
-              </div>
+              <LoadingSpinner />
               <span>Procesando...</span>
             </>
           ) : (
             <>
-              Recargar {formatCRC(optionsData.options[selectedOptionIndex].desired_credit)}
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <img src="/assets/alocoin.png" alt="ALO" className="w-6 h-6" />
+              <span>Comprar {formatALO(optionsData.options[selectedOptionIndex].desired_credit)} AloCoins</span>
+              <ArrowRight className="w-5 h-5" />
             </>
           )}
-        </Button>
+        </button>
       )}
     </div>
   );
